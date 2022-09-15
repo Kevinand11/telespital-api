@@ -13,6 +13,7 @@ export interface RoleInput {
 export interface RegisterInput extends UserUpdateInput {
 	email: string;
 	password: string;
+	type: AuthUserType
 }
 
 export interface PasswordResetInput {
@@ -29,3 +30,11 @@ export interface AuthOutput {
 	accessToken: string;
 	refreshToken: string;
 }
+
+export enum AuthUserType {
+	patient = 'patient',
+	doctor = 'doctor'
+}
+
+export type AuthUserData = { type: AuthUserType.patient }
+	| { type: AuthUserType.doctor, primarySpecialty: string, secondarySpecialty: string }

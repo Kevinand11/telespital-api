@@ -11,4 +11,4 @@ export const AuthUsersUseCases = new AuthUsersUseCase(userRepository)
 
 export { AuthUserEntity } from './domain/entities/users'
 export { UserFromModel } from './data/models/users'
-export { AuthOutput } from './domain/types'
+export { AuthOutput, AuthUserType } from './domain/types'

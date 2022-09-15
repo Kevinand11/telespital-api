@@ -3,6 +3,7 @@ import { UserFromModel } from '../models/users'
 import { UserChangeStreamCallbacks } from '@utils/changeStreams/auth/users'
 import { AuthUserEntity } from '../../domain/entities/users'
 import { UserMapper } from '../mappers/users'
+import { AuthUserType } from '../../domain/types'
 
 const UserSchema = new mongoose.Schema<UserFromModel>({
 	_id: {
@@ -46,7 +47,11 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 		required: false,
 		default: {} as unknown as UserFromModel['roles']
 	},
-
+	type: {
+		type: String,
+		required: false,
+		default: AuthUserType.patient
+	},
 	lastSignedInAt: {
 		type: Number,
 		required: false,

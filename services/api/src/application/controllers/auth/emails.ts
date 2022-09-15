@@ -1,4 +1,4 @@
-import { AuthUseCases, AuthUsersUseCases } from '@modules/auth'
+import { AuthUseCases, AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
 import { generateAuthOutput, isValidPassword } from '@utils/modules/auth'
 import { StorageUseCases } from '@modules/storage'
@@ -10,7 +10,8 @@ export class EmailsController {
 			firstName: req.body.firstName,
 			lastName: req.body.lastName,
 			password: req.body.password,
-			photo: req.files.photo?.[0] ?? null
+			photo: req.files.photo?.[0] ?? null,
+			type: req.body.type
 		}
 
 		const user = await AuthUsersUseCases.findUserByEmail(userCredential.email)
@@ -18,22 +19,23 @@ export class EmailsController {
 		const isUniqueInDb = (_: string) => !user ? Validation.isValid() : Validation.isInvalid('email already in use')
 
 		const {
-			email,
-			firstName,
-			lastName,
-			password,
-			photo: userPhoto
+			email, firstName, lastName,
+			password, photo: userPhoto, type
 		} = validate(userCredential, {
 			email: { required: true, rules: [Validation.isEmail, isUniqueInDb] },
 			password: { required: true, rules: [isValidPassword] },
 			photo: { required: true, nullable: true, rules: [Validation.isNotTruncated, Validation.isImage] },
 			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
-			lastName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] }
+			lastName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
+			type: {
+				required: true,
+				rules: [Validation.isString, Validation.arrayContainsX(Object.values(AuthUserType), (cur, val) => cur === val)]
+			}
 		})
 		const photo = userPhoto ? await StorageUseCases.upload('profiles', userPhoto) : null
 		const validateData = {
 			name: { first: firstName, last: lastName },
-			email, password, photo
+			email, password, photo, type
 		}
 
 		const updatedUser = user

@@ -1,5 +1,6 @@
 import { AuthTypes, MediaOutput } from '@stranerd/api-commons'
 import { AuthRoles } from '@utils/types'
+import { AuthUserType } from '../../domain/types'
 
 export interface UserFromModel extends UserToModel {
 	_id: string
@@ -15,4 +16,5 @@ export interface UserToModel {
 	photo: MediaOutput | null
 	isVerified: boolean
 	authTypes: AuthTypes[]
+	type: AuthUserType
 }

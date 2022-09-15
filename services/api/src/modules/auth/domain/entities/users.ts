@@ -1,5 +1,5 @@
 import { AuthTypes, BaseEntity, MediaOutput } from '@stranerd/api-commons'
-import { UserUpdateInput } from '../types'
+import { AuthUserType, UserUpdateInput } from '../types'
 import { AuthRoles } from '@utils/types'
 
 export class AuthUserEntity extends BaseEntity {
@@ -11,6 +11,7 @@ export class AuthUserEntity extends BaseEntity {
 	public readonly isVerified: boolean
 	public readonly authTypes: AuthTypes[]
 	public readonly roles: AuthRoles
+	public readonly type: AuthUserType
 	public readonly lastSignedInAt: number
 	public readonly signedUpAt: number
 
@@ -24,6 +25,7 @@ export class AuthUserEntity extends BaseEntity {
 		this.isVerified = data.isVerified
 		this.authTypes = data.authTypes
 		this.roles = data.roles ?? {}
+		this.type = data.type
 		this.lastSignedInAt = data.lastSignedInAt
 		this.signedUpAt = data.signedUpAt
 	}
@@ -41,14 +43,15 @@ export class AuthUserEntity extends BaseEntity {
 }
 
 interface UserConstructorArgs {
-	id: string;
-	email: string;
-	password: string;
-	roles: AuthRoles;
+	id: string
+	email: string
+	password: string
+	roles: AuthRoles
 	name: { first: string, last: string }
-	photo: MediaOutput | null;
-	isVerified: boolean;
-	authTypes: AuthTypes[];
-	lastSignedInAt: number;
+	photo: MediaOutput | null
+	isVerified: boolean
+	authTypes: AuthTypes[]
+	type: AuthUserType
+	lastSignedInAt: number
 	signedUpAt: number
 }

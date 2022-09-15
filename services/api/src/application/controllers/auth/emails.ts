@@ -1,6 +1,6 @@
 import { AuthUseCases, AuthUsersUseCases } from '@modules/auth'
 import { AuthTypes, Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
-import { generateAuthOutput } from '@utils/modules/auth'
+import { generateAuthOutput, isValidPassword } from '@utils/modules/auth'
 import { StorageUseCases } from '@modules/storage'
 
 export class EmailsController {
@@ -30,13 +30,10 @@ export class EmailsController {
 			photo: userPhoto
 		} = validate(userCredential, {
 			email: { required: true, rules: [Validation.isEmail, isUniqueInDb] },
-			password: {
-				required: true,
-				rules: [Validation.isString, Validation.isLongerThanX(7), Validation.isShorterThanX(17)]
-			},
+			password: { required: true, rules: [isValidPassword] },
 			photo: { required: true, nullable: true, rules: [Validation.isNotTruncated, Validation.isImage] },
-			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
-			lastName: { required: true, rules: [Validation.isString] }
+			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
+			lastName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] }
 		})
 		const photo = userPhoto ? await StorageUseCases.upload('profiles', userPhoto) : null
 		const validateData = {

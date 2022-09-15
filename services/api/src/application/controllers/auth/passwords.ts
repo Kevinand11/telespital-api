@@ -1,5 +1,5 @@
 import { AuthUseCases, AuthUsersUseCases } from '@modules/auth'
-import { generateAuthOutput } from '@utils/modules/auth'
+import { generateAuthOutput, isValidPassword } from '@utils/modules/auth'
 import { BadRequestError, Hash, Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
 
 export class PasswordsController {
@@ -22,10 +22,7 @@ export class PasswordsController {
 			password: req.body.password
 		}, {
 			token: { required: true, rules: [Validation.isString] },
-			password: {
-				required: true,
-				rules: [Validation.isString, Validation.isLongerThanX(7), Validation.isShorterThanX(17)]
-			}
+			password: { required: true, rules: [isValidPassword] }
 		})
 
 		const data = await AuthUseCases.resetPassword(validateData)
@@ -39,10 +36,7 @@ export class PasswordsController {
 			password: req.body.password
 		}, {
 			oldPassword: { required: true, rules: [Validation.isString] },
-			password: {
-				required: true,
-				rules: [Validation.isString, Validation.isLongerThanX(7), Validation.isShorterThanX(17)]
-			}
+			password: { required: true, rules: [isValidPassword] }
 		})
 
 		const user = await AuthUsersUseCases.findUser(userId)

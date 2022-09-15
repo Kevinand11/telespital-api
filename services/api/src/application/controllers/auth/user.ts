@@ -22,8 +22,8 @@ export class UserController {
 			lastName: req.body.lastName,
 			photo: uploadedPhoto as any
 		}, {
-			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
-			lastName: { required: true, rules: [Validation.isString] },
+			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
+			lastName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
 			photo: { required: true, nullable: true, rules: [Validation.isNotTruncated, Validation.isImage] }
 		})
 		const { firstName, lastName } = data

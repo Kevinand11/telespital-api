@@ -5,9 +5,33 @@ import {
 	deleteCachedRefreshToken,
 	exchangeOldForNewTokens,
 	makeAccessToken,
-	makeRefreshToken
+	makeRefreshToken,
+	Validation
 } from '@stranerd/api-commons'
 import { AuthOutput, AuthUserEntity, AuthUsersUseCases } from '@modules/auth'
+
+const letters = 'abcdefghijklmnopqrstuvwxyz'
+const lCaseLetters = letters.split('')
+const uCaseLetters = letters.toUpperCase().split('')
+const numbers = '0123456789'.split('')
+const symbolChars = '!@#$%^&*_.,?~'
+const symbols = symbolChars.split('')
+
+export const isValidPassword = (value: string) => {
+	const valids = [
+		Validation.isString(value),
+		Validation.isLongerThanOrEqualTo(value, 8),
+		Validation.isShorterThanOrEqualTo(value, 40),
+		uCaseLetters.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid('must contain at least 1 uppercase letter'),
+		lCaseLetters.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid('must contain at least 1 lowercase letter'),
+		numbers.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid('must contain at least 1 number'),
+		symbols.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid(`must contain at least 1 special character in ${symbolChars}`)
+	]
+	if (valids.every((e) => e.valid)) return Validation.isValid()
+	return Validation.isInvalid(valids.filter((v) => !v.valid)
+		.map((v) => v.error)
+		.join(', '))
+}
 
 export const signOutUser = async (userId: string): Promise<boolean> => {
 	await deleteCachedAccessToken(userId)

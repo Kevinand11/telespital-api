@@ -1,0 +1,74 @@
+version: '3.8'
+services:
+  traefik:
+    build:
+      context: ./docker/traefik
+      args:
+        BASE_DOMAIN: ${BASE_DOMAIN}
+        USE_SSL: ${USE_SSL}
+        PORT: ${PORT}
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/c/data/docker/telespital/traefik/acmeStaging.json:/etc/traefik/acmeStaging.json"
+      - "/c/data/docker/telespital/traefik/acmeProduction.json:/etc/traefik/acmeProduction.json"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  api:
+    build:
+      context: ./services/api
+      target: production
+    hostname: api
+    restart: always
+    depends_on:
+      - mongodb
+      - redis
+      - rabbitmq
+    volumes:
+      - '/c/data/docker/telespital/files/api/:/app/public/'
+    command: 'sh ./wait-for-it.sh redis:6379 mongodb:27017 rabbitmq:5672 -- node lib/index.js'
+
+  mongodb:
+    image: 'mongo:5.0.2'
+    hostname: mongodb
+    volumes:
+      - '/c/data/docker/telespital/mongo/db:/data/db'
+      - '/c/data/docker/telespital/mongo/configdb:/data/configdb'
+    restart: always
+    command: '--quiet --bind_ip_all --replSet rs0'
+
+  mongodb-express:
+    image: 'mongo-express:latest'
+    hostname: mongodb-express
+    restart: unless-stopped
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
+  rabbitmq:
+    build:
+      context: ./docker/rabbitmq
+    hostname: rabbitmq
+    restart: always
+
+  redis:
+    image: 'redis:6.2.5-alpine'
+    hostname: redis
+    restart: always
+
+  redis-commander:
+    image: 'rediscommander/redis-commander:latest'
+    hostname: redis-commander
+    restart: always
+    environment:
+      - 'REDIS_HOSTS=local:redis:6379'
+
+  rsinit:
+    build:
+      context: ./docker/mongo
+    hostname: rsinit
+    depends_on:
+      - mongodb
+    restart: on-failure
+    entrypoint: 'bash ./rs.sh'

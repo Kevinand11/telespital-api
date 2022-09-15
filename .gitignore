@@ -1,0 +1,6 @@
+env.json
+.env
+.idea/
+
+docker/public
+services/*/credentials.json

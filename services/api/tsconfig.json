@@ -1,0 +1,49 @@
+{
+	"compilerOptions": {
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"removeComments": false,
+		"noImplicitAny": false,
+		"target": "ES2021",
+		"module": "commonjs",
+		"rootDir": "src",
+		"baseUrl": "./",
+		"outDir": "lib",
+		"moduleResolution": "Node",
+		"lib": [
+			"ESNext",
+			"ESNext.AsyncIterable"
+		],
+		"esModuleInterop": true,
+		"allowJs": false,
+		"sourceMap": false,
+		"strict": true,
+		"noEmit": false,
+		"experimentalDecorators": true,
+		"paths": {
+			"@application/*": [
+				"./src/application/*"
+			],
+			"@modules/*": [
+				"./src/modules/*"
+			],
+			"@utils/*": [
+				"./src/utils/*"
+			],
+			"@index": [
+				"./src/index"
+			]
+		},
+		"types": [
+			"@types/node"
+		]
+	},
+	"include": [
+		"src"
+	],
+	"exclude": [
+		"node_modules",
+		"lib"
+	]
+}

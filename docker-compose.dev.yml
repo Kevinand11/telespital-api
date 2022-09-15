@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  api:
+    restart: unless-stopped
+    build:
+      target: base
+    volumes:
+      - "./services/api/src:/app/src:ro"
+    command: "sh ./wait-for-it.sh redis:6379 mongodb:27017 rabbitmq:5672 -- yarn dev"
+
+  mongodb:
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
+
+  mongodb-express:
+    restart: unless-stopped
+    ports:
+      - '81:8081'
+
+  rabbitmq:
+    restart: unless-stopped
+    ports:
+      - '82:15672'
+
+  redis:
+    restart: unless-stopped
+
+  redis-commander:
+    restart: unless-stopped
+    ports:
+      - '83:8081'
+
+  traefik:
+    restart: unless-stopped
+    ports:
+      - "90:8080"

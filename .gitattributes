@@ -1,0 +1,2 @@
+# Set the default behavior, in case people don't have core.autolf set.
+* text eol=lf

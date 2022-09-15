@@ -10,9 +10,7 @@ export class UserMapper extends BaseMapper<UserFromModel, UserToModel, UserEntit
 			dates: param.dates,
 			roles: param.roles,
 			meta: param.meta,
-			status: param.status,
-			tutor: param.tutor,
-			tutors: param.tutors
+			status: param.status
 		})
 	}
 
@@ -22,9 +20,7 @@ export class UserMapper extends BaseMapper<UserFromModel, UserToModel, UserEntit
 			dates: param.dates,
 			roles: param.roles,
 			meta: param.meta,
-			status: param.status,
-			tutor: param.tutor,
-			tutors: param.tutors
+			status: param.status
 		}
 	}
 }

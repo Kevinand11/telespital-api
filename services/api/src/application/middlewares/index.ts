@@ -16,11 +16,3 @@ export const isAdmin = makeMiddleware(
 		if (!isAdmin) throw new NotAuthorizedError()
 	}
 )
-
-export const isTutor = makeMiddleware(
-	async (request) => {
-		const isTutor = request.authUser?.roles?.[SupportedAuthRoles.isTutor]
-		if (!request.authUser) throw new NotAuthenticatedError()
-		if (!isTutor) throw new NotAuthorizedError()
-	}
-)

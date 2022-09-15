@@ -44,20 +44,4 @@ export class UsersUseCase {
 	async incrementMeta (params: { id: string, value: 1 | -1, property: UserMeta }) {
 		return await this.repository.incrementUserMeta(params.id, params.property, params.value)
 	}
-
-	async updateUserTutors (input: { userId: string, tutorId: string, add: boolean }) {
-		return await this.repository.updateUserTutors(input.userId, input.tutorId, input.add)
-	}
-
-	async removeSavedTutors (tutorId: string) {
-		return await this.repository.removeSavedTutors(tutorId)
-	}
-
-	async updateTutorSubjects (input: { userId: string, subjectId: string, add: boolean }) {
-		return await this.repository.updateTutorSubjects(input.userId, input.subjectId, input.add)
-	}
-
-	async removeSavedSubjects (subjectId: string) {
-		return await this.repository.removeSavedSubjects(subjectId)
-	}
 }

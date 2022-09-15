@@ -1,4 +1,4 @@
-import { EmbeddedUser, UserBio, UserDates, UserMetaType, UserRoles, UserStatus, UserTutor } from '../types'
+import { EmbeddedUser, UserBio, UserDates, UserMetaType, UserRoles, UserStatus } from '../types'
 import { BaseEntity } from '@stranerd/api-commons'
 
 export class UserEntity extends BaseEntity {
@@ -8,11 +8,9 @@ export class UserEntity extends BaseEntity {
 	public readonly dates: UserDates
 	public readonly meta: UserMetaType
 	public readonly status: UserStatus
-	public readonly tutor: UserTutor
-	public readonly tutors: string[]
 
 	constructor ({
-		             id, bio, roles, dates, meta, status, tutors, tutor
+		             id, bio, roles, dates, meta, status
 	             }: UserConstructorArgs) {
 		super()
 		this.id = id
@@ -21,8 +19,6 @@ export class UserEntity extends BaseEntity {
 		this.dates = dates
 		this.meta = meta
 		this.status = status
-		this.tutor = tutor
-		this.tutors = tutors
 	}
 
 	getEmbedded (): EmbeddedUser {
@@ -41,6 +37,4 @@ type UserConstructorArgs = {
 	dates: UserDates
 	meta: UserMetaType
 	status: UserStatus
-	tutor: UserTutor
-	tutors: string[]
 }

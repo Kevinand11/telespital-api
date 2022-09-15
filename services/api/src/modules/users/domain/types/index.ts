@@ -1,9 +1,11 @@
 import { MediaOutput } from '@stranerd/api-commons'
 import { AuthRoles } from '@utils/types'
+import { AuthUserType } from '@modules/auth'
 
 export type Media = MediaOutput
 
 export type UserBio = {
+	type: AuthUserType
 	email: string
 	name: {
 		first: string

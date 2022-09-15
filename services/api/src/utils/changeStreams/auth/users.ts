@@ -8,6 +8,7 @@ export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, Aut
 		await UsersUseCases.createUserWithBio({
 			id: after.id,
 			data: {
+				type: after.type,
 				name: after.allNames,
 				email: after.email,
 				photo: after.photo
@@ -27,6 +28,7 @@ export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, Aut
 		if (updatedBio) await UsersUseCases.updateUserWithBio({
 			id: after.id,
 			data: {
+				type: after.type,
 				name: after.allNames,
 				email: after.email,
 				photo: after.photo

@@ -2,10 +2,10 @@ import { AuthUsersUseCases } from '@modules/auth'
 import { NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
 import { signOutUser } from '@utils/modules/auth'
 import { superAdminEmail } from '@utils/environment'
-import { SupportedAuthRoles } from '@utils/types'
+import { AuthRole } from '@utils/types'
 import { StorageUseCases } from '@modules/storage'
 
-const roles = Object.values<string>(SupportedAuthRoles).filter((key) => key !== SupportedAuthRoles.isSuperAdmin)
+const roles = Object.values<string>(AuthRole).filter((key) => key !== AuthRole.isSuperAdmin)
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -67,8 +67,8 @@ export class UserController {
 		return await AuthUsersUseCases.updateRole({
 			userId: user.id,
 			roles: {
-				[SupportedAuthRoles.isAdmin]: true,
-				[SupportedAuthRoles.isSuperAdmin]: true
+				[AuthRole.isAdmin]: true,
+				[AuthRole.isSuperAdmin]: true
 			}
 		})
 	}

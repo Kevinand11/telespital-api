@@ -14,7 +14,7 @@ const letters = 'abcdefghijklmnopqrstuvwxyz'
 const lCaseLetters = letters.split('')
 const uCaseLetters = letters.toUpperCase().split('')
 const numbers = '0123456789'.split('')
-const symbolChars = '!@#$%^&*_.,?~'
+const symbolChars = '~`!@#$%^&*()_-+={[}]|\\:;"\'<,>.?/'
 const symbols = symbolChars.split('')
 
 export const isValidPassword = (value: string) => {
@@ -30,7 +30,7 @@ export const isValidPassword = (value: string) => {
 	if (valids.every((e) => e.valid)) return Validation.isValid()
 	return Validation.isInvalid(valids.filter((v) => !v.valid)
 		.map((v) => v.error)
-		.join(', '))
+		.join('\n'))
 }
 
 export const signOutUser = async (userId: string): Promise<boolean> => {
@@ -43,6 +43,7 @@ export const generateAuthOutput = async (user: AuthUserEntity): Promise<AuthOutp
 	const accessToken = await makeAccessToken({
 		id: user.id,
 		email: user.email,
+		type: user.type,
 		roles: user.roles,
 		isVerified: user.isVerified,
 		authTypes: user.authTypes

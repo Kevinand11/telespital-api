@@ -15,6 +15,4 @@ export interface IAuthRepository {
 	sendPasswordResetMail (email: string): Promise<boolean>
 
 	resetPassword (input: PasswordResetInput): Promise<AuthUserEntity>
-
-	googleSignIn (tokenId: string): Promise<AuthUserEntity>
 }

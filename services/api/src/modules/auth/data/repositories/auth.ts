@@ -6,7 +6,6 @@ import {
 	AuthTypes,
 	BadRequestError,
 	Hash,
-	MediaOutput,
 	mongoose,
 	Random,
 	readEmailFromPug,
@@ -16,7 +15,6 @@ import { appInstance } from '@utils/environment'
 import { UserMapper } from '../mappers/users'
 import { EmailsList } from '@utils/types'
 import { EventTypes, publishers } from '@utils/events'
-import axios from 'axios'
 
 const TOKENS_TTL_IN_SECS = 60 * 60
 
@@ -119,44 +117,6 @@ export class AuthRepository implements IAuthRepository {
 		if (!user) throw new BadRequestError('No account with saved email exists')
 
 		return this.mapper.mapFrom(user)!
-	}
-
-	async googleSignIn (idToken: string) {
-		const authUrl = `https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`
-		const { data } = await axios.get(authUrl).catch((err) => {
-			const message = err?.response?.data?.error
-			throw new BadRequestError(message ? 'Invalid id token' : 'Something unexpected happened')
-		})
-
-		const names = (data.name ?? '').split(' ')
-		const first = names[0] ?? ''
-		const last = names.length > 1 ? names.at(-1) ?? '' : ''
-		const email = data.email!.toLowerCase()
-		const photo = data.picture ? {
-			link: data.picture
-		} as unknown as MediaOutput : null
-
-		return this.authorizeSocial(AuthTypes.google, {
-			email, photo, name: { first, last }
-		})
-	}
-
-	private async authorizeSocial (type: AuthTypes, data: Pick<UserToModel, 'email' | 'name' | 'photo'>) {
-		const userData = await User.findOne({ email: data.email })
-
-		if (!userData) return await this.addNewUser({
-			name: data.name,
-			email: data.email,
-			photo: data.photo,
-			authTypes: [type],
-			password: '',
-			isVerified: true
-		}, type)
-
-		return await this.authenticateUser({
-			email: userData.email,
-			password: ''
-		}, false, type)
 	}
 
 	private async signInUser (user: UserFromModel & mongoose.Document<any, any, UserFromModel>, type: AuthTypes) {

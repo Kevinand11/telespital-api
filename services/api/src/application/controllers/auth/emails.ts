@@ -1,5 +1,5 @@
 import { AuthUseCases, AuthUsersUseCases } from '@modules/auth'
-import { AuthTypes, Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
+import { Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
 import { generateAuthOutput, isValidPassword } from '@utils/modules/auth'
 import { StorageUseCases } from '@modules/storage'
 
@@ -15,12 +15,7 @@ export class EmailsController {
 
 		const user = await AuthUsersUseCases.findUserByEmail(userCredential.email)
 
-		const isUniqueInDb = (_: string) => {
-			if (!user) return Validation.isValid()
-			if (user.authTypes.includes(AuthTypes.email)) return Validation.isInvalid('this email already exists with a password attached')
-			if (user.authTypes.includes(AuthTypes.google)) return Validation.isInvalid('this email is associated with a google account. Try signing in with google')
-			return Validation.isInvalid('email already in use')
-		}
+		const isUniqueInDb = (_: string) => !user ? Validation.isValid() : Validation.isInvalid('email already in use')
 
 		const {
 			email,

@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 		unique: true,
 		required: true
 	},
+	phone: {
+		type: mongoose.Schema.Types.Mixed,
+		required: true
+	},
 	password: {
 		type: String,
 		required: false,
@@ -51,6 +55,11 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 		type: String,
 		required: false,
 		default: AuthUserType.patient
+	},
+	data: {
+		type: mongoose.Schema.Types.Mixed,
+		required: false,
+		default: {}
 	},
 	lastSignedInAt: {
 		type: Number,

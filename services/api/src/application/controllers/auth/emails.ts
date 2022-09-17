@@ -1,6 +1,6 @@
 import { AuthUseCases, AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
-import { generateAuthOutput, isValidPassword } from '@utils/modules/auth'
+import { generateAuthOutput, isValidPassword, isValidPhone } from '@utils/modules/auth'
 import { StorageUseCases } from '@modules/storage'
 
 export class EmailsController {
@@ -10,19 +10,26 @@ export class EmailsController {
 			firstName: req.body.firstName,
 			lastName: req.body.lastName,
 			password: req.body.password,
+			phone: req.body.phone,
 			photo: req.files.photo?.[0] ?? null,
-			type: req.body.type
+			type: req.body.type,
+			primarySpecialty: req.body.primarySpecialty,
+			secondarySpecialty: req.body.secondarySpecialty
 		}
 
 		const user = await AuthUsersUseCases.findUserByEmail(userCredential.email)
 
 		const isUniqueInDb = (_: string) => !user ? Validation.isValid() : Validation.isInvalid('email already in use')
 
+		const isDoctorType = userCredential.type === AuthUserType.doctor
+
 		const {
-			email, firstName, lastName,
-			password, photo: userPhoto, type
+			email, firstName, lastName, phone,
+			password, photo: userPhoto, type,
+			primarySpecialty, secondarySpecialty
 		} = validate(userCredential, {
 			email: { required: true, rules: [Validation.isEmail, isUniqueInDb] },
+			phone: { required: true, rules: [isValidPhone] },
 			password: { required: true, rules: [isValidPassword] },
 			photo: { required: true, nullable: true, rules: [Validation.isNotTruncated, Validation.isImage] },
 			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
@@ -30,12 +37,15 @@ export class EmailsController {
 			type: {
 				required: true,
 				rules: [Validation.isString, Validation.arrayContainsX(Object.values(AuthUserType), (cur, val) => cur === val)]
-			}
+			},
+			primarySpecialty: { required: isDoctorType, rules: [Validation.isString] },
+			secondarySpecialty: { required: isDoctorType, rules: [Validation.isString] }
 		})
 		const photo = userPhoto ? await StorageUseCases.upload('profiles', userPhoto) : null
 		const validateData = {
 			name: { first: firstName, last: lastName },
-			email, password, photo, type
+			email, password, photo, type, phone,
+			data: isDoctorType ? { primarySpecialty, secondarySpecialty } : {}
 		}
 
 		const updatedUser = user

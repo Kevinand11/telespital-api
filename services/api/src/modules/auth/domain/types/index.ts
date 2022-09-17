@@ -12,8 +12,10 @@ export interface RoleInput {
 
 export interface RegisterInput extends UserUpdateInput {
 	email: string;
-	password: string;
+	phone: { code: string, number: string }
+	password: string
 	type: AuthUserType
+	data: AuthUserData
 }
 
 export interface PasswordResetInput {
@@ -36,5 +38,7 @@ export enum AuthUserType {
 	doctor = 'doctor'
 }
 
-export type AuthUserData = { type: AuthUserType.patient }
-	| { type: AuthUserType.doctor, primarySpecialty: string, secondarySpecialty: string }
+export type AuthUserData = Partial<{
+	primarySpecialty: string
+	secondarySpecialty: string
+}>

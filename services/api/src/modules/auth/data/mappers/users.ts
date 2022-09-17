@@ -7,6 +7,7 @@ export class UserMapper extends BaseMapper<UserFromModel, UserToModel, AuthUserE
 		return !param ? null : new AuthUserEntity({
 			id: param._id.toString(),
 			email: param.email,
+			phone: param.phone,
 			password: param.password,
 			roles: param.roles,
 			name: param.name,
@@ -14,6 +15,7 @@ export class UserMapper extends BaseMapper<UserFromModel, UserToModel, AuthUserE
 			isVerified: param.isVerified,
 			authTypes: param.authTypes,
 			type: param.type,
+			data: param.data,
 			lastSignedInAt: param.lastSignedInAt,
 			signedUpAt: param.signedUpAt
 		})
@@ -22,6 +24,7 @@ export class UserMapper extends BaseMapper<UserFromModel, UserToModel, AuthUserE
 	mapTo (param: AuthUserEntity) {
 		return {
 			email: param.email,
+			phone: param.phone,
 			password: param.password,
 			roles: param.roles,
 			name: param.name,
@@ -29,6 +32,7 @@ export class UserMapper extends BaseMapper<UserFromModel, UserToModel, AuthUserE
 			isVerified: param.isVerified,
 			authTypes: param.authTypes,
 			type: param.type,
+			data: param.data,
 			lastSignedInAt: param.lastSignedInAt,
 			signedUpAt: param.signedUpAt
 		}

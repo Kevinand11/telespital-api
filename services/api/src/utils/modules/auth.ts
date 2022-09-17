@@ -33,6 +33,15 @@ export const isValidPassword = (value: string) => {
 		.join('\n'))
 }
 
+export const isValidPhone = (phone: { code: string, number: string }) => {
+	const { code = '', number = '' } = phone ?? {}
+	const isValidCode = Validation.isString(code).valid && code.startsWith('+') && Validation.isNumber(parseInt(code.slice(1))).valid
+	const isValidNumber = Validation.isNumber(number).valid
+	if (!isValidCode) return Validation.isInvalid('invalid phone code')
+	if (!isValidNumber) return Validation.isInvalid('invalid phone number')
+	return Validation.isValid()
+}
+
 export const signOutUser = async (userId: string): Promise<boolean> => {
 	await deleteCachedAccessToken(userId)
 	await deleteCachedRefreshToken(userId)

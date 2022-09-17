@@ -1,6 +1,6 @@
 import { AuthUsersUseCases } from '@modules/auth'
 import { NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
-import { signOutUser } from '@utils/modules/auth'
+import { isValidPhone, signOutUser } from '@utils/modules/auth'
 import { superAdminEmail } from '@utils/environment'
 import { AuthRole } from '@utils/types'
 import { StorageUseCases } from '@modules/storage'
@@ -20,17 +20,19 @@ export class UserController {
 		const data = validate({
 			firstName: req.body.firstName,
 			lastName: req.body.lastName,
+			phone: req.body.phone,
 			photo: uploadedPhoto as any
 		}, {
 			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
 			lastName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
+			phone: { required: true, rules: [isValidPhone] },
 			photo: { required: true, nullable: true, rules: [Validation.isNotTruncated, Validation.isImage] }
 		})
-		const { firstName, lastName } = data
+		const { firstName, lastName, phone } = data
 		if (uploadedPhoto) data.photo = await StorageUseCases.upload('profiles', uploadedPhoto)
 
 		const validateData = {
-			name: { first: firstName, last: lastName },
+			name: { first: firstName, last: lastName }, phone,
 			...(changedPhoto ? { photo: data.photo } : {})
 		}
 

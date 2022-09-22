@@ -8,7 +8,6 @@ export interface CardFromModel extends CardToModel {
 
 export interface CardToModel {
 	last4Digits: string
-	issuer: string
 	country: string
 	type: string
 	token: string

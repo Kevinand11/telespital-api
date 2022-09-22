@@ -3,7 +3,6 @@ import { BaseEntity } from '@stranerd/api-commons'
 export class CardEntity extends BaseEntity {
 	public readonly id: string
 	public readonly last4Digits: string
-	public readonly issuer: string
 	public readonly country: string
 	public readonly type: string
 	public readonly token: string
@@ -15,13 +14,12 @@ export class CardEntity extends BaseEntity {
 	public readonly updatedAt: number
 
 	constructor ({
-		             id, last4Digits, issuer, country, type, token,
+		             id, last4Digits, country, type, token,
 		             expiredAt, expired, primary, userId, createdAt, updatedAt
 	             }: CardConstructorArgs) {
 		super()
 		this.id = id
 		this.last4Digits = last4Digits
-		this.issuer = issuer
 		this.country = country
 		this.type = type
 		this.token = token
@@ -36,7 +34,7 @@ export class CardEntity extends BaseEntity {
 	get expiry () {
 		const date = new Date(this.expiredAt)
 		return [
-			date.getMonth().toString().padStart(2, '0'),
+			(date.getMonth() + 1).toString().padStart(2, '0'),
 			date.getFullYear().toString().slice(-2)
 		].join('/')
 	}
@@ -45,7 +43,6 @@ export class CardEntity extends BaseEntity {
 type CardConstructorArgs = {
 	id: string
 	last4Digits: string
-	issuer: string
 	country: string
 	type: string
 	token: string

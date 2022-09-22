@@ -22,10 +22,6 @@ const CardSchema = new mongoose.Schema<CardFromModel>({
 		type: String,
 		required: true
 	},
-	issuer: {
-		type: String,
-		required: true
-	},
 	country: {
 		type: String,
 		required: true

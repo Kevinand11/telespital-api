@@ -7,7 +7,6 @@ export class CardMapper extends BaseMapper<CardFromModel, CardToModel, CardEntit
 		return !param ? null : new CardEntity({
 			id: param._id.toString(),
 			last4Digits: param.last4Digits,
-			issuer: param.issuer,
 			country: param.country,
 			type: param.type,
 			token: param.token,
@@ -23,7 +22,6 @@ export class CardMapper extends BaseMapper<CardFromModel, CardToModel, CardEntit
 	mapTo (param: CardEntity) {
 		return {
 			last4Digits: param.last4Digits,
-			issuer: param.issuer,
 			country: param.country,
 			type: param.type,
 			token: param.token,

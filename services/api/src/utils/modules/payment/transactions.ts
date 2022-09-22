@@ -18,7 +18,6 @@ export const fulfillTransaction = async (transaction: TransactionEntity) => {
 		await CardsUseCases.create({
 			userId: transaction.userId,
 			last4Digits: fTransaction.card.last_4digits,
-			issuer: fTransaction.card.issuer,
 			country: fTransaction.card.country,
 			type: fTransaction.card.type,
 			token: fTransaction.card.token,

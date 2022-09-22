@@ -36,7 +36,7 @@ export const isValidPassword = (value: string) => {
 export const isValidPhone = (phone: { code: string, number: string }) => {
 	const { code = '', number = '' } = phone ?? {}
 	const isValidCode = Validation.isString(code).valid && code.startsWith('+') && Validation.isNumber(parseInt(code.slice(1))).valid
-	const isValidNumber = Validation.isNumber(number).valid
+	const isValidNumber = Validation.isNumber(parseInt(number)).valid
 	if (!isValidCode) return Validation.isInvalid('invalid phone code')
 	if (!isValidNumber) return Validation.isInvalid('invalid phone number')
 	return Validation.isValid()

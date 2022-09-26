@@ -1,5 +1,6 @@
-import { makeController, requireAuthUser, Route, StatusCodes } from '@stranerd/api-commons'
+import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
 import { TransactionsController } from '@application/controllers/payment/transactions'
+import { isAuthenticated } from '@application/middlewares'
 
 export const transactionsRoutes: Route[] = [
 	{
@@ -18,7 +19,7 @@ export const transactionsRoutes: Route[] = [
 		path: '/payment/transactions',
 		method: 'get',
 		controllers: [
-			requireAuthUser,
+			isAuthenticated,
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,
@@ -31,7 +32,7 @@ export const transactionsRoutes: Route[] = [
 		path: '/payment/transactions/:id',
 		method: 'get',
 		controllers: [
-			requireAuthUser,
+			isAuthenticated,
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,
@@ -44,7 +45,7 @@ export const transactionsRoutes: Route[] = [
 		path: '/payment/transactions',
 		method: 'post',
 		controllers: [
-			requireAuthUser,
+			isAuthenticated,
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,
@@ -57,7 +58,7 @@ export const transactionsRoutes: Route[] = [
 		path: '/payment/transactions/:id/fulfill',
 		method: 'put',
 		controllers: [
-			requireAuthUser,
+			isAuthenticated,
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,

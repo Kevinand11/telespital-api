@@ -1,11 +1,12 @@
-import { makeController, requireAuthUser, Route, StatusCodes, validate, Validation } from '@stranerd/api-commons'
+import { makeController, Route, StatusCodes, validate, Validation } from '@stranerd/api-commons'
 import { TokensUseCases } from '@modules/notifications'
+import { isAuthenticated } from '@application/middlewares'
 
 const subscribeDevice: Route = {
 	path: '/notifications/devices/subscribe',
 	method: 'post',
 	controllers: [
-		requireAuthUser,
+		isAuthenticated,
 		makeController(async (req) => {
 			const { token } = validate({
 				token: req.body.token
@@ -25,7 +26,7 @@ const unsubscribeDevice: Route = {
 	path: '/notifications/devices/unsubscribe',
 	method: 'post',
 	controllers: [
-		requireAuthUser,
+		isAuthenticated,
 		makeController(async (req) => {
 			const { token } = validate({
 				token: req.body.token

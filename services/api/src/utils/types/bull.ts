@@ -1,3 +1,3 @@
-export declare enum DelayedJobs {}
+export enum DelayedJobs {}
 
-export declare type DelayedEvent = any
+export type DelayedEvent = any

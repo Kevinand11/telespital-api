@@ -4,7 +4,7 @@ import { isAuthenticated } from '@application/middlewares'
 
 export const notificationsRoutes: Route[] = [
 	{
-		path: '/users/notifications/',
+		path: '/notifications/notifications/',
 		method: 'get',
 		controllers: [
 			isAuthenticated,
@@ -17,7 +17,7 @@ export const notificationsRoutes: Route[] = [
 		]
 	},
 	{
-		path: '/users/notifications/:id',
+		path: '/notifications/notifications/:id',
 		method: 'get',
 		controllers: [
 			isAuthenticated,
@@ -30,7 +30,7 @@ export const notificationsRoutes: Route[] = [
 		]
 	},
 	{
-		path: '/users/notifications/:id/seen',
+		path: '/notifications/notifications/:id/seen',
 		method: 'put',
 		controllers: [
 			isAuthenticated,

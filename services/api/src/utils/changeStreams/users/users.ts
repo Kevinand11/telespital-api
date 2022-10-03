@@ -11,11 +11,7 @@ export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, Use
 		await getSocketEmitter().emitUpdated('users/users', after)
 		await getSocketEmitter().emitUpdated(`users/users/${after.id}`, after)
 		const updatedBioOrRoles = !!changes.bio || !!changes.roles
-		if (updatedBioOrRoles) await Promise.all([].map(async (useCase: any) => await useCase.execute({
-			userId: after.id,
-			userBio: after.bio,
-			userRoles: after.roles
-		})))
+		if (updatedBioOrRoles) await Promise.all([].map(async (useCase: any) => await useCase.updateUserBio(after.getEmbedded())))
 	},
 	deleted: async ({ before }) => {
 		await getSocketEmitter().emitDeleted('users/users', before)

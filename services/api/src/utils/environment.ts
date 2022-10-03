@@ -5,6 +5,7 @@ const useSSL = parseInt(getEnvOrFail('USE_SSL'))
 export const baseDomain = `http${useSSL ? 's' : ''}://` + getEnvOrFail('BASE_DOMAIN')
 export const environment = getEnvOrFail('ENVIRONMENT')
 export const isDev = environment === 'local'
+export const isProd = environment === 'production'
 
 export const port = parseInt(getEnvOrFail('PORT'))
 export const appId = getEnvOrFail('APP_ID')

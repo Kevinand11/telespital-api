@@ -13,7 +13,7 @@ export class NotificationRepository implements INotificationRepository {
 		return NotificationRepository.instance
 	}
 
-	async getNotifications (query: QueryParams) {
+	async get (query: QueryParams) {
 		const data = await parseQueryParams<NotificationFromModel>(Notification, query)
 		return {
 			...data,
@@ -21,23 +21,23 @@ export class NotificationRepository implements INotificationRepository {
 		}
 	}
 
-	async findNotification (data: { userId: string, id: string }) {
-		const notification = await Notification.findOne({ _id: data.id, userId: data.userId })
+	async find (id: string) {
+		const notification = await Notification.findById(id)
 		return this.mapper.mapFrom(notification)
 	}
 
-	async createNotification (data: NotificationToModel[]) {
+	async create (data: NotificationToModel[]) {
 		const notifications = await Notification.insertMany(data)
 		return notifications.map((notification) => this.mapper.mapFrom(notification)!)
 	}
 
-	async markNotificationsSeen (data: { userId: string, ids: string[], seen: boolean }) {
+	async markSeen (data: { userId: string, ids: string[], seen: boolean }) {
 		await Notification.findOneAndUpdate({
 			userId: data.userId, _id: { $in: data.ids }
 		}, { $set: { seen: data.seen } })
 	}
 
-	async deleteOldSeenNotifications () {
+	async deleteOldSeen () {
 		const weekInMs = 1000 * 60 * 60 * 24 * 7
 		await Notification.deleteMany({
 			seen: true,

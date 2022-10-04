@@ -13,8 +13,8 @@ export class CardsUseCase {
 		return await this.repository.get(input)
 	}
 
-	async find (data: { id: string, userId: string }) {
-		return await this.repository.find(data.id, data.userId)
+	async find (id: string) {
+		return await this.repository.find(id)
 	}
 
 	async create (data: CardToModel) {

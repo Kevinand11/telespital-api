@@ -9,23 +9,23 @@ export class NotificationsUseCase {
 		this.repository = repo
 	}
 
-	async find (input: { userId: string, id: string }) {
-		return await this.repository.findNotification(input)
+	async find (id: string) {
+		return await this.repository.find(id)
 	}
 
 	async get (input: QueryParams) {
-		return await this.repository.getNotifications(input)
+		return await this.repository.get(input)
 	}
 
 	async create (input: NotificationToModel[]) {
-		return await this.repository.createNotification(input)
+		return await this.repository.create(input)
 	}
 
 	async deleteOldSeen () {
-		return await this.repository.deleteOldSeenNotifications()
+		return await this.repository.deleteOldSeen()
 	}
 
 	async markSeen (input: { userId: string, ids: string[], seen: boolean }) {
-		return await this.repository.markNotificationsSeen(input)
+		return await this.repository.markSeen(input)
 	}
 }

@@ -33,8 +33,8 @@ export class CardRepository implements ICardRepository {
 		return this.mapper.mapFrom(card)!
 	}
 
-	async find (id: string, userId: string) {
-		const card = await Card.findOne({ _id: id, userId })
+	async find (id: string) {
+		const card = await Card.findById(id)
 		return this.mapper.mapFrom(card)
 	}
 

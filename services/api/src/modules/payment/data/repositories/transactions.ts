@@ -31,8 +31,8 @@ export class TransactionRepository implements ITransactionRepository {
 		return this.mapper.mapFrom(transaction)!
 	}
 
-	async find (id: string, userId: string) {
-		const transaction = await Transaction.findOne({ _id: id, userId })
+	async find (id: string) {
+		const transaction = await Transaction.findById(id )
 		return this.mapper.mapFrom(transaction)
 	}
 

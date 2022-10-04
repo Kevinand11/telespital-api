@@ -9,10 +9,9 @@ export class NotificationsController {
 	}
 
 	static async findNotification (req: Request) {
-		return await NotificationsUseCases.find({
-			id: req.params.id,
-			userId: req.authUser!.id
-		})
+		const notification = await NotificationsUseCases.find(req.params.id)
+		if (!notification || notification.userId !== req.authUser!.id) return null
+		return notification
 	}
 
 	static async markNotificationSeen (req: Request) {

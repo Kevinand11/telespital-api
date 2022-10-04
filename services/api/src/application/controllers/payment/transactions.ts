@@ -8,7 +8,9 @@ export class TransactionsController {
 	}
 
 	static async find (req: Request) {
-		return await TransactionsUseCases.find({ id: req.params.id, userId: req.authUser!.id })
+		const transaction = await TransactionsUseCases.find(req.params.id)
+		if (!transaction || transaction.userId !== req.authUser!.id) return null
+		return transaction
 	}
 
 	static async get (req: Request) {

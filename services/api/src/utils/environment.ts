@@ -20,10 +20,10 @@ export const emails = Object.fromEntries(
 	}])
 )
 
-const flutterwave = JSON.parse(getEnvOrFail('FLUTTERWAVE') || '{}')
-export const flutterwaveConfig = {
-	secretKey: flutterwave.secretKey,
-	publicKey: flutterwave.publicKey
+const stripe = JSON.parse(getEnvOrFail('STRIPE') || '{}')
+export const stripeConfig = {
+	secretKey: stripe.secretKey,
+	publicKey: stripe.publicKey
 }
 
 export const accessTokenKey = getEnvOrFail('ACCESS_TOKEN_KEY')

@@ -4,7 +4,7 @@ import { isAuthenticated } from '@application/middlewares'
 
 export const transactionsRoutes: Route[] = [
 	{
-		path: '/payment/transactions/flutterwave/secrets',
+		path: '/payment/transactions/secrets',
 		method: 'get',
 		controllers: [
 			makeController(async (req) => {
@@ -37,32 +37,6 @@ export const transactionsRoutes: Route[] = [
 				return {
 					status: StatusCodes.Ok,
 					result: await TransactionsController.find(req)
-				}
-			})
-		]
-	},
-	{
-		path: '/payment/transactions',
-		method: 'post',
-		controllers: [
-			isAuthenticated,
-			makeController(async (req) => {
-				return {
-					status: StatusCodes.Ok,
-					result: await TransactionsController.create(req)
-				}
-			})
-		]
-	},
-	{
-		path: '/payment/transactions/:id/fulfill',
-		method: 'put',
-		controllers: [
-			isAuthenticated,
-			makeController(async (req) => {
-				return {
-					status: StatusCodes.Ok,
-					result: await TransactionsController.fulfill(req)
 				}
 			})
 		]

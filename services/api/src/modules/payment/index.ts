@@ -14,9 +14,9 @@ export const CardsUseCases = new CardsUseCase(cardRepository)
 export const WalletsUseCases = new WalletsUseCase(walletRepository)
 
 export { TransactionFromModel } from './data/models/transactions'
-export { CardFromModel } from './data/models/cards'
+export { CardFromModel, CardToModel } from './data/models/cards'
 export { WalletFromModel } from './data/models/wallets'
 export { TransactionEntity } from './domain/entities/transactions'
 export { CardEntity } from './domain/entities/cards'
 export { WalletEntity } from './domain/entities/wallets'
-export { Currencies, TransactionType, TransactionStatus, CurrencyCountries } from './domain/types'
+export { Currencies, TransactionType, TransactionStatus } from './domain/types'

@@ -54,5 +54,18 @@ export const cardsRoutes: Route[] = [
 				}
 			})
 		]
+	},
+	{
+		path: '/payment/cards/',
+		method: 'post',
+		controllers: [
+			isAuthenticated,
+			makeController(async (req) => {
+				return {
+					status: StatusCodes.Ok,
+					result: await CardsController.create(req)
+				}
+			})
+		]
 	}
 ]

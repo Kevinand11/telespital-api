@@ -13,15 +13,9 @@ export enum TransactionStatus {
 	settled = 'settled'
 }
 
-export enum TransactionType {
-	NewCard = 'NewCard'
-}
+export enum TransactionType {}
 
-type TransactionNewCard = {
-	type: TransactionType.NewCard
-}
-
-export type TransactionData = TransactionNewCard
+export type TransactionData = { type: TransactionType }
 
 export type AccountDetails = {
 	country: CurrencyCountries

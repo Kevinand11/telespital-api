@@ -43,7 +43,7 @@ export class StripePayment {
 
 	static async chargeCard (data: {
 		userId: string, token: string, currency: Currencies
-		amount: number, email: string, transaction: string
+		amount: number, email: string
 	}) {
 		const customer = await StripePayment.getCustomer(data.userId)
 		const intent = await stripe().paymentIntents.create({

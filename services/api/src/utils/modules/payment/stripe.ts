@@ -41,6 +41,10 @@ export class StripePayment {
 		}
 	}
 
+	static async deleteCard (token: string) {
+		await stripe().paymentMethods.detach(token)
+	}
+
 	static async chargeCard (data: {
 		userId: string, token: string, currency: Currencies
 		amount: number, email: string

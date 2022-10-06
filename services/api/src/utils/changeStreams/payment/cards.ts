@@ -1,6 +1,7 @@
 import { ChangeStreamCallbacks } from '@stranerd/api-commons'
 import { CardEntity, CardFromModel } from '@modules/payment'
 import { getSocketEmitter } from '@index'
+import { StripePayment } from '@utils/modules/payment/stripe'
 
 export const CardChangeStreamCallbacks: ChangeStreamCallbacks<CardFromModel, CardEntity> = {
 	created: async ({ after }) => {
@@ -14,5 +15,6 @@ export const CardChangeStreamCallbacks: ChangeStreamCallbacks<CardFromModel, Car
 	deleted: async ({ before }) => {
 		await getSocketEmitter().emitDeleted(`payment/cards/${before.userId}`, before)
 		await getSocketEmitter().emitDeleted(`payment/cards/${before.id}/${before.userId}`, before)
+		await StripePayment.deleteCard(before.token)
 	}
 }

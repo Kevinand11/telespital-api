@@ -13,9 +13,14 @@ export enum TransactionStatus {
 	settled = 'settled'
 }
 
-export enum TransactionType {}
+export enum TransactionType {
+	PayForConsultation = 'PayForConsultation'
+}
 
-export type TransactionData = { type: TransactionType }
+export type TransactionData = {
+	type: TransactionType.PayForConsultation,
+	consultationId: string
+}
 
 export type AccountDetails = {
 	country: CurrencyCountries

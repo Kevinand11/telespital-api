@@ -27,7 +27,10 @@ export type UserStatus = {
 	lastUpdatedAt: number
 }
 
-export enum UserMeta {}
+export enum UserMeta {
+	sessionsAttended = 'sessionsAttended',
+	sessionsHosted = 'sessionsHosted'
+}
 
 export type UserRatings = {
 	total: number

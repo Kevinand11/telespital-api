@@ -68,11 +68,9 @@ export class UserRepository implements IUserRepository {
 		return !!res.acknowledged
 	}
 
-	async incrementUserMeta (userId: string, key: UserMeta, value: 1 | -1) {
-		await User.findByIdAndUpdate(userId, {
-			$inc: {
-				[`meta.${key}`]: value
-			}
+	async incrementUserMeta (userIds: string[], key: UserMeta, value: 1 | -1) {
+		await User.updateMany({ id: { $in: userIds } }, {
+			$inc: { [`meta.${key}`]: value }
 		})
 	}
 

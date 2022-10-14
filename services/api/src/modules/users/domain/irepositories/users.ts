@@ -19,7 +19,7 @@ export interface IUserRepository {
 
 	resetAllUsersStatus (): Promise<boolean>
 
-	incrementUserMeta (userId: string, key: UserMeta, value: 1 | -1): Promise<void>
+	incrementUserMeta (userIds: string[], key: UserMeta, value: 1 | -1): Promise<void>
 
 	updateRatings (userId: string, ratings: number, add: boolean): Promise<boolean>
 }

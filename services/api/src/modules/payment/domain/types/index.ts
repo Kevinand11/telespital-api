@@ -14,12 +14,12 @@ export enum TransactionStatus {
 }
 
 export enum TransactionType {
-	PayForConsultation = 'PayForConsultation'
+	PayForSession = 'PayForSession'
 }
 
 export type TransactionData = {
-	type: TransactionType.PayForConsultation,
-	consultationId: string
+	type: TransactionType.PayForSession,
+	sessionId: string
 }
 
 export type AccountDetails = {

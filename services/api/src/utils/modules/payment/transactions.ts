@@ -1,10 +1,27 @@
-import { TransactionEntity, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
+import {
+	Currencies,
+	TransactionEntity,
+	TransactionStatus,
+	TransactionsUseCases,
+	TransactionType,
+	WalletsUseCases
+} from '@modules/payment'
 import { Conditions } from '@stranerd/api-commons'
 import { SessionsUseCases } from '@modules/sessions'
+import { StripePayment } from '@utils/modules/payment/stripe'
 
 export const fulfillTransaction = async (transaction: TransactionEntity) => {
 	if (transaction.data.type === TransactionType.PayForSession) {
 		await SessionsUseCases.updatePaid({ id: transaction.data.sessionId, add: true })
+		await TransactionsUseCases.update({
+			id: transaction.id,
+			data: { status: TransactionStatus.settled }
+		})
+	} else if (transaction.data.type === TransactionType.RefundSession) {
+		await WalletsUseCases.updateAmount({
+			userId: transaction.userId,
+			amount: await StripePayment.convertAmount(transaction.amount, transaction.currency, Currencies.USD)
+		})
 		await TransactionsUseCases.update({
 			id: transaction.id,
 			data: { status: TransactionStatus.settled }

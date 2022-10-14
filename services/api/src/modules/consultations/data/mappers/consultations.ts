@@ -15,6 +15,7 @@ export class ConsultationMapper extends BaseMapper<ConsultationFromModel, Consul
 			price: param.price,
 			currency: param.currency,
 			paid: param.paid,
+			ratings: param.ratings,
 			cancelled: param.cancelled,
 			startedAt: param.startedAt,
 			closedAt: param.closedAt,

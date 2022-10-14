@@ -12,6 +12,7 @@ export class ConsultationEntity extends BaseEntity {
 	public readonly price: number
 	public readonly currency: Currencies
 	public readonly paid: boolean
+	public readonly ratings: Record<string, string>
 	public readonly cancelled: ConsultationCancelled | null
 	public readonly startedAt: number | null
 	public readonly closedAt: number | null
@@ -20,7 +21,7 @@ export class ConsultationEntity extends BaseEntity {
 
 	constructor ({
 		             id, doctor, patient, prescriptions, note,
-		             description, price, currency, paid, status,
+		             description, price, currency, paid, status, ratings,
 		             cancelled, startedAt, closedAt, createdAt, updatedAt
 	             }: ConsultationConstructorArgs) {
 		super()
@@ -34,6 +35,7 @@ export class ConsultationEntity extends BaseEntity {
 		this.currency = currency
 		this.paid = paid
 		this.status = status
+		this.ratings = ratings
 		this.cancelled = cancelled
 		this.startedAt = startedAt
 		this.closedAt = closedAt
@@ -59,6 +61,7 @@ type ConsultationConstructorArgs = {
 	price: number
 	currency: Currencies
 	paid: boolean
+	ratings: Record<string, string>
 	cancelled: ConsultationCancelled | null
 	startedAt: number | null
 	closedAt: number | null

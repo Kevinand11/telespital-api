@@ -44,4 +44,8 @@ export class UsersUseCase {
 	async incrementMeta (params: { id: string, value: 1 | -1, property: UserMeta }) {
 		return await this.repository.incrementUserMeta(params.id, params.property, params.value)
 	}
+
+	async updateRatings (input: { userId: string, ratings: number, add: boolean }) {
+		return await this.repository.updateRatings(input.userId, input.ratings, input.add)
+	}
 }

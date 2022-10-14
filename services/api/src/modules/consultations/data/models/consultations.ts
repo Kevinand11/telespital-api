@@ -3,6 +3,7 @@ import { ConsultationCancelled, ConsultationStatus, Currencies, EmbeddedUser, Pr
 export interface ConsultationFromModel extends ConsultationToModel {
 	_id: string
 	cancelled: ConsultationCancelled | null
+	ratings: Record<string, string>
 	startedAt: number | null
 	closedAt: number | null
 	createdAt: number

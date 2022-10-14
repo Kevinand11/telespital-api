@@ -2,6 +2,7 @@ import { IConsultationRepository } from '../irepositories/consultations'
 import { ConsultationToModel } from '../../data/models/consultations'
 import { QueryParams } from '@stranerd/api-commons'
 import { EmbeddedUser } from '../types'
+import { ReviewToModel } from '../../data/models/reviews'
 
 export class ConsultationsUseCase {
 	private repository: IConsultationRepository
@@ -44,5 +45,9 @@ export class ConsultationsUseCase {
 
 	async cancel (data: { id: string, userId: string, reason: string }) {
 		return await this.repository.cancel(data.id, data.userId, data.reason)
+	}
+
+	async rate (data: Omit<ReviewToModel, 'to'>) {
+		return await this.repository.rate(data)
 	}
 }

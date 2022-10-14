@@ -29,6 +29,12 @@ export type UserStatus = {
 
 export enum UserMeta {}
 
+export type UserRatings = {
+	total: number
+	count: number
+	avg: number
+}
+
 export type UserMetaType = Record<UserMeta, number>
 
 export type EmbeddedUser = {

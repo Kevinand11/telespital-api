@@ -50,6 +50,11 @@ const ConsultationSchema = new mongoose.Schema<ConsultationFromModel>({
 		required: false,
 		default: false
 	},
+	ratings: {
+		type: mongoose.Schema.Types.Mixed,
+		required: false,
+		default: {}
+	},
 	cancelled: {
 		type: mongoose.Schema.Types.Mixed,
 		required: false,

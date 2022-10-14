@@ -2,7 +2,7 @@ import { IUserRepository } from '../../domain/irepositories/users'
 import { UserBio, UserMeta, UserRoles } from '../../domain/types'
 import { UserMapper } from '../mappers/users'
 import { User } from '../mongooseModels/users'
-import { parseQueryParams } from '@stranerd/api-commons'
+import { mongoose, parseQueryParams } from '@stranerd/api-commons'
 import { UserFromModel } from '../models/users'
 
 export class UserRepository implements IUserRepository {
@@ -74,5 +74,21 @@ export class UserRepository implements IUserRepository {
 				[`meta.${key}`]: value
 			}
 		})
+	}
+
+	async updateRatings (userId: string, ratings: number, add: boolean) {
+		let res = false
+		const session = await mongoose.startSession()
+		await session.withTransaction(async (session) => {
+			const user = await User.findById(userId, {}, { session })
+			if (!user) return res
+			user.ratings.total += (add ? 1 : -1) * ratings
+			user.ratings.count += add ? 1 : -1
+			user.ratings.avg = Number((user.ratings.total / user.ratings.count).toFixed(2))
+			res = !!(await user.save({ session }))
+			return res
+		})
+		await session.endSession()
+		return res
 	}
 }

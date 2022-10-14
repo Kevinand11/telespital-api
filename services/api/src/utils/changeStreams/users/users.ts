@@ -1,6 +1,7 @@
 import { ChangeStreamCallbacks } from '@stranerd/api-commons'
 import { UserEntity, UserFromModel } from '@modules/users'
 import { getSocketEmitter } from '@index'
+import { ConsultationsUseCases, ReviewsUseCases } from '@modules/consultations'
 
 export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, UserEntity> = {
 	created: async ({ after }) => {
@@ -11,7 +12,9 @@ export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, Use
 		await getSocketEmitter().emitUpdated('users/users', after)
 		await getSocketEmitter().emitUpdated(`users/users/${after.id}`, after)
 		const updatedBioOrRoles = !!changes.bio || !!changes.roles
-		if (updatedBioOrRoles) await Promise.all([].map(async (useCase: any) => await useCase.updateUserBio(after.getEmbedded())))
+		if (updatedBioOrRoles) await Promise.all([
+			ConsultationsUseCases, ReviewsUseCases
+		].map(async (useCase) => await useCase.updateUserBio(after.getEmbedded())))
 	},
 	deleted: async ({ before }) => {
 		await getSocketEmitter().emitDeleted('users/users', before)

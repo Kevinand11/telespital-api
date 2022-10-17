@@ -4,18 +4,6 @@ import { isAuthenticated } from '@application/middlewares'
 
 export const transactionsRoutes: Route[] = [
 	{
-		path: '/payment/transactions/secrets',
-		method: 'get',
-		controllers: [
-			makeController(async (req) => {
-				return {
-					status: StatusCodes.Ok,
-					result: await TransactionsController.getSecrets(req)
-				}
-			})
-		]
-	},
-	{
 		path: '/payment/transactions',
 		method: 'get',
 		controllers: [

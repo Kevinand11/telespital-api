@@ -32,7 +32,7 @@ export class TransactionRepository implements ITransactionRepository {
 	}
 
 	async find (id: string) {
-		const transaction = await Transaction.findById(id )
+		const transaction = await Transaction.findById(id)
 		return this.mapper.mapFrom(transaction)
 	}
 

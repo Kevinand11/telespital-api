@@ -32,3 +32,20 @@ export type AccountDetails = {
 	bankCode: string
 	bankName: string
 }
+
+export enum MethodType {
+	Card = 'Card',
+	Paypal = 'Paypal'
+}
+
+export type MethodData = {
+	type: MethodType.Paypal
+	email: string
+} | {
+	type: MethodType.Card
+	last4Digits: string
+	country: string
+	cardType: string
+	expiredAt: number
+	expired: boolean
+}

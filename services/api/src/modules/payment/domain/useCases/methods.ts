@@ -1,11 +1,11 @@
 import { QueryParams } from '@stranerd/api-commons'
-import { ICardRepository } from '../irepositories/cards'
-import { CardToModel } from '../../data/models/cards'
+import { IMethodRepository } from '../irepositories/methods'
+import { MethodToModel } from '../../data/models/methods'
 
-export class CardsUseCase {
-	repository: ICardRepository
+export class MethodsUseCase {
+	repository: IMethodRepository
 
-	constructor (repo: ICardRepository) {
+	constructor (repo: IMethodRepository) {
 		this.repository = repo
 	}
 
@@ -17,7 +17,7 @@ export class CardsUseCase {
 		return await this.repository.find(id)
 	}
 
-	async create (data: CardToModel) {
+	async create (data: MethodToModel) {
 		return await this.repository.create(data)
 	}
 

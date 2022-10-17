@@ -20,10 +20,12 @@ export const emails = Object.fromEntries(
 	}])
 )
 
-const stripe = JSON.parse(getEnvOrFail('STRIPE') || '{}')
-export const stripeConfig = {
-	secretKey: stripe.secretKey,
-	publicKey: stripe.publicKey
+const braintree = JSON.parse(getEnvOrFail('BRAINTREE') || '{}')
+export const braintreeConfig = {
+	privateKey: braintree.privateKey,
+	publicKey: braintree.publicKey,
+	merchantId: braintree.merchantId,
+	isProd: braintree.isProd
 }
 
 export const accessTokenKey = getEnvOrFail('ACCESS_TOKEN_KEY')

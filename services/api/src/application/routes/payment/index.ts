@@ -1,9 +1,9 @@
 import { transactionsRoutes } from './transactions'
-import { cardsRoutes } from './cards'
+import { methodsRoutes } from './methods'
 import { walletsRoutes } from './wallets'
 
 export default [
 	...transactionsRoutes,
-	...cardsRoutes,
+	...methodsRoutes,
 	...walletsRoutes
 ]

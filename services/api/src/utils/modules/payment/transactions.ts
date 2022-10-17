@@ -8,7 +8,7 @@ import {
 } from '@modules/payment'
 import { Conditions } from '@stranerd/api-commons'
 import { SessionsUseCases } from '@modules/sessions'
-import { StripePayment } from '@utils/modules/payment/stripe'
+import { BraintreePayment } from '@utils/modules/payment/braintree'
 
 export const fulfillTransaction = async (transaction: TransactionEntity) => {
 	if (transaction.data.type === TransactionType.PayForSession) {
@@ -20,7 +20,7 @@ export const fulfillTransaction = async (transaction: TransactionEntity) => {
 	} else if (transaction.data.type === TransactionType.RefundSession) {
 		await WalletsUseCases.updateAmount({
 			userId: transaction.userId,
-			amount: await StripePayment.convertAmount(transaction.amount, transaction.currency, Currencies.USD)
+			amount: await BraintreePayment.convertAmount(transaction.amount, transaction.currency, Currencies.USD)
 		})
 		await TransactionsUseCases.update({
 			id: transaction.id,

@@ -5,7 +5,7 @@ import { sendMailAndCatchError } from '@utils/modules/notifications/emails'
 import { DelayedEvent } from '@utils/types'
 import { deleteUnverifiedUsers } from '@utils/modules/auth'
 import { retryTransactions } from '@utils/modules/payment/transactions'
-import { CardsUseCases } from '@modules/payment'
+import { MethodsUseCases } from '@modules/payment'
 
 export const startJobs = async () => {
 	await appInstance.job.startProcessingQueues<DelayedEvent, any>([
@@ -14,7 +14,8 @@ export const startJobs = async () => {
 		{ name: CronTypes.weekly, cron: '0 0 * * SUN' },
 		{ name: CronTypes.monthly, cron: '0 0 1 * *' }
 	], {
-		onDelayed: async () => {},
+		onDelayed: async () => {
+		},
 		onCronLike: async () => {
 		},
 		onCron: async (type) => {
@@ -26,7 +27,7 @@ export const startJobs = async () => {
 			}
 			if (type === CronTypes.daily) await deleteUnverifiedUsers()
 			if (type === CronTypes.weekly) await NotificationsUseCases.deleteOldSeen()
-			if (type === CronTypes.monthly) await CardsUseCases.markExpireds()
+			if (type === CronTypes.monthly) await MethodsUseCases.markExpireds()
 		}
 	})
 }

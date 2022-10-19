@@ -26,6 +26,15 @@ export const fulfillTransaction = async (transaction: TransactionEntity) => {
 			id: transaction.id,
 			data: { status: TransactionStatus.settled }
 		})
+	} else if (transaction.data.type === TransactionType.ReceiveSessionPayment) {
+		await WalletsUseCases.updateAmount({
+			userId: transaction.userId,
+			amount: await BraintreePayment.convertAmount(transaction.amount, transaction.currency, Currencies.USD)
+		})
+		await TransactionsUseCases.update({
+			id: transaction.id,
+			data: { status: TransactionStatus.settled }
+		})
 	}
 }
 

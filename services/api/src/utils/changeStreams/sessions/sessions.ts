@@ -13,7 +13,7 @@ export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromMode
 			})
 		)
 	},
-	updated: async ({ after, changes }) => {
+	updated: async ({ after, before, changes }) => {
 		await Promise.all(
 			after.getParticipants().map(async (id) => {
 				await getSocketEmitter().emitUpdated(`sessions/sessions/${id}`, after)
@@ -23,13 +23,20 @@ export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromMode
 
 		if (changes.cancelled && after.cancelled && after.paid) await TransactionsUseCases.create({
 			userId: after.patient.id, email: after.patient.bio.email,
-			title: `Refund for Session: ${after.id}`,
+			title: `Refund for session: ${after.id}`,
 			amount: after.price, currency: after.currency,
 			status: TransactionStatus.fulfilled,
 			data: { type: TransactionType.RefundSession, sessionId: after.id }
 		})
 
-		if (changes.closedAt && after.closedAt && !after.cancelled) await Promise.all([
+		if (changes.closedAt && !before.closedAt && after.closedAt && !after.cancelled) await Promise.all([
+			after.doctor && await TransactionsUseCases.create({
+				userId: after.doctor.id, email: after.doctor.bio.email,
+				title: `You received payment for session: ${after.id}`,
+				amount: after.price, currency: after.currency,
+				status: TransactionStatus.fulfilled,
+				data: { type: TransactionType.ReceiveSessionPayment, sessionId: after.id }
+			}),
 			UsersUseCases.incrementMeta({
 				ids: [after.patient.id],
 				value: 1,

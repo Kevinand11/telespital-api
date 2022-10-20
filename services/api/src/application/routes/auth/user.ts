@@ -1,12 +1,12 @@
 import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
 import { UserController } from '../../controllers/auth/user'
-import { cannotModifyMyRole, isAdmin, isAuthenticated } from '../../middlewares'
+import { cannotModifyMyRole, isAdmin, isAuthenticated, isAuthenticatedButIgnoreVerified } from '../../middlewares'
 
 const getUserDetails: Route = {
 	path: '/auth/user',
 	method: 'get',
 	controllers: [
-		isAuthenticated,
+		isAuthenticatedButIgnoreVerified,
 		makeController(async (req) => {
 			return {
 				status: StatusCodes.Ok,

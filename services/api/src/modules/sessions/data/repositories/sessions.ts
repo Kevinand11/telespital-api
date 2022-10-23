@@ -48,15 +48,16 @@ export class SessionRepository implements ISessionRepository {
 	async connect (user: EmbeddedUser) {
 		const session = await Session.findOneAndUpdate(
 			{ status: SessionStatus.waiting, 'patient.id': { $ne: user.id } },
-			{ $set: { doctor: user, status: SessionStatus.ongoing } }
+			{ $set: { doctor: user, status: SessionStatus.ongoing, startedAt: Date.now() } },
+			{ new: true }
 		)
 		return this.mapper.mapFrom(session)
 	}
 
 	async update (id: string, userId: string, data: Partial<SessionToModel>, byDoctor: boolean) {
 		const session = await Session.findOneAndUpdate(
-			{ _id: id, [byDoctor ? 'doctor.id' : 'patient.id']: userId },
-			{ $set: data }
+			{ _id: id, [byDoctor ? 'doctor.id' : 'patient.id']: userId, closedAt: null },
+			{ $set: data }, { new: true }
 		)
 		return this.mapper.mapFrom(session)
 	}
@@ -72,14 +73,15 @@ export class SessionRepository implements ISessionRepository {
 	async updatePaid (id: string, add: boolean) {
 		const session = await Session.findByIdAndUpdate(id, {
 			$set: { paid: add, ...(add ? { status: SessionStatus.waiting } : {}) }
-		})
+		}, { new: true })
 		return !!session
 	}
 
 	async close (id: string, userId: string) {
 		const session = await Session.findOneAndUpdate(
 			{ _id: id, closedAt: null, cancelled: null, 'doctor.id': userId, startedAt: { $ne: null } },
-			{ $set: { closedAt: Date.now(), status: SessionStatus.pendingRating } })
+			{ $set: { closedAt: Date.now(), status: SessionStatus.pendingRating } },
+			{ new: true })
 		return !!session
 	}
 
@@ -92,7 +94,7 @@ export class SessionRepository implements ISessionRepository {
 					closedAt: Date.now(),
 					status: SessionStatus.completed
 				}
-			})
+			}, { new: true })
 		return !!session
 	}
 

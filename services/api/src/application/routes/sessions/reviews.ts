@@ -3,7 +3,7 @@ import { ReviewsController } from '../../controllers/sessions/reviews'
 
 export const reviewsRoutes: Route[] = [
 	{
-		path: '/reviews/reviews/',
+		path: '/sessions/reviews/',
 		method: 'get',
 		controllers: [
 			makeController(async (req) => {
@@ -15,7 +15,7 @@ export const reviewsRoutes: Route[] = [
 		]
 	},
 	{
-		path: '/reviews/reviews/:id',
+		path: '/sessions/reviews/:id',
 		method: 'get',
 		controllers: [
 			makeController(async (req) => {

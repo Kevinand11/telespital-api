@@ -1,22 +1,16 @@
 import { PrescriptionUnit, SessionStatus, SessionsUseCases } from '@modules/sessions'
 import { UsersUseCases } from '@modules/users'
-import {
-	BadRequestError,
-	NotAuthorizedError,
-	QueryKeys,
-	QueryParams,
-	Request,
-	validate,
-	Validation
-} from '@stranerd/api-commons'
+import { BadRequestError, NotAuthorizedError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
+import { AuthRole } from '@utils/types'
 
 export class SessionsController {
 	static async getSessions (req: Request) {
 		const query = req.query as QueryParams
-		query.auth = [{ field: 'doctor.id', value: req.authUser!.id }, { field: 'patient.id', value: req.authUser!.id }]
-		query.authType = QueryKeys.or
+		if (!req.authUser!.roles[AuthRole.isDoctor]) {
+			query.auth = [{ field: 'patient.id', value: req.authUser!.id }]
+		}
 		return await SessionsUseCases.get(query)
 	}
 
@@ -86,7 +80,7 @@ export class SessionsController {
 
 	static async updateNote (req: Request) {
 		const data = validate({
-			note: req.body.description
+			note: req.body.note
 		}, {
 			note: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] }
 		})

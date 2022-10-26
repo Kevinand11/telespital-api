@@ -112,7 +112,7 @@ export class SessionsController {
 
 		await TransactionsUseCases.create({
 			email, userId, status: successful ? TransactionStatus.fulfilled : TransactionStatus.failed,
-			title: 'Paid for session', amount: session.price, currency: session.currency,
+			title: 'Paid for session', amount: 0 - session.price, currency: session.currency,
 			data: {
 				type: TransactionType.PayForSession,
 				sessionId: session.id

@@ -2,6 +2,7 @@ import { IWalletRepository } from '../../domain/irepositories/wallets'
 import { WalletMapper } from '../mappers/wallets'
 import { Wallet } from '../mongooseModels/wallets'
 import { AccountDetails } from '../../domain/types'
+import { BadRequestError, mongoose } from '@stranerd/api-commons'
 
 export class WalletRepository implements IWalletRepository {
 	private static instance: WalletRepository
@@ -16,11 +17,11 @@ export class WalletRepository implements IWalletRepository {
 		return WalletRepository.instance
 	}
 
-	private static async getUserWallet (userId: string) {
+	private static async getUserWallet (userId: string, session?: any) {
 		const wallet = await Wallet.findOneAndUpdate(
 			{ userId },
 			{ $setOnInsert: { userId } },
-			{ upsert: true, new: true })
+			{ upsert: true, new: true, ...(session ? { session } : {}) })
 		return wallet!
 	}
 
@@ -30,9 +31,20 @@ export class WalletRepository implements IWalletRepository {
 	}
 
 	async updateAmount (userId: string, amount: number) {
-		let wallet = await WalletRepository.getUserWallet(userId)
-		wallet = (await Wallet.findByIdAndUpdate(wallet._id, { $inc: { amount } }, { new: true }))!
-		return this.mapper.mapFrom(wallet)!
+		let res = false
+		const session = await mongoose.startSession()
+		await session.withTransaction(async (session) => {
+			const wallet = this.mapper.mapFrom(await WalletRepository.getUserWallet(userId, session))!
+			const updatedBalance = wallet.balance.amount + amount
+			if (updatedBalance < 0) throw new BadRequestError('wallet balance can\'t go below 0')
+			res = !!(await Wallet.findByIdAndUpdate(wallet.id,
+				{ $inc: { 'balance.amount': amount } },
+				{ new: true, session }
+			))
+			return res
+		})
+		await session.endSession()
+		return res
 	}
 
 	async updateAccount (userId: string, account: AccountDetails) {

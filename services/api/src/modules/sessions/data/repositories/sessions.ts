@@ -34,7 +34,7 @@ export class SessionRepository implements ISessionRepository {
 
 	async add (data: SessionToModel) {
 		const session = await Session.findOneAndUpdate({
-			status: { $in: [SessionStatus.pendingPay, SessionStatus.waiting] },
+			status: { $in: [SessionStatus.pendingPay, SessionStatus.waiting, SessionStatus.ongoing] },
 			'patient.id': data.patient.id
 		}, { $setOnInsert: data }, { new: true, upsert: true })
 		return this.mapper.mapFrom(session)!

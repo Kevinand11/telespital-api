@@ -7,6 +7,7 @@ import {
 	requireAuthUser,
 	requireRefreshUser
 } from '@stranerd/api-commons'
+import { AuthUserType } from '@modules/auth'
 
 export const isAuthenticatedButIgnoreVerified = makeMiddleware(
 	async (request) => {
@@ -47,6 +48,13 @@ export const isDoctor = makeMiddleware(
 	async (request) => {
 		const isDoctor = request.authUser?.roles?.[AuthRole.isDoctor]
 		if (!request.authUser) throw new NotAuthenticatedError()
-		if (!isDoctor) throw new NotAuthorizedError()
+		if (!isDoctor || request.authUser.type !== AuthUserType.doctor) throw new NotAuthorizedError()
+	}
+)
+
+export const isPatient = makeMiddleware(
+	async (request) => {
+		if (!request.authUser) throw new NotAuthenticatedError()
+		if (request.authUser.type !== AuthUserType.patient) throw new NotAuthorizedError()
 	}
 )

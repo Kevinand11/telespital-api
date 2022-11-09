@@ -1,6 +1,6 @@
 import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
 import { SessionsController } from '../../controllers/sessions/sessions'
-import { isAuthenticated, isDoctor } from '@application/middlewares'
+import { isAuthenticated, isDoctor, isPatient } from '@application/middlewares'
 
 export const sessionsRoutes: Route[] = [
 	{
@@ -33,7 +33,7 @@ export const sessionsRoutes: Route[] = [
 		path: '/sessions/sessions/',
 		method: 'post',
 		controllers: [
-			isAuthenticated,
+			isAuthenticated, isPatient,
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,

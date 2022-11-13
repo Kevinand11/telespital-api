@@ -10,9 +10,14 @@ export interface RoleInput {
 	roles: Record<string, boolean>
 }
 
+export type UserPhone = {
+	code: string
+	number: string
+}
+
 export interface RegisterInput extends UserUpdateInput {
 	email: string;
-	phone: { code: string, number: string }
+	phone: UserPhone
 	password: string
 	type: AuthUserType
 	data: AuthUserData

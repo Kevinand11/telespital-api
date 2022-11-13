@@ -1,11 +1,11 @@
 import { AuthTypes, BaseEntity, MediaOutput } from '@stranerd/api-commons'
-import { AuthUserData, AuthUserType, UserUpdateInput } from '../types'
+import { AuthUserData, AuthUserType, UserPhone, UserUpdateInput } from '../types'
 import { AuthRoles } from '@utils/types'
 
 export class AuthUserEntity extends BaseEntity {
 	public readonly id: string
 	public readonly email: string
-	public readonly phone: { code: string, number: string }
+	public readonly phone: UserPhone
 	public readonly password: string
 	public readonly name: { first: string, last: string }
 	public readonly photo: MediaOutput | null
@@ -49,7 +49,7 @@ export class AuthUserEntity extends BaseEntity {
 interface UserConstructorArgs {
 	id: string
 	email: string
-	phone: { code: string, number: string }
+	phone: UserPhone
 	password: string
 	roles: AuthRoles
 	name: { first: string, last: string }

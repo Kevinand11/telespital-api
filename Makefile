@@ -5,7 +5,8 @@ args = $(filter-out $@,$(MAKECMDGOALS))
 SETUP_FOLDER = /c/data/docker/telespital/traefik
 SETUP = mkdir -p $(SETUP_FOLDER) &&\
 	touch $(SETUP_FOLDER)/acmeStaging.json $(SETUP_FOLDER)/acmeProduction.json &&\
-	chmod 600 $(SETUP_FOLDER)/acme*.json
+	chmod 600 $(SETUP_FOLDER)/acme*.json &&\
+	node bin/copy-envs.js $(APPS)
 
 dev-start:
 	$(SETUP) && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build --remove-orphans
@@ -20,7 +21,7 @@ dev-watch-logs:
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs
 
 prod-build:
-	docker-compose -f docker-compose.yml build
+	$(SETUP) && docker-compose -f docker-compose.yml build
 
 prod-start:
 	$(SETUP) && docker-compose -f docker-compose.yml up --remove-orphans
@@ -42,6 +43,3 @@ lint-all:
 
 build-all:
 	$(foreach folder, $(ALL_FOLDERS), yarn --cwd ./services/$(folder) build &&) echo
-
-copy-envs:
-	node bin/copy-envs.js $(APPS)

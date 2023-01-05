@@ -20,9 +20,9 @@ jobs:
         env:
           GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
         run: echo "$GCP_SERVICE_ACCOUNT" > services/api/credentials.json
-      - name: Docker Build
-        run: make prod-build
       - name: Docker Stop Existing Run
         run: make prod-stop
+      - name: Docker Build
+        run: make prod-build
       - name: Docker Start
         run: make prod-start-detach

@@ -4,6 +4,7 @@ import { BadRequestError, NotAuthorizedError, QueryParams, Request, validate, Va
 import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
 import { AuthRole } from '@utils/types'
+import { Ms100Live } from '@utils/modules/sessions/100ms'
 
 export class SessionsController {
 	static async getSessions (req: Request) {
@@ -138,5 +139,44 @@ export class SessionsController {
 		const cancelled = await SessionsUseCases.cancel({ id: req.params.id, reason, userId: req.authUser!.id })
 		if (cancelled) return cancelled
 		throw new NotAuthorizedError()
+	}
+
+	static async rateSession (req: Request) {
+		const data = validate({
+			rating: parseInt(req.body.rating),
+			message: req.body.message
+		}, {
+			rating: {
+				required: true,
+				rules: [Validation.isNumber, Validation.isMoreThanOrEqualToX(0), Validation.isLessThanOrEqualToX(5)]
+			},
+			message: { required: true, rules: [Validation.isString] }
+		})
+
+		const user = await UsersUseCases.find(req.authUser!.id)
+		if (!user) throw new BadRequestError('profile not found')
+
+		return await SessionsUseCases.rate({
+			...data, sessionId: req.params.id, user: user.getEmbedded()
+		})
+	}
+
+	static async joinSession (req: Request) {
+		const userId = req.authUser!.id
+		const session = await SessionsUseCases.find(req.params.id)
+		if (!session || !session.getParticipants().includes(userId)) throw new NotAuthorizedError()
+		if (session.closedAt) throw new BadRequestError('session has been closed')
+		const user = [session.doctor!, session.patient].find((u) => u?.id === userId)!
+		return await Ms100Live.getRoomToken({
+			sessionId: session.id,
+			userId: user.id,
+			userName: user.bio.name.first,
+			isDoctor: session.doctor?.id === userId
+		})
+	}
+
+	static async getSessionDetails (req: Request) {
+		const sessionId = req.params.id
+		return await Ms100Live.getSessions(sessionId)
 	}
 }

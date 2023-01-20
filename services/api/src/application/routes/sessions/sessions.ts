@@ -132,5 +132,44 @@ export const sessionsRoutes: Route[] = [
 				}
 			})
 		]
+	},
+	{
+		path: '/sessions/sessions/:id/rate',
+		method: 'post',
+		controllers: [
+			isAuthenticated,
+			makeController(async (req) => {
+				return {
+					status: StatusCodes.Ok,
+					result: await SessionsController.rateSession(req)
+				}
+			})
+		]
+	},
+	{
+		path: '/sessions/sessions/:id/join',
+		method: 'post',
+		controllers: [
+			isAuthenticated,
+			makeController(async (req) => {
+				return {
+					status: StatusCodes.Ok,
+					result: await SessionsController.joinSession(req)
+				}
+			})
+		]
+	},
+	{
+		path: '/sessions/sessions/:id/details',
+		method: 'get',
+		controllers: [
+			isAuthenticated,
+			makeController(async (req) => {
+				return {
+					status: StatusCodes.Ok,
+					result: await SessionsController.getSessionDetails(req)
+				}
+			})
+		]
 	}
 ]

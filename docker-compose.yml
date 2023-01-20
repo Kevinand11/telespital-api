@@ -43,6 +43,8 @@ services:
     image: 'mongo-express:latest'
     hostname: mongodb-express
     restart: unless-stopped
+    depends_on:
+      - mongodb
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongodb
 
@@ -61,6 +63,8 @@ services:
     image: 'rediscommander/redis-commander:latest'
     hostname: redis-commander
     restart: always
+    depends_on:
+      - redis
     environment:
       - 'REDIS_HOSTS=local:redis:6379'
 

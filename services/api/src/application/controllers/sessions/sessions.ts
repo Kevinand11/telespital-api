@@ -4,7 +4,7 @@ import { BadRequestError, NotAuthorizedError, QueryParams, Request, validate, Va
 import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
 import { AuthRole } from '@utils/types'
-import { Ms100Live } from '@utils/modules/sessions/100ms'
+import { LiveVideo } from '@utils/modules/sessions/video'
 
 export class SessionsController {
 	static async getSessions (req: Request) {
@@ -167,7 +167,7 @@ export class SessionsController {
 		if (!session || !session.getParticipants().includes(userId)) throw new NotAuthorizedError()
 		if (session.closedAt) throw new BadRequestError('session has been closed')
 		const user = [session.doctor!, session.patient].find((u) => u?.id === userId)!
-		return await Ms100Live.getRoomToken({
+		return await LiveVideo.getRoomToken({
 			sessionId: session.id,
 			userId: user.id,
 			userName: user.bio.name.first,
@@ -177,6 +177,6 @@ export class SessionsController {
 
 	static async getSessionDetails (req: Request) {
 		const sessionId = req.params.id
-		return await Ms100Live.getSessions(sessionId)
+		return await LiveVideo.getSessions(sessionId)
 	}
 }

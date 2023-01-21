@@ -3,7 +3,7 @@ import { SessionEntity, SessionFromModel } from '@modules/sessions'
 import { getSocketEmitter } from '@index'
 import { TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { UserMeta, UsersUseCases } from '@modules/users'
-import { Ms100Live } from '@utils/modules/sessions/100ms'
+import { LiveVideo } from '@utils/modules/sessions/video'
 
 export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromModel, SessionEntity> = {
 	created: async ({ after }) => {
@@ -48,7 +48,7 @@ export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromMode
 				value: 1,
 				property: UserMeta.sessionsHosted
 			}),
-			Ms100Live.endRoom(after.id)
+			LiveVideo.endRoom(after.id)
 		])
 	},
 	deleted: async ({ before }) => {

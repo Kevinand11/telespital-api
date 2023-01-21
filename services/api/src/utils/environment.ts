@@ -45,8 +45,8 @@ export const appInstance = Instance.getInstance()
 
 const agora = JSON.parse(getEnvOrFail('AGORA') || '{}')
 export const agoraConfig = {
-	templateId: agora.templateId,
-	region: agora.region,
-	accessKey: agora.accessKey,
-	appSecret: agora.appSecret
+	appId: agora.appId,
+	appCertificate: agora.appCertificate,
+	apiKey: agora.apiKey,
+	apiSecret: agora.apiSecret
 }

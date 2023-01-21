@@ -1,12 +1,11 @@
 import { RtcRole, RtcTokenBuilder } from 'agora-access-token'
 import { agoraConfig } from '@utils/environment'
-import axios from 'axios'
 
 const { appId, appCertificate, apiKey, apiSecret } = agoraConfig
 
-const axiosInstance = axios.create({
+/* const axiosInstance = axios.create({
 	baseURL: 'https://api.100ms.live/v2'
-})
+}) */
 
 export class LiveVideo {
 	static async getRoomToken (data: { sessionId: string, userId: string, userName: string, isDoctor: boolean }) {
@@ -17,7 +16,7 @@ export class LiveVideo {
 			appId, appCertificate, roomId, userId, role,
 			Math.floor(Date.now() / 1000) + (3600 * 4)
 		)
-		return { authToken, userName, userId, roomId, role }
+		return { authToken, userName, userId, roomId, role, appId }
 	}
 
 	static async createRoom (sessionId: string) {
@@ -30,7 +29,8 @@ export class LiveVideo {
 
 	static async getSessions (sessionId: string) {
 		const roomId = await LiveVideo.createRoom(sessionId)
-		const { data } = await axiosInstance.get(`/sessions?room_id=${roomId}&limit=100`, {
+		return roomId ? [] : []
+		/* const { data } = await axiosInstance.get(`/sessions?room_id=${roomId}&limit=100`, {
 			headers: {
 				'Content-Type': 'application/json',
 				'Authorization': await LiveVideo.getManagementToken()
@@ -61,14 +61,14 @@ export class LiveVideo {
 					duration: recording.duration
 				}
 			}
-		})
+		}) */
 	}
 
-	private static async getManagementToken () {
+	static async getManagementToken () {
 		return 'Basic ' + Buffer.from(`${apiKey}:${apiSecret}`).toString('base64')
 	}
 
-	private static parseS3URL (url: string) {
+	static parseS3URL (url: string) {
 		if (!url.startsWith('s3://')) return url
 		const slices = url.slice(5).split('/')
 		const bucket = slices[0]

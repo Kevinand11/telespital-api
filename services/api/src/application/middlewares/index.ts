@@ -46,9 +46,9 @@ export const isAdmin = makeMiddleware(
 
 export const isDoctor = makeMiddleware(
 	async (request) => {
-		const isDoctor = request.authUser?.roles?.[AuthRole.isDoctor]
 		if (!request.authUser) throw new NotAuthenticatedError()
-		if (!isDoctor || request.authUser.type !== AuthUserType.doctor) throw new NotAuthorizedError()
+		if (request.authUser.type !== AuthUserType.doctor) throw new NotAuthorizedError()
+		if (request.authUser.roles[AuthRole.isInactive]) throw new NotAuthenticatedError('your account is currently inactive')
 	}
 )
 
@@ -56,5 +56,6 @@ export const isPatient = makeMiddleware(
 	async (request) => {
 		if (!request.authUser) throw new NotAuthenticatedError()
 		if (request.authUser.type !== AuthUserType.patient) throw new NotAuthorizedError()
+		if (request.authUser.roles[AuthRole.isInactive]) throw new NotAuthenticatedError('your account is currently inactive')
 	}
 )

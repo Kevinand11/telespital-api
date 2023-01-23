@@ -1,6 +1,6 @@
 export enum AuthRole {
+	isInactive = 'isInactive',
 	isAdmin = 'isAdmin',
-	isDoctor = 'isDoctor',
 	isSuperAdmin = 'isSuperAdmin',
 }
 

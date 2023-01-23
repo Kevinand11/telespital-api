@@ -7,6 +7,6 @@ export const UsersUseCases = new UsersUseCase(userRepository)
 
 export { UserFromModel } from './data/models/users'
 export { OrderFromModel } from './data/models/orders'
-export { UserEntity } from './domain/entities/users'
+export { generateDefaultUser, UserEntity } from './domain/entities/users'
 export { OrderEntity } from './domain/entities/orders'
 export { UserBio, UserRoles, EmbeddedUser, UserMeta } from './domain/types'

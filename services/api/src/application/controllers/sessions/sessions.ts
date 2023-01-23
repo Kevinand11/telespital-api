@@ -3,13 +3,13 @@ import { UsersUseCases } from '@modules/users'
 import { BadRequestError, NotAuthorizedError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
-import { AuthRole } from '@utils/types'
 import { LiveVideo } from '@utils/modules/sessions/video'
+import { AuthUserType } from '@modules/auth'
 
 export class SessionsController {
 	static async getSessions (req: Request) {
 		const query = req.query as QueryParams
-		if (!req.authUser!.roles[AuthRole.isDoctor]) {
+		if (req.authUser!.type !== AuthUserType.doctor) {
 			query.auth = [{ field: 'patient.id', value: req.authUser!.id }]
 		}
 		return await SessionsUseCases.get(query)

@@ -1,5 +1,5 @@
 import { EmbeddedUser, UserBio, UserDates, UserMetaType, UserRatings, UserRoles, UserStatus } from '../types'
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity, Validation } from '@stranerd/api-commons'
 
 export class UserEntity extends BaseEntity {
 	public readonly id: string
@@ -15,8 +15,8 @@ export class UserEntity extends BaseEntity {
 	             }: UserConstructorArgs) {
 		super()
 		this.id = id
-		this.bio = bio ?? {}
-		this.roles = roles ?? {}
+		this.bio = generateDefaultBio(bio ?? {})
+		this.roles = generateDefaultRoles(roles ?? {})
 		this.dates = dates
 		this.meta = meta
 		this.status = status
@@ -40,4 +40,31 @@ type UserConstructorArgs = {
 	meta: UserMetaType
 	status: UserStatus
 	ratings: UserRatings
+}
+
+const generateDefaultBio = (bio: Partial<UserBio>): UserBio => {
+	const first = Validation.capitalizeText(bio?.name?.first ?? 'Anon')
+	const last = Validation.capitalizeText(bio?.name?.last ?? 'Ymous')
+	const full = Validation.capitalizeText(bio?.name?.full ?? (first + ' ' + last))
+	const email = bio?.email ?? 'anon@ymous.com'
+	const type = bio?.type!
+	const photo = bio?.photo ?? null
+	const phone = bio?.phone!
+	return {
+		name: { first, last, full },
+		email, type, photo, phone
+	}
+}
+
+const generateDefaultRoles = (roles: Partial<UserRoles>): UserRoles => {
+	return {
+		isAdmin: roles?.isAdmin ?? false
+	}
+}
+
+export const generateDefaultUser = (user: Partial<EmbeddedUser>): EmbeddedUser => {
+	const id = user?.id ?? ''
+	const bio = generateDefaultBio(user?.bio ?? {})
+	const roles = generateDefaultRoles(user?.roles ?? {})
+	return { id, bio, roles }
 }

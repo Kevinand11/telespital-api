@@ -1,5 +1,6 @@
 import { Currencies, EmbeddedUser, Prescription, SessionCancelled, SessionStatus } from '../types'
 import { BaseEntity } from '@stranerd/api-commons'
+import { generateDefaultUser } from '@modules/users'
 
 export class SessionEntity extends BaseEntity {
 	public readonly id: string
@@ -26,8 +27,8 @@ export class SessionEntity extends BaseEntity {
 	             }: SessionConstructorArgs) {
 		super()
 		this.id = id
-		this.doctor = doctor
-		this.patient = patient
+		this.doctor = doctor ? generateDefaultUser(doctor) : null
+		this.patient = generateDefaultUser(patient)
 		this.prescriptions = prescriptions
 		this.note = note
 		this.description = description

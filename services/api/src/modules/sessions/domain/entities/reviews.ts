@@ -1,5 +1,6 @@
 import { EmbeddedUser } from '../types'
 import { BaseEntity } from '@stranerd/api-commons'
+import { generateDefaultUser } from '@modules/users'
 
 export class ReviewEntity extends BaseEntity {
 	public readonly id: string
@@ -18,7 +19,7 @@ export class ReviewEntity extends BaseEntity {
 		this.id = id
 		this.sessionId = sessionId
 		this.to = to
-		this.user = user
+		this.user = generateDefaultUser(user)
 		this.rating = rating
 		this.message = message
 		this.createdAt = createdAt

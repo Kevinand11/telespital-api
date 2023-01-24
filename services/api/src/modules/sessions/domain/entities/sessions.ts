@@ -49,6 +49,10 @@ export class SessionEntity extends BaseEntity {
 		if (this.doctor) participants.push(this.doctor.id)
 		return participants
 	}
+
+	isOngoing () {
+		return this.status === SessionStatus.ongoing
+	}
 }
 
 type SessionConstructorArgs = {

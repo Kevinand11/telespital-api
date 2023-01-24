@@ -1,5 +1,5 @@
 import { ChangeStreamCallbacks } from '@stranerd/api-commons'
-import { SessionEntity, SessionFromModel } from '@modules/sessions'
+import { MessagesUseCases, SessionEntity, SessionFromModel } from '@modules/sessions'
 import { getSocketEmitter } from '@index'
 import { TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { UserMeta, UsersUseCases } from '@modules/users'
@@ -71,5 +71,7 @@ export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromMode
 				property: UserMeta.sessionsHosted
 			})
 		])
+
+		await MessagesUseCases.deleteSessionMessages(before.id)
 	}
 }

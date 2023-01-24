@@ -1,5 +1,6 @@
 export { EmbeddedUser } from '@modules/users'
 export { Currencies } from '@modules/payment'
+export { MediaOutput as Media } from '@stranerd/api-commons'
 
 export enum SessionStatus {
 	pendingPay = 'pendingPay',

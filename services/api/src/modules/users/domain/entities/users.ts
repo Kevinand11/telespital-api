@@ -23,6 +23,10 @@ export class UserEntity extends BaseEntity {
 		this.ratings = ratings
 	}
 
+	isDeleted () {
+		return this.dates.deletedAt !== null
+	}
+
 	getEmbedded (): EmbeddedUser {
 		return {
 			id: this.id,
@@ -57,9 +61,7 @@ const generateDefaultBio = (bio: Partial<UserBio>): UserBio => {
 }
 
 const generateDefaultRoles = (roles: Partial<UserRoles>): UserRoles => {
-	return {
-		isAdmin: roles?.isAdmin ?? false
-	}
+	return roles ?? {}
 }
 
 export const generateDefaultUser = (user: Partial<EmbeddedUser>): EmbeddedUser => {

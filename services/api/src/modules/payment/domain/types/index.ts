@@ -16,7 +16,8 @@ export enum TransactionStatus {
 export enum TransactionType {
 	PayForSession = 'PayForSession',
 	RefundSession = 'RefundSession',
-	ReceiveSessionPayment = 'ReceiveSessionPayment'
+	ReceiveSessionPayment = 'ReceiveSessionPayment',
+	PayForRPM = 'PayForRPM'
 }
 
 export type TransactionData = {
@@ -28,6 +29,9 @@ export type TransactionData = {
 } | {
 	type: TransactionType.ReceiveSessionPayment,
 	sessionId: string
+} | {
+	type: TransactionType.PayForRPM,
+	orderId: string
 }
 
 export type AccountDetails = {

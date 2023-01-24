@@ -14,6 +14,11 @@ const OrderSchema = new mongoose.Schema<OrderFromModel>({
 		required: false,
 		default: ''
 	},
+	paid: {
+		type: Boolean,
+		required: false,
+		default: false
+	},
 	phone: {
 		type: mongoose.Schema.Types.Mixed as unknown as OrderFromModel['phone'],
 		required: true

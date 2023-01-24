@@ -9,6 +9,7 @@ import {
 import { Conditions } from '@stranerd/api-commons'
 import { SessionsUseCases } from '@modules/sessions'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
+import { OrdersUseCases } from '@modules/users'
 
 export const fulfillTransaction = async (transaction: TransactionEntity) => {
 	if (transaction.data.type === TransactionType.PayForSession) {
@@ -31,6 +32,12 @@ export const fulfillTransaction = async (transaction: TransactionEntity) => {
 			userId: transaction.userId,
 			amount: await BraintreePayment.convertAmount(transaction.amount, transaction.currency, Currencies.USD)
 		})
+		await TransactionsUseCases.update({
+			id: transaction.id,
+			data: { status: TransactionStatus.settled }
+		})
+	} else if (transaction.data.type === TransactionType.PayForRPM) {
+		await OrdersUseCases.updatePaid({ id: transaction.data.orderId, paid: true })
 		await TransactionsUseCases.update({
 			id: transaction.id,
 			data: { status: TransactionStatus.settled }

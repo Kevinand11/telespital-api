@@ -1,7 +1,8 @@
 import { AuthUseCases, AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
-import { generateAuthOutput, isValidPassword, isValidPhone } from '@utils/modules/auth'
+import { checkPermissions, generateAuthOutput, isValidPassword, isValidPhone } from '@utils/modules/auth'
 import { StorageUseCases } from '@modules/storage'
+import { AuthRole } from '@utils/types'
 
 export class EmailsController {
 	static async signup (req: Request) {
@@ -22,6 +23,9 @@ export class EmailsController {
 		const isUniqueInDb = (_: string) => !user ? Validation.isValid() : Validation.isInvalid('email already in use')
 
 		const isDoctorType = userCredential.type === AuthUserType.doctor
+		const isAdminType = userCredential.type === AuthUserType.admin
+
+		if (isAdminType) checkPermissions(req.authUser, [AuthRole.canCreateAdmins])
 
 		const {
 			email, firstName, lastName, phone,

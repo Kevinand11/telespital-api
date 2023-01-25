@@ -1,11 +1,9 @@
-import { AuthUsersUseCases } from '@modules/auth'
+import { AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { BadRequestError, NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
-import { isValidPhone, signOutUser } from '@utils/modules/auth'
+import { checkPermissions, isValidPhone, signOutUser } from '@utils/modules/auth'
 import { superAdminEmail } from '@utils/environment'
 import { AuthRole } from '@utils/types'
 import { StorageUseCases } from '@modules/storage'
-
-const supportedRoles = Object.values<string>(AuthRole).filter((key) => key !== AuthRole.isSuperAdmin)
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -40,6 +38,10 @@ export class UserController {
 	}
 
 	static async updateUserRole (req: Request) {
+		const unSupportedRoles = [AuthRole.isSuperAdmin, AuthRole.isInactive] as string[]
+		const supportedRoles = Object.values<string>(AuthRole)
+			.filter((key) => !unSupportedRoles.includes(key))
+
 		const { roles, userId, value } = validate({
 			roles: req.body.roles,
 			userId: req.body.userId,
@@ -59,6 +61,27 @@ export class UserController {
 			userId, roles: Object.fromEntries(
 				roles.map((role) => [role, value])
 			)
+		})
+	}
+
+	static async updateUserInactiveRole (req: Request) {
+		const { userId, value } = validate({
+			userId: req.body.userId,
+			value: req.body.value
+		}, {
+			value: { required: true, rules: [Validation.isBoolean] },
+			userId: { required: true, rules: [Validation.isString] }
+		})
+
+		if (req.authUser!.id === userId) throw new BadRequestError('You cannot modify your own roles')
+		const user = await AuthUsersUseCases.findUser(userId)
+		if (!user) throw new NotFoundError()
+		if (user.type === AuthUserType.patient) checkPermissions(req.authUser, [AuthRole.canDeactivatePatientProfile])
+		if (user.type === AuthUserType.doctor) checkPermissions(req.authUser, [AuthRole.canDeactivateDoctorProfile])
+		if (user.type === AuthUserType.admin) checkPermissions(req.authUser, [AuthRole.canDeactivateAdminProfile])
+
+		return await AuthUsersUseCases.updateRole({
+			userId, roles: { [AuthRole.isInactive]: value }
 		})
 	}
 

@@ -12,7 +12,9 @@ export enum AuthRole {
 	canViewTransactionHistory = 'canViewTransactionHistory',
 	canViewReports = 'canViewReports',
 	canViewSessions = 'canViewSessions',
+	canCreateAdmins = 'canCreateAdmins',
 	canViewAdmins = 'canViewAdmins',
+	canDeactivateAdminProfile = 'canDeactivateAdminProfile',
 	canModifyRole = 'canModifyRole'
 }
 

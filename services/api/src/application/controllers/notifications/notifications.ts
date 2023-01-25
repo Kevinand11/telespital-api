@@ -1,10 +1,10 @@
 import { NotificationsUseCases, NotificationType } from '@modules/notifications'
-import { NotAuthorizedError, NotFoundError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
+import { NotFoundError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { sendNotification } from '@utils/modules/notifications/notifications'
 import { UsersUseCases } from '@modules/users'
 import { AuthUserType } from '@modules/auth'
 import { AuthRole } from '@utils/types'
-import { hasPermission } from '@utils/modules/auth'
+import { checkPermissions } from '@utils/modules/auth'
 
 export class NotificationsController {
 	static async getNotifications (req: Request) {
@@ -32,8 +32,8 @@ export class NotificationsController {
 
 		const user = await UsersUseCases.find(userId)
 		if (!user) throw new NotFoundError('user not found')
-		if (user.bio.type === AuthUserType.patient && !hasPermission(req.authUser, [AuthRole.canSendPatientNotification])) throw new NotAuthorizedError('insufficient permissions')
-		if (user.bio.type === AuthUserType.doctor && !hasPermission(req.authUser, [AuthRole.canSendDoctorNotification])) throw new NotAuthorizedError('insufficient permissions')
+		if (user.bio.type === AuthUserType.patient) checkPermissions(req.authUser, [AuthRole.canSendPatientNotification])
+		if (user.bio.type === AuthUserType.doctor) checkPermissions(req.authUser, [AuthRole.canSendDoctorNotification])
 
 		return await sendNotification([userId], {
 			title, body: message, sendEmail: false,

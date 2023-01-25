@@ -7,6 +7,7 @@ import {
 	exchangeOldForNewTokens,
 	makeAccessToken,
 	makeRefreshToken,
+	NotAuthorizedError,
 	Validation
 } from '@stranerd/api-commons'
 import { AuthOutput, AuthUserEntity, AuthUsersUseCases } from '@modules/auth'
@@ -86,7 +87,9 @@ export const deleteUnverifiedUsers = async () => {
 	await AuthUsersUseCases.deleteUsers(unverifiedUsers.map((u) => u.id))
 }
 
-export const hasPermission = (authUser: AuthUser | null, roles: AuthRole[]) => {
-	if (!authUser) return false
-	return roles.concat(AuthRole.isSuperAdmin).some((role) => authUser.roles[role])
+export const checkPermissions = (authUser: AuthUser | null, roles: AuthRole[]) => {
+	if (!authUser) throw new NotAuthorizedError('insufficient permissions')
+	const hasPerm = roles.concat(AuthRole.isSuperAdmin).some((role) => authUser.roles[role])
+	if (!hasPerm) throw new NotAuthorizedError('insufficient permissions')
+	return true
 }

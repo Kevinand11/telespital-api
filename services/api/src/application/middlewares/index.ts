@@ -8,7 +8,7 @@ import {
 	requireRefreshUser
 } from '@stranerd/api-commons'
 import { AuthUserType } from '@modules/auth'
-import { hasPermission } from '@utils/modules/auth'
+import { checkPermissions } from '@utils/modules/auth'
 
 const isAuth = async (req: Request) => {
 	await requireAuthUser(req)
@@ -37,8 +37,7 @@ export const hasRefreshToken = makeMiddleware(
 export const isAdmin = (roles: AuthRole[]) => makeMiddleware(
 	async (request) => {
 		await isAuth(request)
-		const isAdmin = hasPermission(request.authUser, roles)
-		if (!isAdmin) throw new NotAuthorizedError('you dont have enough permissions to access this route')
+		checkPermissions(request.authUser, roles)
 	}
 )
 

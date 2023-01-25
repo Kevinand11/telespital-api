@@ -54,8 +54,7 @@ export const generateAuthOutput = async (user: AuthUserEntity): Promise<AuthOutp
 		email: user.email,
 		type: user.type,
 		roles: user.roles,
-		isVerified: user.isVerified,
-		authTypes: user.authTypes
+		isEmailVerified: user.isVerified
 	})
 	const refreshToken = await makeRefreshToken({ id: user.id })
 	return { accessToken, refreshToken, user }

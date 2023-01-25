@@ -5,7 +5,7 @@ import { superAdminEmail } from '@utils/environment'
 import { AuthRole } from '@utils/types'
 import { StorageUseCases } from '@modules/storage'
 
-const roles = Object.values<string>(AuthRole).filter((key) => key !== AuthRole.isSuperAdmin)
+const supportedRoles = Object.values<string>(AuthRole).filter((key) => key !== AuthRole.isSuperAdmin)
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -40,21 +40,23 @@ export class UserController {
 	}
 
 	static async updateUserRole (req: Request) {
-		const { role, userId, value } = validate({
-			role: req.body.role,
+		const { roles, userId, value } = validate({
+			roles: req.body.roles,
 			userId: req.body.userId,
 			value: req.body.value
 		}, {
-			role: {
+			roles: {
 				required: true,
-				rules: [Validation.isString, Validation.arrayContainsX(roles, (cur, val) => cur === val)]
+				rules: [Validation.isArray, Validation.isArrayOfX<string>((cur) => supportedRoles.includes(cur), 'roles')]
 			},
 			value: { required: true, rules: [Validation.isBoolean] },
 			userId: { required: true, rules: [Validation.isString] }
 		})
 
 		return await AuthUsersUseCases.updateRole({
-			userId, roles: { [role]: value }
+			userId, roles: Object.fromEntries(
+				roles.map((role) => [role, value])
+			)
 		})
 	}
 

@@ -40,7 +40,8 @@ export interface AuthOutput {
 
 export enum AuthUserType {
 	patient = 'patient',
-	doctor = 'doctor'
+	doctor = 'doctor',
+	admin = 'admin'
 }
 
 export type AuthUserData = Partial<{

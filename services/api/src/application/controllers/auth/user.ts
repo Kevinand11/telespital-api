@@ -1,5 +1,5 @@
 import { AuthUsersUseCases } from '@modules/auth'
-import { NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
+import { BadRequestError, NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
 import { isValidPhone, signOutUser } from '@utils/modules/auth'
 import { superAdminEmail } from '@utils/environment'
 import { AuthRole } from '@utils/types'
@@ -53,6 +53,8 @@ export class UserController {
 			userId: { required: true, rules: [Validation.isString] }
 		})
 
+		if (req.authUser!.id === userId) throw new BadRequestError('You cannot modify your own roles')
+
 		return await AuthUsersUseCases.updateRole({
 			userId, roles: Object.fromEntries(
 				roles.map((role) => [role, value])
@@ -70,10 +72,7 @@ export class UserController {
 		if (!user) throw new NotFoundError()
 		return await AuthUsersUseCases.updateRole({
 			userId: user.id,
-			roles: {
-				[AuthRole.isAdmin]: true,
-				[AuthRole.isSuperAdmin]: true
-			}
+			roles: { [AuthRole.isSuperAdmin]: true }
 		})
 	}
 }

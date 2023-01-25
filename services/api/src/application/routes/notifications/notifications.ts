@@ -1,6 +1,7 @@
 import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
 import { NotificationsController } from '../../controllers/notifications/notifications'
 import { isAdmin, isAuthenticated } from '@application/middlewares'
+import { AuthRole } from '@utils/types'
 
 export const notificationsRoutes: Route[] = [
 	{
@@ -20,7 +21,7 @@ export const notificationsRoutes: Route[] = [
 		path: '/notifications/notifications/',
 		method: 'post',
 		controllers: [
-			isAdmin,
+			isAdmin([AuthRole.canSendPatientNotification, AuthRole.canSendDoctorNotification]),
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,

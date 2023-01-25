@@ -1,13 +1,19 @@
 import { AuthRole } from '@utils/types'
 import {
-	BadRequestError,
 	makeMiddleware,
 	NotAuthenticatedError,
 	NotAuthorizedError,
+	Request,
 	requireAuthUser,
 	requireRefreshUser
 } from '@stranerd/api-commons'
 import { AuthUserType } from '@modules/auth'
+
+const isAuth = async (req: Request) => {
+	await requireAuthUser(req)
+	if (!req.authUser?.isEmailVerified) throw new NotAuthenticatedError('verify your account to proceed')
+	if (req.authUser.roles[AuthRole.isInactive]) throw new NotAuthorizedError('your account is currently inactive')
+}
 
 export const isAuthenticatedButIgnoreVerified = makeMiddleware(
 	async (request) => {
@@ -17,8 +23,7 @@ export const isAuthenticatedButIgnoreVerified = makeMiddleware(
 
 export const isAuthenticated = makeMiddleware(
 	async (request) => {
-		await requireAuthUser(request)
-		if (!request.authUser?.isEmailVerified) throw new NotAuthenticatedError('verify your account to proceed')
+		await isAuth(request)
 	}
 )
 
@@ -28,34 +33,24 @@ export const hasRefreshToken = makeMiddleware(
 	}
 )
 
-export const cannotModifyMyRole = makeMiddleware(
+export const isAdmin = (roles: AuthRole[]) => makeMiddleware(
 	async (request) => {
-		const userIdToEdit = request.body.userId
-		if (!request.authUser) throw new NotAuthenticatedError()
-		if (request.authUser.id === userIdToEdit) throw new BadRequestError('You cannot modify your own roles')
-	}
-)
-
-export const isAdmin = makeMiddleware(
-	async (request) => {
-		const isAdmin = request.authUser?.roles?.[AuthRole.isAdmin] || request.authUser?.roles?.['isSuperAdmin']
-		if (!request.authUser) throw new NotAuthenticatedError()
-		if (!isAdmin) throw new NotAuthorizedError()
+		await isAuth(request)
+		const isAdmin = roles.concat(AuthRole.isSuperAdmin).some((role) => request.authUser!.roles[role])
+		if (!isAdmin) throw new NotAuthorizedError('you dont have enough permissions to access this route')
 	}
 )
 
 export const isDoctor = makeMiddleware(
 	async (request) => {
-		if (!request.authUser) throw new NotAuthenticatedError()
-		if (request.authUser.type !== AuthUserType.doctor) throw new NotAuthorizedError()
-		if (request.authUser.roles[AuthRole.isInactive]) throw new NotAuthenticatedError('your account is currently inactive')
+		await isAuth(request)
+		if (request.authUser!.type !== AuthUserType.doctor) throw new NotAuthorizedError('you need a doctor account to access this route')
 	}
 )
 
 export const isPatient = makeMiddleware(
 	async (request) => {
-		if (!request.authUser) throw new NotAuthenticatedError()
-		if (request.authUser.type !== AuthUserType.patient) throw new NotAuthorizedError()
-		if (request.authUser.roles[AuthRole.isInactive]) throw new NotAuthenticatedError('your account is currently inactive')
+		await isAuth(request)
+		if (request.authUser!.type !== AuthUserType.patient) throw new NotAuthorizedError('you need a patient account to access this route')
 	}
 )

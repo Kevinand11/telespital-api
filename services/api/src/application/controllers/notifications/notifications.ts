@@ -1,6 +1,9 @@
 import { NotificationsUseCases, NotificationType } from '@modules/notifications'
-import { QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
+import { NotAuthorizedError, NotFoundError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { sendNotification } from '@utils/modules/notifications/notifications'
+import { UsersUseCases } from '@modules/users'
+import { AuthUserType } from '@modules/auth'
+import { AuthRole } from '@utils/types'
 
 export class NotificationsController {
 	static async getNotifications (req: Request) {
@@ -16,19 +19,22 @@ export class NotificationsController {
 	}
 
 	static async createNotification (req: Request) {
-		const { title, message, userIds } = validate({
+		const { title, message, userId } = validate({
 			title: req.body.title,
 			message: req.body.message,
-			userIds: req.body.userIds
+			userId: req.body.userId
 		}, {
 			title: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
 			message: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
-			userIds: {
-				required: true,
-				rules: [Validation.isArray, Validation.isArrayOfX((x) => Validation.isString(x).valid, 'userIds')]
-			}
+			userId: { required: true, rules: [Validation.isString] }
 		})
-		return await sendNotification(userIds, {
+
+		const user = await UsersUseCases.find(userId)
+		if (!user) throw new NotFoundError('user not found')
+		if (user.bio.type === AuthUserType.patient && !req.authUser!.roles[AuthRole.canSendPatientNotification]) throw new NotAuthorizedError('insufficient permissions')
+		if (user.bio.type === AuthUserType.doctor && !req.authUser!.roles[AuthRole.canSendDoctorNotification]) throw new NotAuthorizedError('insufficient permissions')
+
+		return await sendNotification([userId], {
 			title, body: message, sendEmail: false,
 			data: { type: NotificationType.AdminMessage, adminId: req.authUser!.id }
 		})

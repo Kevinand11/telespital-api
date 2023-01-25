@@ -1,6 +1,5 @@
 export enum AuthRole {
 	isInactive = 'isInactive',
-	isAdmin = 'isAdmin',
 	isSuperAdmin = 'isSuperAdmin',
 	canViewPatients = 'canViewPatients',
 	canDeactivatePatientProfile = 'canDeactivatePatientProfile',
@@ -12,7 +11,9 @@ export enum AuthRole {
 	canGeneratePayment = 'canGeneratePayment',
 	canViewTransactionHistory = 'canViewTransactionHistory',
 	canViewReports = 'canViewReports',
-	canViewSessions = 'canViewSessions'
+	canViewSessions = 'canViewSessions',
+	canViewAdmins = 'canViewAdmins',
+	canModifyRole = 'canModifyRole'
 }
 
 export type AuthRoles = Partial<Record<AuthRole, boolean>>

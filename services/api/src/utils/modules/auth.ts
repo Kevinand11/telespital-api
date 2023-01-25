@@ -1,4 +1,5 @@
 import {
+	AuthUser,
 	BadRequestError,
 	Conditions,
 	deleteCachedAccessToken,
@@ -9,6 +10,7 @@ import {
 	Validation
 } from '@stranerd/api-commons'
 import { AuthOutput, AuthUserEntity, AuthUsersUseCases } from '@modules/auth'
+import { AuthRole } from '@utils/types'
 
 const letters = 'abcdefghijklmnopqrstuvwxyz'
 const lCaseLetters = letters.split('')
@@ -82,4 +84,9 @@ export const deleteUnverifiedUsers = async () => {
 		all: true
 	})
 	await AuthUsersUseCases.deleteUsers(unverifiedUsers.map((u) => u.id))
+}
+
+export const hasPermission = (authUser: AuthUser | null, roles: AuthRole[]) => {
+	if (!authUser) return false
+	return roles.concat(AuthRole.isSuperAdmin).some((role) => authUser.roles[role])
 }

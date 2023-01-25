@@ -4,6 +4,7 @@ import { sendNotification } from '@utils/modules/notifications/notifications'
 import { UsersUseCases } from '@modules/users'
 import { AuthUserType } from '@modules/auth'
 import { AuthRole } from '@utils/types'
+import { hasPermission } from '@utils/modules/auth'
 
 export class NotificationsController {
 	static async getNotifications (req: Request) {
@@ -31,8 +32,8 @@ export class NotificationsController {
 
 		const user = await UsersUseCases.find(userId)
 		if (!user) throw new NotFoundError('user not found')
-		if (user.bio.type === AuthUserType.patient && !req.authUser!.roles[AuthRole.canSendPatientNotification]) throw new NotAuthorizedError('insufficient permissions')
-		if (user.bio.type === AuthUserType.doctor && !req.authUser!.roles[AuthRole.canSendDoctorNotification]) throw new NotAuthorizedError('insufficient permissions')
+		if (user.bio.type === AuthUserType.patient && !hasPermission(req.authUser, [AuthRole.canSendPatientNotification])) throw new NotAuthorizedError('insufficient permissions')
+		if (user.bio.type === AuthUserType.doctor && !hasPermission(req.authUser, [AuthRole.canSendDoctorNotification])) throw new NotAuthorizedError('insufficient permissions')
 
 		return await sendNotification([userId], {
 			title, body: message, sendEmail: false,

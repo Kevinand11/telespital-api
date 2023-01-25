@@ -1,5 +1,4 @@
-import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
-import { appId } from '@utils/environment'
+import { Route } from '@stranerd/api-commons'
 import authRoutes from './auth'
 import notificationRoutes from './notifications'
 import usersRoutes from './users'
@@ -13,17 +12,5 @@ export const routes: Route[] = [
 	...usersRoutes,
 	...paymentRoutes,
 	...metaRoutes,
-	...sessionsRoutes,
-	{
-		path: '/',
-		method: 'get',
-		controllers: [
-			makeController(async () => {
-				return {
-					status: StatusCodes.Ok,
-					result: `${appId} service running`
-				}
-			})
-		]
-	}
+	...sessionsRoutes
 ]

@@ -1,12 +1,12 @@
-import { EmbeddedUser, PayoutPay, PayoutStatus, TransactionStatus, TransactionType } from '../../domain/types'
 import { mongoose, parseQueryParams, QueryParams } from '@stranerd/api-commons'
 import { IPayoutRepository } from '../../domain/irepositories/payouts'
+import { EmbeddedUser, PayoutPay, PayoutStatus, TransactionStatus, TransactionType } from '../../domain/types'
 import { PayoutMapper } from '../mappers/payouts'
-import { Payout } from '../mongooseModels/payouts'
-import { PayoutFromModel } from './../models/payouts'
-import { Wallet } from '../mongooseModels/wallets'
-import { Transaction } from '../mongooseModels/transactions'
 import { TransactionToModel } from '../models/transactions'
+import { Payout } from '../mongooseModels/payouts'
+import { Transaction } from '../mongooseModels/transactions'
+import { Wallet } from '../mongooseModels/wallets'
+import { PayoutFromModel } from './../models/payouts'
 
 export class PayoutRepository implements IPayoutRepository {
 	private static instance: PayoutRepository
@@ -39,7 +39,7 @@ export class PayoutRepository implements IPayoutRepository {
 		let res = null as any
 		const session = await mongoose.startSession()
 		await session.withTransaction(async (session) => {
-			const id = new mongoose.Types.ObjectId().toString()
+			const _id = new mongoose.Types.ObjectId().toString()
 			const transactionModels: TransactionToModel[] = []
 			const userDataPromise: Promise<[string, PayoutPay[string]]>[] = users.map(async (user) => {
 				const wallet = await Wallet.findOneAndUpdate(
@@ -53,17 +53,23 @@ export class PayoutRepository implements IPayoutRepository {
 					...balance, title: 'Payout generated',
 					userId: user.id, email: user.bio.email,
 					status: TransactionStatus.fulfilled,
-					data: { payoutId: id, type: TransactionType.NewPayout }
+					data: { payoutId: _id, type: TransactionType.NewPayout }
 				})
 				return [userId, { ...balance }]
 			})
 			const userData = (await Promise.all(userDataPromise)).filter((d) => !!d)
 			const pay = Object.fromEntries(userData)
-			res = new Payout({ id, userId, pay, status: PayoutStatus.created }).save({ session })
+			res = await new Payout({ _id, userId, pay, status: PayoutStatus.created }).save({ session })
 			await Transaction.insertMany(transactionModels, { session })
 			return res
 		})
 		await session.endSession()
 		return this.mapper.mapFrom(res)!
+	}
+
+	async settle (id: string, userId: string) {
+		const settlement = { userId, at: Date.now() }
+		const payout = await Payout.findByIdAndUpdate({ _id: id, settlement: null }, { $set: { settlement } }, { new: true })
+		return this.mapper.mapFrom(payout)
 	}
 }

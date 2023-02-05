@@ -1,13 +1,14 @@
-import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
 import { PayoutsController } from '@application/controllers/payment/payouts'
-import { isAuthenticated } from '@application/middlewares'
+import { isAdmin } from '@application/middlewares'
+import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { AuthRole } from '@utils/types'
 
 export const payoutsRoutes: Route[] = [
 	{
 		path: '/payment/payouts',
 		method: 'get',
 		controllers: [
-			isAuthenticated,
+			isAdmin([AuthRole.canViewPayment]),
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,
@@ -20,7 +21,7 @@ export const payoutsRoutes: Route[] = [
 		path: '/payment/payouts/:id',
 		method: 'get',
 		controllers: [
-			isAuthenticated,
+			isAdmin([AuthRole.canViewPayment]),
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,
@@ -33,11 +34,24 @@ export const payoutsRoutes: Route[] = [
 		path: '/payment/payouts/',
 		method: 'post',
 		controllers: [
-			isAuthenticated,
+			isAdmin([AuthRole.canGeneratePayment]),
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,
 					result: await PayoutsController.create(req)
+				}
+			})
+		]
+	},
+	{
+		path: '/payment/payouts/:id/settle',
+		method: 'post',
+		controllers: [
+			isAdmin([AuthRole.canGeneratePayment]),
+			makeController(async (req) => {
+				return {
+					status: StatusCodes.Ok,
+					result: await PayoutsController.settle(req)
 				}
 			})
 		]

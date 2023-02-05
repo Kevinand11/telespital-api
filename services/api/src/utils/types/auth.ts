@@ -7,7 +7,7 @@ export enum AuthRole {
 	canViewDoctors = 'canViewDoctors',
 	canDeactivateDoctorProfile = 'canDeactivateDoctorProfile',
 	canSendDoctorNotification = 'canSendDoctorNotification',
-	canViewFinance = 'canViewFinance',
+	canViewPayment = 'canViewPayment',
 	canGeneratePayment = 'canGeneratePayment',
 	canViewTransactionHistory = 'canViewTransactionHistory',
 	canViewReports = 'canViewReports',

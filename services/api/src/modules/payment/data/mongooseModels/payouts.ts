@@ -22,6 +22,11 @@ const PayoutSchema = new mongoose.Schema<PayoutFromModel>({
 		required: false,
 		default: {}
 	},
+	settlement: {
+		type: mongoose.Schema.Types.Mixed,
+		required: false,
+		default: null
+	},
 	createdAt: {
 		type: Number,
 		required: false,

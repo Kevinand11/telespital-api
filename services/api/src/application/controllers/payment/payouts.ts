@@ -21,4 +21,11 @@ export class PayoutsController {
 		})
 		return await PayoutsUseCases.create(req.authUser!.id, users.results.map((u) => u.getEmbedded()))
 	}
+
+	static async settle (req: Request) {
+		return await PayoutsUseCases.settle({
+			id: req.params.id,
+			userId: req.authUser!.id
+		})
+	}
 }

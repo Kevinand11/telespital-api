@@ -69,6 +69,11 @@ export type PayoutPay = Record<string, {
 	currency: Currencies
 }>
 
+export type PayoutSettlement = {
+	userId: string
+	at: number
+} | null
+
 export enum PayoutStatus {
 	created = 'created',
 	settled = 'settled'

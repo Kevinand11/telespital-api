@@ -1,3 +1,4 @@
+import { AuthOutput, AuthUserEntity, AuthUsersUseCases } from '@modules/auth'
 import {
 	AuthUser,
 	BadRequestError,
@@ -10,7 +11,6 @@ import {
 	NotAuthorizedError,
 	Validation
 } from '@stranerd/api-commons'
-import { AuthOutput, AuthUserEntity, AuthUsersUseCases } from '@modules/auth'
 import { AuthRole } from '@utils/types'
 
 const letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -89,7 +89,9 @@ export const deleteUnverifiedUsers = async () => {
 
 export const checkPermissions = (authUser: AuthUser | null, roles: AuthRole[]) => {
 	if (!authUser) throw new NotAuthorizedError('insufficient permissions')
-	const hasPerm = roles.concat(AuthRole.isSuperAdmin).some((role) => authUser.roles[role])
+	if (authUser.roles[AuthRole.isSuperAdmin]) return true
+	if (authUser.roles[AuthRole.isInactive]) throw new NotAuthorizedError('your account is currently inactive')
+	const hasPerm = roles.some((role) => authUser.roles[role])
 	if (!hasPerm) throw new NotAuthorizedError('insufficient permissions')
 	return true
 }

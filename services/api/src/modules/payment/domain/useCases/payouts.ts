@@ -20,4 +20,8 @@ export class PayoutsUseCase {
 	async create(userId: string, users: EmbeddedUser[]) {
 		return await this.repository.create(userId, users)
 	}
+
+	async settle (data: { id: string, userId: string}) {
+		return await this.repository.settle(data.id, data.userId)
+	}
 }

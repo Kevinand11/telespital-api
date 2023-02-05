@@ -9,6 +9,7 @@ export class PayoutMapper extends BaseMapper<PayoutFromModel, PayoutToModel, Pay
 			userId: param.userId,
 			pay: param.pay,
 			status: param.status,
+			settlement: param.settlement,
 			createdAt: param.createdAt,
 			updatedAt: param.updatedAt
 		})

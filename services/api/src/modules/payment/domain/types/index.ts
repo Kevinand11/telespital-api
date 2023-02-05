@@ -1,3 +1,5 @@
+export { EmbeddedUser } from '@modules/users'
+
 export enum Currencies {
 	USD = 'USD'
 }
@@ -17,7 +19,8 @@ export enum TransactionType {
 	PayForSession = 'PayForSession',
 	RefundSession = 'RefundSession',
 	ReceiveSessionPayment = 'ReceiveSessionPayment',
-	PayForRPM = 'PayForRPM'
+	PayForRPM = 'PayForRPM',
+	NewPayout = 'NewPayout',
 }
 
 export type TransactionData = {
@@ -32,6 +35,9 @@ export type TransactionData = {
 } | {
 	type: TransactionType.PayForRPM,
 	orderId: string
+} | {
+	type: TransactionType.NewPayout,
+	payoutId: string
 }
 
 export type AccountDetails = {
@@ -56,4 +62,14 @@ export type MethodData = {
 	cardType: string
 	expiredAt: number
 	expired: boolean
+}
+
+export type PayoutPay = Record<string, {
+	amount: number
+	currency: Currencies
+}>
+
+export enum PayoutStatus {
+	created = 'created',
+	settled = 'settled'
 }

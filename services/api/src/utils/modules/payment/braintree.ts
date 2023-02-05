@@ -1,10 +1,10 @@
-import { BraintreeGateway, CreditCard, Environment, PayPalAccount } from 'braintree'
+import { BraintreeGateway, CreditCard, PayPalAccount } from 'braintree'
 import { Currencies, MethodToModel, MethodType } from '@modules/payment'
 import { braintreeConfig } from '@utils/environment'
 
 const getGateway = () => new BraintreeGateway({
 	...braintreeConfig,
-	environment: braintreeConfig.isProd ? Environment.Production : Environment.Sandbox
+	environment: (braintreeConfig.isProd ? 'Production' : 'Sandbox') as any
 })
 
 export class BraintreePayment {

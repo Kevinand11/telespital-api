@@ -41,7 +41,7 @@ export class UsersUseCase {
 		return await this.repository.updateUserWithRoles(params.id, params.data, params.timestamp)
 	}
 
-	async incrementMeta (params: { ids: string[], value: 1 | -1, property: UserMeta }) {
+	async incrementMeta (params: { ids: string[], value: number, property: UserMeta }) {
 		return await this.repository.incrementUserMeta(params.ids, params.property, params.value)
 	}
 

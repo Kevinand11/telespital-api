@@ -1,9 +1,10 @@
 import { ChangeStreamCallbacks } from '@stranerd/api-commons'
 import { MessagesUseCases, SessionEntity, SessionFromModel } from '@modules/sessions'
 import { getSocketEmitter } from '@index'
-import { TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
+import { Currencies, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { UserMeta, UsersUseCases } from '@modules/users'
 import { LiveVideo } from '@utils/modules/sessions/video'
+import { BraintreePayment } from '@utils/modules/payment/braintree'
 
 export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromModel, SessionEntity> = {
 	created: async ({ after }) => {
@@ -48,6 +49,11 @@ export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromMode
 				value: 1,
 				property: UserMeta.sessionsHosted
 			}),
+			after.doctor && UsersUseCases.incrementMeta({
+				ids: [after.doctor.id],
+				value: await BraintreePayment.convertAmount(after.price, after.currency, Currencies.USD),
+				property: UserMeta.sessionsEarnings
+			}),
 			LiveVideo.endRoom(after.id)
 		])
 	},
@@ -69,6 +75,11 @@ export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromMode
 				ids: [before.doctor.id],
 				value: -1,
 				property: UserMeta.sessionsHosted
+			}),
+			before.doctor && UsersUseCases.incrementMeta({
+				ids: [before.doctor.id],
+				value: await BraintreePayment.convertAmount(-before.price, before.currency, Currencies.USD),
+				property: UserMeta.sessionsEarnings
 			})
 		])
 

@@ -33,7 +33,8 @@ export type UserStatus = {
 
 export enum UserMeta {
 	sessionsAttended = 'sessionsAttended',
-	sessionsHosted = 'sessionsHosted'
+	sessionsHosted = 'sessionsHosted',
+	sessionsEarnings = 'sessionsEarnings'
 }
 
 export type UserRatings = {

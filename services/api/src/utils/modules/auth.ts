@@ -1,4 +1,5 @@
 import { AuthOutput, AuthUserEntity, AuthUsersUseCases } from '@modules/auth'
+import { NotificationType } from '@modules/notifications'
 import {
 	AuthUser,
 	BadRequestError,
@@ -11,6 +12,7 @@ import {
 	NotAuthorizedError,
 	Validation
 } from '@stranerd/api-commons'
+import { sendNotification } from '@utils/modules/notifications/notifications'
 import { AuthRole } from '@utils/types'
 
 const letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -94,4 +96,15 @@ export const checkPermissions = (authUser: AuthUser | null, roles: AuthRole[]) =
 	const hasPerm = roles.some((role) => authUser.roles[role])
 	if (!hasPerm) throw new NotAuthorizedError('insufficient permissions')
 	return true
+}
+
+export const deActivateUserProfile = async (userId: string, value: boolean, message: string) => {
+	await sendNotification([userId], {
+		title: 'Profile Activity Updated',
+		body: message, sendEmail: true,
+		data: { type: NotificationType.SystemMessage }
+	})
+	return await AuthUsersUseCases.updateRole({
+		userId, roles: { [AuthRole.isInactive]: value }
+	})
 }

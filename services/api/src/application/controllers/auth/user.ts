@@ -1,9 +1,9 @@
 import { AuthUsersUseCases, AuthUserType } from '@modules/auth'
-import { BadRequestError, NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
-import { checkPermissions, isValidPhone, signOutUser } from '@utils/modules/auth'
-import { superAdminEmail } from '@utils/environment'
-import { AuthRole } from '@utils/types'
 import { StorageUseCases } from '@modules/storage'
+import { BadRequestError, NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
+import { superAdminEmail } from '@utils/environment'
+import { checkPermissions, deActivateUserProfile, isValidPhone, signOutUser } from '@utils/modules/auth'
+import { AuthRole } from '@utils/types'
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -80,9 +80,8 @@ export class UserController {
 		if (user.type === AuthUserType.doctor) checkPermissions(req.authUser, [AuthRole.canDeactivateDoctorProfile])
 		if (user.type === AuthUserType.admin) checkPermissions(req.authUser, [AuthRole.canDeactivateAdminProfile])
 
-		return await AuthUsersUseCases.updateRole({
-			userId, roles: { [AuthRole.isInactive]: value }
-		})
+		return await deActivateUserProfile(userId, value, 
+			value ? 'Your account has been deactivated' : 'Your account has been reactivated')
 	}
 
 	static async signout (req: Request) {

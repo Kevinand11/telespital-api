@@ -9,6 +9,9 @@ export const registerSockets = () => {
 	const canViewPayment: OnJoinFn = async ({ channel, user }) => checkPermissions(user, [
 		AuthRole.canViewPayment
 	]) ? channel : null
+	const canViewReports: OnJoinFn = async ({ channel, user }) => checkPermissions(user, [
+		AuthRole.canViewReports
+	]) ? channel : null
 
 	getSocketEmitter().register('notifications/notifications', isMine)
 	getSocketEmitter().register('payment/methods', isMine)
@@ -20,4 +23,5 @@ export const registerSockets = () => {
 	getSocketEmitter().register('sessions/sessions', isMine)
 	getSocketEmitter().register('sessions/messages', isMine)
 	getSocketEmitter().register('sessions/reviews', isOpen)
+	getSocketEmitter().register('sessions/reports', canViewReports)
 }

@@ -69,7 +69,10 @@ export class PayoutRepository implements IPayoutRepository {
 
 	async settle (id: string, userId: string) {
 		const settlement = { userId, at: Date.now() }
-		const payout = await Payout.findByIdAndUpdate({ _id: id, settlement: null }, { $set: { settlement } }, { new: true })
+		const payout = await Payout.findOneAndUpdate(
+			{ _id: id, settlement: null },
+			{ $set: { settlement, status: PayoutStatus.settled } },
+			{ new: true })
 		return this.mapper.mapFrom(payout)
 	}
 }

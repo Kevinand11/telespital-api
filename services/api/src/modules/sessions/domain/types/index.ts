@@ -1,6 +1,8 @@
-export { EmbeddedUser } from '@modules/users'
+import { EmbeddedUser } from '@modules/users'
 export { Currencies } from '@modules/payment'
 export { MediaOutput as Media } from '@stranerd/api-commons'
+
+export { EmbeddedUser}
 
 export enum SessionStatus {
 	pendingPay = 'pendingPay',
@@ -26,4 +28,20 @@ export type SessionCancelled = {
 	userId: string
 	at: number
 	reason: string
+}
+
+export type ReportSettlement = {
+	userId: string
+	at: number
+} | null
+
+export enum ReportStatus {
+	created = 'created',
+	settled = 'settled',
+}
+
+export type ReportData = {
+	sessionId: string
+	doctor: EmbeddedUser
+	patient: EmbeddedUser
 }

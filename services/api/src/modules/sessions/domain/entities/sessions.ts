@@ -53,6 +53,11 @@ export class SessionEntity extends BaseEntity {
 	isOngoing () {
 		return this.status === SessionStatus.ongoing
 	}
+
+	canReport (userId: string) {
+		if (this.patient.id !== userId) return false
+		return !!this.doctor
+	}
 }
 
 type SessionConstructorArgs = {

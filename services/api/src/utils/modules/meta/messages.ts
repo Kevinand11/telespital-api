@@ -1,6 +1,5 @@
-import { readEmailFromPug } from '@stranerd/api-commons'
-import { EventTypes, publishers } from '@utils/events'
-import { EmailsList } from '@utils/types'
+import { EmailsList, EventTypes, readEmailFromPug } from '@stranerd/api-commons'
+import { publishers } from '@utils/events'
 
 type Message = {
 	name: string

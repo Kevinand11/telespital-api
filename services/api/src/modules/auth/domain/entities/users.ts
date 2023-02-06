@@ -1,6 +1,5 @@
-import { AuthTypes, BaseEntity, MediaOutput } from '@stranerd/api-commons'
+import { AuthRoles, AuthTypes, BaseEntity, Enum, MediaOutput } from '@stranerd/api-commons'
 import { AuthUserData, AuthUserType, UserPhone, UserUpdateInput } from '../types'
-import { AuthRoles } from '@utils/types'
 
 export class AuthUserEntity extends BaseEntity {
 	public readonly id: string
@@ -10,7 +9,7 @@ export class AuthUserEntity extends BaseEntity {
 	public readonly name: { first: string, last: string }
 	public readonly photo: MediaOutput | null
 	public readonly isVerified: boolean
-	public readonly authTypes: AuthTypes[]
+	public readonly authTypes: Enum<typeof AuthTypes>[]
 	public readonly roles: AuthRoles
 	public readonly type: AuthUserType
 	public readonly data: AuthUserData
@@ -55,7 +54,7 @@ interface UserConstructorArgs {
 	name: { first: string, last: string }
 	photo: MediaOutput | null
 	isVerified: boolean
-	authTypes: AuthTypes[]
+	authTypes: Enum<typeof AuthTypes>[]
 	type: AuthUserType
 	data: AuthUserData
 	lastSignedInAt: number

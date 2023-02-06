@@ -1,9 +1,8 @@
 import { NotificationsUseCases, NotificationType } from '@modules/notifications'
-import { NotFoundError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
+import { AuthRole, NotFoundError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { sendNotification } from '@utils/modules/notifications/notifications'
 import { UsersUseCases } from '@modules/users'
 import { AuthUserType } from '@modules/auth'
-import { AuthRole } from '@utils/types'
 import { checkPermissions } from '@utils/modules/auth'
 
 export class NotificationsController {

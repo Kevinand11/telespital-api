@@ -1,9 +1,8 @@
 import { AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { StorageUseCases } from '@modules/storage'
-import { BadRequestError, NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
+import { AuthRole, BadRequestError, NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
 import { superAdminEmail } from '@utils/environment'
 import { checkPermissions, deActivateUserProfile, isValidPhone, signOutUser } from '@utils/modules/auth'
-import { AuthRole } from '@utils/types'
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -38,8 +37,8 @@ export class UserController {
 	}
 
 	static async updateUserRole (req: Request) {
-		const unSupportedRoles = [AuthRole.isSuperAdmin, AuthRole.isInactive] as string[]
-		const supportedRoles = Object.values<string>(AuthRole)
+		const unSupportedRoles = [AuthRole.isSuperAdmin, AuthRole.isInactive]
+		const supportedRoles = Object.values(AuthRole)
 			.filter((key) => !unSupportedRoles.includes(key))
 
 		const { roles, userId, value } = validate({

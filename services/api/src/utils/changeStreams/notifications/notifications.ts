@@ -1,9 +1,8 @@
-import { ChangeStreamCallbacks, readEmailFromPug } from '@stranerd/api-commons'
+import { ChangeStreamCallbacks, EmailsList, readEmailFromPug } from '@stranerd/api-commons'
 import { NotificationEntity, NotificationFromModel } from '@modules/notifications'
 import { getSocketEmitter } from '@index'
 import { sendPushNotification } from '@utils/modules/notifications/push'
-import { EventTypes, publishers } from '@utils/events'
-import { EmailsList } from '@utils/types'
+import { publishers } from '@utils/events'
 import { UsersUseCases } from '@modules/users'
 
 export const NotificationChangeStreamCallbacks: ChangeStreamCallbacks<NotificationFromModel, NotificationEntity> = {
@@ -24,7 +23,7 @@ export const NotificationChangeStreamCallbacks: ChangeStreamCallbacks<Notificati
 			const user = await UsersUseCases.find(after.userId)
 			if (user) {
 				const content = await readEmailFromPug('emails/newNotification.pug', { notification: after })
-				await publishers[EventTypes.SENDMAIL].publish({
+				await publishers.SENDMAIL.publish({
 					from: EmailsList.NO_REPLY, to: user.bio.email, subject: after.title,
 					content, data: {}
 				})

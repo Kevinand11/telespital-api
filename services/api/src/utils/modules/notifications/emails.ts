@@ -1,9 +1,9 @@
 import { createTransport } from 'nodemailer'
 import { appInstance, emails, isDev } from '@utils/environment'
 import { EmailsUseCases } from '@modules/notifications'
-import { EmailsList, TypedEmail } from '@utils/types'
+import { Email, EmailsList } from '@stranerd/api-commons'
 
-const sendMail = async (email: TypedEmail) => {
+const sendMail = async (email: Email) => {
 	const { to, subject, content, from = EmailsList.NO_REPLY } = email
 	const { clientId, privateKey } = emails[from]
 
@@ -23,7 +23,7 @@ const sendMail = async (email: TypedEmail) => {
 	})
 }
 
-export const sendMailAndCatchError = async (email: TypedEmail) => {
+export const sendMailAndCatchError = async (email: Email) => {
 	try {
 		if (isDev) await appInstance.logger.info(email.to, email.content)
 		await sendMail(email)

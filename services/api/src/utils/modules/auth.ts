@@ -1,11 +1,13 @@
 import { AuthOutput, AuthUserEntity, AuthUsersUseCases } from '@modules/auth'
 import { NotificationType } from '@modules/notifications'
 import {
+	AuthRole,
 	AuthUser,
 	BadRequestError,
 	Conditions,
 	deleteCachedAccessToken,
 	deleteCachedRefreshToken,
+	Enum,
 	exchangeOldForNewTokens,
 	makeAccessToken,
 	makeRefreshToken,
@@ -13,7 +15,6 @@ import {
 	Validation
 } from '@stranerd/api-commons'
 import { sendNotification } from '@utils/modules/notifications/notifications'
-import { AuthRole } from '@utils/types'
 
 const letters = 'abcdefghijklmnopqrstuvwxyz'
 const lCaseLetters = letters.split('')
@@ -89,7 +90,7 @@ export const deleteUnverifiedUsers = async () => {
 	await AuthUsersUseCases.deleteUsers(unverifiedUsers.map((u) => u.id))
 }
 
-export const checkPermissions = (authUser: AuthUser | null, roles: AuthRole[]) => {
+export const checkPermissions = (authUser: AuthUser | null, roles: Enum<typeof AuthRole>[]) => {
 	if (!authUser) throw new NotAuthorizedError('insufficient permissions')
 	if (authUser.roles[AuthRole.isSuperAdmin]) return true
 	if (authUser.roles[AuthRole.isInactive]) throw new NotAuthorizedError('your account is currently inactive')

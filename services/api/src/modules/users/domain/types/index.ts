@@ -1,5 +1,4 @@
-import { MediaOutput } from '@stranerd/api-commons'
-import { AuthRoles } from '@utils/types'
+import { AuthRoles, MediaOutput } from '@stranerd/api-commons'
 import { AuthUserType, UserPhone } from '@modules/auth'
 
 export { Currencies } from '@modules/payment'

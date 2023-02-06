@@ -2,13 +2,12 @@ import { CronTypes } from '@stranerd/api-commons'
 import { appInstance } from '@utils/environment'
 import { EmailsUseCases, NotificationsUseCases } from '@modules/notifications'
 import { sendMailAndCatchError } from '@utils/modules/notifications/emails'
-import { DelayedEvent } from '@utils/types'
 import { deleteUnverifiedUsers } from '@utils/modules/auth'
 import { retryTransactions } from '@utils/modules/payment/transactions'
 import { MethodsUseCases } from '@modules/payment'
 
 export const startJobs = async () => {
-	await appInstance.job.startProcessingQueues<DelayedEvent, any>([
+	await appInstance.job.startProcessingQueues([
 		{ name: CronTypes.hourly, cron: '0 * * * *' },
 		{ name: CronTypes.daily, cron: '0 0 * * *' },
 		{ name: CronTypes.weekly, cron: '0 0 * * SUN' },

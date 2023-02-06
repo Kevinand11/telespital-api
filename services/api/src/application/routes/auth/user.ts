@@ -1,7 +1,6 @@
-import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { AuthRole, makeController, Route, StatusCodes } from '@stranerd/api-commons'
 import { UserController } from '../../controllers/auth/user'
 import { isAdmin, isAuthenticated, isAuthenticatedButIgnoreVerified } from '../../middlewares'
-import { AuthRole } from '@utils/types'
 
 const getUserDetails: Route = {
 	path: '/auth/user',

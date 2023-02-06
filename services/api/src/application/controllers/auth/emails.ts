@@ -1,8 +1,7 @@
 import { AuthUseCases, AuthUsersUseCases, AuthUserType } from '@modules/auth'
-import { Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
+import { AuthRole, Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
 import { checkPermissions, generateAuthOutput, isValidPassword, isValidPhone } from '@utils/modules/auth'
 import { StorageUseCases } from '@modules/storage'
-import { AuthRole } from '@utils/types'
 
 export class EmailsController {
 	static async signup (req: Request) {

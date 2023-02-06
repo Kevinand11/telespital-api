@@ -1,7 +1,6 @@
 import { getSocketEmitter } from '@index'
-import { OnJoinFn } from '@stranerd/api-commons'
+import { AuthRole, OnJoinFn } from '@stranerd/api-commons'
 import { checkPermissions } from '@utils/modules/auth'
-import { AuthRole } from '@utils/types'
 
 export const registerSockets = () => {
 	const isMine: OnJoinFn = async ({ channel, user }) => user ? `${channel}/${user.id}` : null

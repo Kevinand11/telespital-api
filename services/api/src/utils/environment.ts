@@ -1,5 +1,5 @@
-import { getEnvOrFail, Instance } from '@stranerd/api-commons'
-import { EmailsList } from '@utils/types'
+import '@utils/types/enums'
+import { EmailsList, getEnvOrFail, Instance } from '@stranerd/api-commons'
 
 const useSSL = parseInt(getEnvOrFail('USE_SSL'))
 export const baseDomain = `http${useSSL ? 's' : ''}://` + getEnvOrFail('BASE_DOMAIN')

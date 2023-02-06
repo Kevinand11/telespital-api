@@ -1,5 +1,6 @@
-import { AuthRole } from '@utils/types'
 import {
+	AuthRole,
+	Enum,
 	makeMiddleware,
 	NotAuthenticatedError,
 	NotAuthorizedError,
@@ -34,7 +35,7 @@ export const hasRefreshToken = makeMiddleware(
 	}
 )
 
-export const isAdmin = (roles: AuthRole[]) => makeMiddleware(
+export const isAdmin = (roles: Enum<typeof AuthRole>[]) => makeMiddleware(
 	async (request) => {
 		await isAuth(request)
 		checkPermissions(request.authUser, roles)

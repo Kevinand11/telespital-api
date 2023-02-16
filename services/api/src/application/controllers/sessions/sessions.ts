@@ -127,9 +127,9 @@ export class SessionsController {
 
 	static async rateSession (req: Request) {
 		const data = validateReq({
-			rating: Schema.number().gte(0).lte(5),
+			rating: Schema.number().round(0).gte(0).lte(5),
 			message: Schema.string()
-		}, { ...req.body, rating: parseInt(req.body.rating) })
+		}, req.body)
 
 		const user = await UsersUseCases.find(req.authUser!.id)
 		if (!user) throw new BadRequestError('profile not found')

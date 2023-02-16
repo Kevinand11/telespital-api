@@ -1,5 +1,5 @@
 import { Media } from '../types'
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity } from 'equipped'
 
 export class MessageEntity extends BaseEntity {
 	public readonly id: string

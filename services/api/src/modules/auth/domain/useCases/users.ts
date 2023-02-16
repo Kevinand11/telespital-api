@@ -1,5 +1,5 @@
 import { IUserRepository } from '../irepositories/users'
-import { QueryParams } from '@stranerd/api-commons'
+import { QueryParams } from 'equipped'
 import { RegisterInput, RoleInput, UserUpdateInput } from '../types'
 
 export class AuthUsersUseCase {

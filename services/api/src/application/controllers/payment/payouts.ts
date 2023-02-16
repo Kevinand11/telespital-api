@@ -1,7 +1,7 @@
 import { AuthUserType } from '@modules/auth'
 import { UsersUseCases } from '@modules/users'
 import { PayoutsUseCases } from '@modules/payment'
-import { QueryParams, Request } from '@stranerd/api-commons'
+import { QueryParams, Request } from 'equipped'
 
 export class PayoutsController {
 	static async find (req: Request) {

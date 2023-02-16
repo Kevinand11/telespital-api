@@ -1,7 +1,7 @@
 import { IOrderRepository } from '../../domain/irepositories/orders'
 import { OrderMapper } from '../mappers/orders'
 import { Order } from '../mongooseModels/orders'
-import { parseQueryParams } from '@stranerd/api-commons'
+import { parseQueryParams } from 'equipped'
 import { OrderFromModel, OrderToModel } from '../models/orders'
 
 export class OrderRepository implements IOrderRepository {

@@ -1,14 +1,12 @@
 import { AuthUseCases, AuthUsersUseCases } from '@modules/auth'
 import { generateAuthOutput, isValidPassword } from '@utils/modules/auth'
-import { BadRequestError, Hash, Request, validate, Validation, ValidationError } from '@stranerd/api-commons'
+import { BadRequestError, Hash, Request, Schema, validateReq, ValidationError } from 'equipped'
 
 export class PasswordsController {
 	static async sendResetMail (req: Request) {
-		const { email } = validate({
-			email: req.body.email
-		}, {
-			email: { required: true, rules: [Validation.isEmail] }
-		})
+		const { email } = validateReq({
+			email: Schema.string().email()
+		}, req.body)
 
 		const user = await AuthUsersUseCases.findUserByEmail(email)
 		if (!user) throw new ValidationError([{ field: 'email', messages: ['No account with such email exists'] }])
@@ -17,13 +15,10 @@ export class PasswordsController {
 	}
 
 	static async resetPassword (req: Request) {
-		const validateData = validate({
-			token: req.body.token,
-			password: req.body.password
-		}, {
-			token: { required: true, rules: [Validation.isString] },
-			password: { required: true, rules: [isValidPassword] }
-		})
+		const validateData = validateReq({
+			token: Schema.string(),
+			password: Schema.string().min(8).max(16)
+		}, req.body)
 
 		const data = await AuthUseCases.resetPassword(validateData)
 		return await generateAuthOutput(data)
@@ -31,13 +26,10 @@ export class PasswordsController {
 
 	static async updatePassword (req: Request) {
 		const userId = req.authUser!.id
-		const { oldPassword, password } = validate({
-			oldPassword: req.body.oldPassword,
-			password: req.body.password
-		}, {
-			oldPassword: { required: true, rules: [Validation.isString] },
-			password: { required: true, rules: [isValidPassword] }
-		})
+		const { oldPassword, password } = validateReq({
+			oldPassword: Schema.string(),
+			password: Schema.string().addRule(isValidPassword)
+		}, req.body)
 
 		const user = await AuthUsersUseCases.findUser(userId)
 		if (!user) throw new BadRequestError('No account with such id exists')

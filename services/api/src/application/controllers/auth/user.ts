@@ -1,8 +1,8 @@
 import { AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { StorageUseCases } from '@modules/storage'
-import { AuthRole, BadRequestError, NotFoundError, Request, validate, Validation, verifyAccessToken } from '@stranerd/api-commons'
 import { superAdminEmail } from '@utils/environment'
-import { checkPermissions, deActivateUserProfile, isValidPhone, signOutUser } from '@utils/modules/auth'
+import { checkPermissions, deActivateUserProfile, signOutUser } from '@utils/modules/auth'
+import { AuthRole, BadRequestError, Enum, NotFoundError, Request, Schema, validateReq, Validation, verifyAccessToken } from 'equipped'
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -14,26 +14,23 @@ export class UserController {
 		const userId = req.authUser!.id
 		const uploadedPhoto = req.files.photo?.[0] ?? null
 		const changedPhoto = !!uploadedPhoto || req.body.photo === null
-		const data = validate({
-			firstName: req.body.firstName,
-			lastName: req.body.lastName,
-			phone: req.body.phone,
-			photo: uploadedPhoto as any
-		}, {
-			firstName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
-			lastName: { required: true, rules: [Validation.isString, Validation.isLongerThanOrEqualToX(2)] },
-			phone: { required: true, rules: [isValidPhone] },
-			photo: { required: true, nullable: true, rules: [Validation.isNotTruncated, Validation.isImage] }
-		})
+		const data = validateReq({
+			firstName: Schema.string().min(1),
+			lastName: Schema.string().min(1),
+			phone: Schema.any().addRule(Validation.isValidPhone()),
+			photo: Schema.file().image().nullable()
+		}, { ...req.body, photo: uploadedPhoto })
 		const { firstName, lastName, phone } = data
-		if (uploadedPhoto) data.photo = await StorageUseCases.upload('profiles', uploadedPhoto)
+		const photo = uploadedPhoto ? await StorageUseCases.upload('profiles', uploadedPhoto) : undefined
 
-		const validateData = {
-			name: { first: firstName, last: lastName }, phone,
-			...(changedPhoto ? { photo: data.photo } : {})
-		}
-
-		return await AuthUsersUseCases.updateProfile({ userId, data: validateData as any })
+		return await AuthUsersUseCases.updateProfile({
+			userId,
+			data: {
+				name: { first: firstName, last: lastName },
+				phone,
+				...(changedPhoto ? { photo } : {}) as any
+			}
+		})
 	}
 
 	static async updateUserRole (req: Request) {
@@ -41,18 +38,11 @@ export class UserController {
 		const supportedRoles = Object.values(AuthRole)
 			.filter((key) => !unSupportedRoles.includes(key))
 
-		const { roles, userId, value } = validate({
-			roles: req.body.roles,
-			userId: req.body.userId,
-			value: req.body.value
-		}, {
-			roles: {
-				required: true,
-				rules: [Validation.isArray, Validation.isArrayOfX<string>((cur) => supportedRoles.includes(cur), 'roles')]
-			},
-			value: { required: true, rules: [Validation.isBoolean] },
-			userId: { required: true, rules: [Validation.isString] }
-		})
+		const { roles, userId, value } = validateReq({
+			roles: Schema.array(Schema.any<Enum<typeof AuthRole>>().in(supportedRoles)),
+			userId: Schema.string().min(1),
+			value: Schema.boolean()
+		}, req.body)
 
 		if (req.authUser!.id === userId) throw new BadRequestError('You cannot modify your own roles')
 
@@ -64,13 +54,10 @@ export class UserController {
 	}
 
 	static async updateUserInactiveRole (req: Request) {
-		const { userId, value } = validate({
-			userId: req.body.userId,
-			value: req.body.value
-		}, {
-			value: { required: true, rules: [Validation.isBoolean] },
-			userId: { required: true, rules: [Validation.isString] }
-		})
+		const { userId, value } = validateReq({
+			userId: Schema.string().min(1),
+			value: Schema.boolean()
+		}, req.body)
 
 		if (req.authUser!.id === userId) throw new BadRequestError('You cannot modify your own roles')
 		const user = await AuthUsersUseCases.findUser(userId)
@@ -79,7 +66,7 @@ export class UserController {
 		if (user.type === AuthUserType.doctor) checkPermissions(req.authUser, [AuthRole.canDeactivateDoctorProfile])
 		if (user.type === AuthUserType.admin) checkPermissions(req.authUser, [AuthRole.canDeactivateAdminProfile])
 
-		return await deActivateUserProfile(userId, value, 
+		return await deActivateUserProfile(userId, value,
 			value ? 'Your account has been deactivated' : 'Your account has been reactivated')
 	}
 

@@ -1,5 +1,5 @@
 import { EmbeddedUser, UserBio, UserDates, UserMetaType, UserRatings, UserRoles, UserStatus } from '../types'
-import { BaseEntity, Validation } from '@stranerd/api-commons'
+import { BaseEntity, Validation } from 'equipped'
 
 export class UserEntity extends BaseEntity {
 	public readonly id: string
@@ -11,8 +11,8 @@ export class UserEntity extends BaseEntity {
 	public readonly ratings: UserRatings
 
 	constructor ({
-		             id, bio, roles, dates, meta, status, ratings
-	             }: UserConstructorArgs) {
+		id, bio, roles, dates, meta, status, ratings
+	}: UserConstructorArgs) {
 		super()
 		this.id = id
 		this.bio = generateDefaultBio(bio ?? {})
@@ -47,9 +47,9 @@ type UserConstructorArgs = {
 }
 
 const generateDefaultBio = (bio: Partial<UserBio>): UserBio => {
-	const first = Validation.capitalizeText(bio?.name?.first ?? 'Anon')
-	const last = Validation.capitalizeText(bio?.name?.last ?? 'Ymous')
-	const full = Validation.capitalizeText(bio?.name?.full ?? (first + ' ' + last))
+	const first = Validation.capitalize(bio?.name?.first ?? 'Anon')
+	const last = Validation.capitalize(bio?.name?.last ?? 'Ymous')
+	const full = Validation.capitalize(bio?.name?.full ?? (first + ' ' + last))
 	const email = bio?.email ?? 'anon@ymous.com'
 	const type = bio?.type!
 	const photo = bio?.photo ?? null

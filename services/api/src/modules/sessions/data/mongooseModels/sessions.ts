@@ -1,4 +1,4 @@
-import { generateChangeStreams, mongoose } from '@stranerd/api-commons'
+import { generateChangeStreams, mongoose } from 'equipped'
 import { SessionFromModel } from '../models/sessions'
 import { SessionChangeStreamCallbacks } from '@utils/changeStreams/sessions/sessions'
 import { SessionEntity } from '../../domain/entities/sessions'

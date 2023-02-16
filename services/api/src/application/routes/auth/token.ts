@@ -1,4 +1,4 @@
-import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { makeController, Route, StatusCodes } from 'equipped'
 import { TokenController } from '../../controllers/auth/token'
 
 const getNewTokens: Route = {

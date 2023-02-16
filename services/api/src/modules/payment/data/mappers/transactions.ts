@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { TransactionEntity } from '../../domain/entities/transactions'
 import { TransactionFromModel, TransactionToModel } from '../models/transactions'
 

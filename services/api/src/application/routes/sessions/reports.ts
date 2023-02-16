@@ -1,6 +1,6 @@
 import { ReportsController } from '@application/controllers/sessions/reports'
 import { isAdmin, isAuthenticated } from '@application/middlewares'
-import { AuthRole, makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { AuthRole, makeController, Route, StatusCodes } from 'equipped'
 
 export const reportsRoutes: Route[] = [
 	{

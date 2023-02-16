@@ -2,7 +2,7 @@ import { MessageMapper } from '../mappers/messages'
 import { IMessageRepository } from '../../domain/irepositories/messages'
 import { MessageFromModel, MessageToModel } from '../models/messages'
 import { Message } from '../mongooseModels/messages'
-import { parseQueryParams, QueryParams } from '@stranerd/api-commons'
+import { parseQueryParams, QueryParams } from 'equipped'
 
 export class MessageRepository implements IMessageRepository {
 	private static instance: MessageRepository

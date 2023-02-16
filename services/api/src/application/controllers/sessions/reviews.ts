@@ -1,5 +1,5 @@
 import { ReviewsUseCases } from '@modules/sessions'
-import { QueryParams, Request } from '@stranerd/api-commons'
+import { QueryParams, Request } from 'equipped'
 
 export class ReviewsController {
 	static async getReviews (req: Request) {

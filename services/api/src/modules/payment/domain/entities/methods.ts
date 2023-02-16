@@ -1,4 +1,4 @@
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity } from 'equipped'
 import { MethodData } from '../types'
 
 export class MethodEntity extends BaseEntity {
@@ -11,8 +11,8 @@ export class MethodEntity extends BaseEntity {
 	public readonly updatedAt: number
 
 	constructor ({
-		             id, data, token, primary, userId, createdAt, updatedAt
-	             }: MethodConstructorArgs) {
+		id, data, token, primary, userId, createdAt, updatedAt
+	}: MethodConstructorArgs) {
 		super()
 		this.id = id
 		this.data = data

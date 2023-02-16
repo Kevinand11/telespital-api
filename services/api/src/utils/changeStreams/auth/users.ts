@@ -1,4 +1,4 @@
-import { ChangeStreamCallbacks } from '@stranerd/api-commons'
+import { ChangeStreamCallbacks } from 'equipped'
 import { AuthUserEntity, UserFromModel } from '@modules/auth'
 import { UsersUseCases } from '@modules/users'
 import { publishers } from '@utils/events'

@@ -1,4 +1,4 @@
-import { generateChangeStreams, mongoose } from '@stranerd/api-commons'
+import { generateChangeStreams, mongoose } from 'equipped'
 import { ReviewFromModel } from '../models/reviews'
 import { ReviewEntity } from '../../domain/entities/reviews'
 import { ReviewMapper } from '../mappers/reviews'

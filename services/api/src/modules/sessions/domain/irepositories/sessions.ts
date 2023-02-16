@@ -1,6 +1,6 @@
 import { SessionEntity } from '../entities/sessions'
 import { SessionToModel } from '../../data/models/sessions'
-import { QueryParams, QueryResults } from '@stranerd/api-commons'
+import { QueryParams, QueryResults } from 'equipped'
 import { EmbeddedUser } from '../types'
 import { ReviewToModel } from '../../data/models/reviews'
 import { ReviewEntity } from '../entities/reviews'

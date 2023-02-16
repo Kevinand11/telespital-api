@@ -1,7 +1,7 @@
 import { ITransactionRepository } from '../../domain/irepositories/transactions'
 import { TransactionMapper } from '../mappers/transactions'
 import { TransactionFromModel, TransactionToModel } from '../models/transactions'
-import { parseQueryParams, QueryParams } from '@stranerd/api-commons'
+import { parseQueryParams, QueryParams } from 'equipped'
 import { Transaction } from '../mongooseModels/transactions'
 
 export class TransactionRepository implements ITransactionRepository {

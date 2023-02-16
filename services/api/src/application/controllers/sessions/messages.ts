@@ -1,6 +1,6 @@
 import { MessagesUseCases, SessionsUseCases } from '@modules/sessions'
-import { Conditions, NotAuthorizedError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { StorageUseCases } from '@modules/storage'
+import { Conditions, NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
 
 export class MessageController {
 	static async getMessages (req: Request) {
@@ -16,18 +16,11 @@ export class MessageController {
 	}
 
 	static async addMessage (req: Request) {
-		const { body, sessionId, media: mediaFile } = validate({
-			body: req.body.body,
-			sessionId: req.body.sessionId,
-			media: req.files.media?.[0] ?? null
-		}, {
-			body: { required: true, rules: [Validation.isString] },
-			sessionId: { required: true, rules: [Validation.isString] },
-			media: {
-				required: true, nullable: true,
-				rules: [Validation.isNotTruncated, Validation.isFile]
-			}
-		})
+		const { body, sessionId, media: mediaFile } = validateReq({
+			body: Schema.string(),
+			sessionId: Schema.string().min(1),
+			media: Schema.file().nullable()
+		}, { ...req.body, media: req.files.media?.[0] ?? null })
 
 		const media = mediaFile ? await StorageUseCases.upload('sessions/messages', mediaFile) : null
 
@@ -42,11 +35,9 @@ export class MessageController {
 	}
 
 	static async markMessageRead (req: Request) {
-		const data = validate({
-			sessionId: req.body.sessionId
-		}, {
-			sessionId: { required: true, rules: [Validation.isString] }
-		})
+		const data = validateReq({
+			sessionId: Schema.string().min(1)
+		}, req.body)
 
 		return await MessagesUseCases.markRead({
 			from: req.authUser!.id, sessionId: data.sessionId

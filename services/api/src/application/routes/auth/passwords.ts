@@ -1,4 +1,4 @@
-import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { makeController, Route, StatusCodes } from 'equipped'
 import { PasswordsController } from '../../controllers/auth/passwords'
 import { isAuthenticated } from '@application/middlewares'
 

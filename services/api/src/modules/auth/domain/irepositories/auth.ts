@@ -1,5 +1,5 @@
 import { Credential, PasswordResetInput } from '../types'
-import { AuthTypes, Enum } from '@stranerd/api-commons'
+import { AuthTypes, Enum } from 'equipped'
 import { UserToModel } from '../../data/models/users'
 import { AuthUserEntity } from '../entities/users'
 

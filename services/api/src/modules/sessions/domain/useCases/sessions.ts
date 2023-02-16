@@ -1,6 +1,6 @@
 import { ISessionRepository } from '../irepositories/sessions'
 import { SessionToModel } from '../../data/models/sessions'
-import { QueryParams } from '@stranerd/api-commons'
+import { QueryParams } from 'equipped'
 import { EmbeddedUser } from '../types'
 import { ReviewToModel } from '../../data/models/reviews'
 

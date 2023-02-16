@@ -7,7 +7,7 @@ import {
 	Request,
 	requireAuthUser,
 	requireRefreshUser
-} from '@stranerd/api-commons'
+} from 'equipped'
 import { AuthUserType } from '@modules/auth'
 import { checkPermissions } from '@utils/modules/auth'
 

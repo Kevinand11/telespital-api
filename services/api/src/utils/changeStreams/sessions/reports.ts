@@ -1,18 +1,18 @@
-import { getSocketEmitter } from '@index'
 import { ReportEntity, ReportFromModel } from '@modules/sessions'
-import { ChangeStreamCallbacks } from '@stranerd/api-commons'
+import { appInstance } from '@utils/environment'
+import { ChangeStreamCallbacks } from 'equipped'
 
 export const ReportChangeStreamCallbacks: ChangeStreamCallbacks<ReportFromModel, ReportEntity> = {
 	created: async ({ after }) => {
-		await getSocketEmitter().emitCreated('sessions/reports', after)
-		await getSocketEmitter().emitCreated(`sessions/reports/${after.id}`, after)
+		await appInstance.listener.created('sessions/reports', after)
+		await appInstance.listener.created(`sessions/reports/${after.id}`, after)
 	},
 	updated: async ({ after }) => {
-		await getSocketEmitter().emitUpdated('sessions/reports', after)
-		await getSocketEmitter().emitUpdated(`sessions/reports/${after.id}`, after)
+		await appInstance.listener.updated('sessions/reports', after)
+		await appInstance.listener.updated(`sessions/reports/${after.id}`, after)
 	},
 	deleted: async ({ before }) => {
-		await getSocketEmitter().emitDeleted('sessions/reports', before)
-		await getSocketEmitter().emitDeleted(`sessions/reports/${before.id}`, before)
+		await appInstance.listener.deleted('sessions/reports', before)
+		await appInstance.listener.deleted(`sessions/reports/${before.id}`, before)
 	}
 }

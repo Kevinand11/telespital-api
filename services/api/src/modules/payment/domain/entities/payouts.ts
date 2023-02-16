@@ -1,4 +1,4 @@
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity } from 'equipped'
 import { PayoutPay, PayoutStatus, PayoutSettlement } from '../types'
 
 export class PayoutEntity extends BaseEntity {
@@ -11,8 +11,8 @@ export class PayoutEntity extends BaseEntity {
 	public readonly updatedAt: number
 
 	constructor ({
-		             id, userId, pay, status, settlement, createdAt, updatedAt
-	             }: PayoutConstructorArgs) {
+		id, userId, pay, status, settlement, createdAt, updatedAt
+	}: PayoutConstructorArgs) {
 		super()
 		this.id = id
 		this.userId = userId

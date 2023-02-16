@@ -1,6 +1,6 @@
 import { INotificationRepository } from '../irepositories/notifications'
 import { NotificationToModel } from '../../data/models/notifications'
-import { QueryParams } from '@stranerd/api-commons'
+import { QueryParams } from 'equipped'
 
 export class NotificationsUseCase {
 	repository: INotificationRepository

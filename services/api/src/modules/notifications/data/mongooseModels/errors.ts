@@ -1,4 +1,4 @@
-import { generateChangeStreams, mongoose } from '@stranerd/api-commons'
+import { generateChangeStreams, mongoose } from 'equipped'
 import { ErrorFromModel } from '../models/errors'
 import { ErrorChangeStreamCallbacks } from '@utils/changeStreams/notifications/errors'
 import { ErrorEntity } from '../../domain/entities/errors'

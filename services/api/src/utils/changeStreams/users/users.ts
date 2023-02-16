@@ -1,17 +1,17 @@
-import { ChangeStreamCallbacks } from '@stranerd/api-commons'
-import { UserEntity, UserFromModel } from '@modules/users'
-import { getSocketEmitter } from '@index'
 import { ReviewsUseCases, SessionsUseCases } from '@modules/sessions'
+import { UserEntity, UserFromModel } from '@modules/users'
+import { appInstance } from '@utils/environment'
 import { deActivateUserProfile } from '@utils/modules/auth'
+import { ChangeStreamCallbacks } from 'equipped'
 
 export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, UserEntity> = {
 	created: async ({ after }) => {
-		await getSocketEmitter().emitCreated('users/users', after)
-		await getSocketEmitter().emitCreated(`users/users/${after.id}`, after)
+		await appInstance.listener.created('users/users', after)
+		await appInstance.listener.created(`users/users/${after.id}`, after)
 	},
 	updated: async ({ after, before, changes }) => {
-		await getSocketEmitter().emitUpdated('users/users', after)
-		await getSocketEmitter().emitUpdated(`users/users/${after.id}`, after)
+		await appInstance.listener.updated('users/users', after)
+		await appInstance.listener.updated(`users/users/${after.id}`, after)
 		const updatedBioOrRoles = !!changes.bio || !!changes.roles
 		if (updatedBioOrRoles) await Promise.all([
 			SessionsUseCases, ReviewsUseCases
@@ -19,11 +19,11 @@ export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, Use
 
 		const MINIMUM_RATING = 3
 		const isLoweredRating = before.ratings.avg >= MINIMUM_RATING && after.ratings.avg < MINIMUM_RATING
-		if (isLoweredRating) await deActivateUserProfile(after.id, true, 
+		if (isLoweredRating) await deActivateUserProfile(after.id, true,
 			`Your account has been deactivated because it went below a rating of ${MINIMUM_RATING}`)
 	},
 	deleted: async ({ before }) => {
-		await getSocketEmitter().emitDeleted('users/users', before)
-		await getSocketEmitter().emitDeleted(`users/users/${before.id}`, before)
+		await appInstance.listener.deleted('users/users', before)
+		await appInstance.listener.deleted(`users/users/${before.id}`, before)
 	}
 }

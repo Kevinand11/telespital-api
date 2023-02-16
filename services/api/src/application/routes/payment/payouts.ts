@@ -1,6 +1,6 @@
 import { PayoutsController } from '@application/controllers/payment/payouts'
 import { isAdmin } from '@application/middlewares'
-import { AuthRole, makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { AuthRole, makeController, Route, StatusCodes } from 'equipped'
 
 export const payoutsRoutes: Route[] = [
 	{

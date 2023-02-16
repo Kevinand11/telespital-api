@@ -1,14 +1,14 @@
-import { ChangeStreamCallbacks, EmailsList, readEmailFromPug } from '@stranerd/api-commons'
 import { NotificationEntity, NotificationFromModel } from '@modules/notifications'
-import { getSocketEmitter } from '@index'
-import { sendPushNotification } from '@utils/modules/notifications/push'
-import { publishers } from '@utils/events'
 import { UsersUseCases } from '@modules/users'
+import { appInstance } from '@utils/environment'
+import { publishers } from '@utils/events'
+import { sendPushNotification } from '@utils/modules/notifications/push'
+import { ChangeStreamCallbacks, EmailsList, readEmailFromPug } from 'equipped'
 
 export const NotificationChangeStreamCallbacks: ChangeStreamCallbacks<NotificationFromModel, NotificationEntity> = {
 	created: async ({ after }) => {
-		await getSocketEmitter().emitCreated(`notifications/notifications/${after.userId}`, after)
-		await getSocketEmitter().emitCreated(`notifications/notifications/${after.id}/${after.userId}`, after)
+		await appInstance.listener.created(`notifications/notifications/${after.userId}`, after)
+		await appInstance.listener.created(`notifications/notifications/${after.id}/${after.userId}`, after)
 
 		await sendPushNotification({
 			userIds: [after.userId],
@@ -31,11 +31,11 @@ export const NotificationChangeStreamCallbacks: ChangeStreamCallbacks<Notificati
 		}
 	},
 	updated: async ({ after }) => {
-		await getSocketEmitter().emitUpdated(`notifications/notifications/${after.userId}`, after)
-		await getSocketEmitter().emitUpdated(`notifications/notifications/${after.id}/${after.userId}`, after)
+		await appInstance.listener.updated(`notifications/notifications/${after.userId}`, after)
+		await appInstance.listener.updated(`notifications/notifications/${after.id}/${after.userId}`, after)
 	},
 	deleted: async ({ before }) => {
-		await getSocketEmitter().emitDeleted(`notifications/notifications/${before.userId}`, before)
-		await getSocketEmitter().emitDeleted(`notifications/notifications/${before.id}/${before.userId}`, before)
+		await appInstance.listener.deleted(`notifications/notifications/${before.userId}`, before)
+		await appInstance.listener.deleted(`notifications/notifications/${before.id}/${before.userId}`, before)
 	}
 }

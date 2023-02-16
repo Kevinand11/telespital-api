@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { NotificationEntity } from '../../domain/entities/notifications'
 import { NotificationFromModel, NotificationToModel } from '../models/notifications'
 

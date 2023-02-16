@@ -1,5 +1,5 @@
 import { WalletsUseCases } from '@modules/payment'
-import { Request } from '@stranerd/api-commons'
+import { Request } from 'equipped'
 
 export class WalletsController {
 	static async get (req: Request) {

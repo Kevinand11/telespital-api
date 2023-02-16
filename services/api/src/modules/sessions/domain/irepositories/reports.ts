@@ -1,5 +1,5 @@
 import { ReportToModel } from './../../data/models/reports'
-import { QueryParams, QueryResults } from '@stranerd/api-commons'
+import { QueryParams, QueryResults } from 'equipped'
 import { ReportEntity } from '../entities/reports'
 
 export interface IReportRepository {

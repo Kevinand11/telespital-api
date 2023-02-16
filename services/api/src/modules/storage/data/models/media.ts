@@ -1,3 +1,3 @@
-import { MediaOutput, StorageFile } from '@stranerd/api-commons'
+import { MediaOutput, StorageFile } from 'equipped'
 
 export { MediaOutput, StorageFile as MediaInput }

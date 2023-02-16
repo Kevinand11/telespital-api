@@ -1,4 +1,4 @@
-import { mongoose, parseQueryParams, QueryParams } from '@stranerd/api-commons'
+import { mongoose, parseQueryParams, QueryParams } from 'equipped'
 import { IPayoutRepository } from '../../domain/irepositories/payouts'
 import { EmbeddedUser, PayoutPay, PayoutStatus, TransactionStatus, TransactionType } from '../../domain/types'
 import { PayoutMapper } from '../mappers/payouts'
@@ -21,7 +21,7 @@ export class PayoutRepository implements IPayoutRepository {
 		return PayoutRepository.instance
 	}
 
-	async get(query: QueryParams) {
+	async get (query: QueryParams) {
 		const data = await parseQueryParams<PayoutFromModel>(Payout, query)
 
 		return {
@@ -30,12 +30,12 @@ export class PayoutRepository implements IPayoutRepository {
 		}
 	}
 
-	async find(id: string) {
+	async find (id: string) {
 		const payout = await Payout.findById(id)
 		return this.mapper.mapFrom(payout)
 	}
 
-	async create(userId: string, users: EmbeddedUser[]) {
+	async create (userId: string, users: EmbeddedUser[]) {
 		let res = null as any
 		const session = await mongoose.startSession()
 		await session.withTransaction(async (session) => {

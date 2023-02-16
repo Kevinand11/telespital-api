@@ -1,5 +1,5 @@
 import '@utils/types/enums'
-import { EmailsList, getEnvOrFail, Instance } from '@stranerd/api-commons'
+import { EmailsList, getEnvOrFail, Instance } from 'equipped'
 
 const useSSL = parseInt(getEnvOrFail('USE_SSL'))
 export const baseDomain = `http${useSSL ? 's' : ''}://` + getEnvOrFail('BASE_DOMAIN')
@@ -41,7 +41,7 @@ Instance.initialize({
 	bullQueueName: 'telespital-task-queues',
 	rabbitColumnName: 'Telespital'
 })
-export const appInstance = Instance.getInstance()
+export const appInstance = Instance.get()
 
 const agora = JSON.parse(getEnvOrFail('AGORA') || '{}')
 export const agoraConfig = {

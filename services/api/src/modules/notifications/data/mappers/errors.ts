@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { ErrorFromModel, ErrorToModel } from '../models/errors'
 import { ErrorEntity } from '../../domain/entities/errors'
 

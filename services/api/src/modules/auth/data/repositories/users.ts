@@ -9,7 +9,7 @@ import {
 	NotFoundError,
 	parseQueryParams,
 	QueryParams
-} from '@stranerd/api-commons'
+} from 'equipped'
 import User from '../mongooseModels/users'
 
 export class UserRepository implements IUserRepository {

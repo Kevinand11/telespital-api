@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { ReviewEntity } from '../../domain/entities/reviews'
 import { ReviewFromModel, ReviewToModel } from '../models/reviews'
 

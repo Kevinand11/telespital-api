@@ -1,4 +1,4 @@
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity } from 'equipped'
 
 export class ErrorEntity extends BaseEntity {
 	public readonly id: string

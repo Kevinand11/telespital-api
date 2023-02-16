@@ -1,4 +1,4 @@
-import { ChangeStreamCallbacks } from '@stranerd/api-commons'
+import { ChangeStreamCallbacks } from 'equipped'
 import { ErrorEntity, ErrorFromModel } from '@modules/notifications'
 import { appInstance } from '@utils/environment'
 

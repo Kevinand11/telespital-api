@@ -1,6 +1,6 @@
-import { getSocketEmitter } from '@index'
-import { AuthRole, OnJoinFn } from '@stranerd/api-commons'
+import { appInstance } from '@utils/environment'
 import { checkPermissions } from '@utils/modules/auth'
+import { AuthRole, OnJoinFn } from 'equipped'
 
 export const registerSockets = () => {
 	const isMine: OnJoinFn = async ({ channel, user }) => user ? `${channel}/${user.id}` : null
@@ -12,15 +12,15 @@ export const registerSockets = () => {
 		AuthRole.canViewReports
 	]) ? channel : null
 
-	getSocketEmitter().register('notifications/notifications', isMine)
-	getSocketEmitter().register('payment/methods', isMine)
-	getSocketEmitter().register('payment/transactions', isMine)
-	getSocketEmitter().register('payment/wallets', isMine)
-	getSocketEmitter().register('payment/payouts', canViewPayment)
-	getSocketEmitter().register('users/users', isOpen)
-	getSocketEmitter().register('users/orders', isMine)
-	getSocketEmitter().register('sessions/sessions', isMine)
-	getSocketEmitter().register('sessions/messages', isMine)
-	getSocketEmitter().register('sessions/reviews', isOpen)
-	getSocketEmitter().register('sessions/reports', canViewReports)
+	appInstance.listener.register('notifications/notifications', isMine)
+	appInstance.listener.register('payment/methods', isMine)
+	appInstance.listener.register('payment/transactions', isMine)
+	appInstance.listener.register('payment/wallets', isMine)
+	appInstance.listener.register('payment/payouts', canViewPayment)
+	appInstance.listener.register('users/users', isOpen)
+	appInstance.listener.register('users/orders', isMine)
+	appInstance.listener.register('sessions/sessions', isMine)
+	appInstance.listener.register('sessions/messages', isMine)
+	appInstance.listener.register('sessions/reviews', isOpen)
+	appInstance.listener.register('sessions/reports', canViewReports)
 }

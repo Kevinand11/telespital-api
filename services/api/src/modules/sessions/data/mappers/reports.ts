@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { ReportEntity } from '../../domain/entities/reports'
 import { ReportFromModel, ReportToModel } from '../models/reports'
 

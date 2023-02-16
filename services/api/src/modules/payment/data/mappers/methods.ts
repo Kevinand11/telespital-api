@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { MethodEntity } from '../../domain/entities/methods'
 import { MethodFromModel, MethodToModel } from '../models/methods'
 

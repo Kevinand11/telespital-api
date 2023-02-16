@@ -1,8 +1,7 @@
-import { OrdersUseCases, UsersUseCases } from '@modules/users'
-import { BadRequestError, NotAuthorizedError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
+import { OrdersUseCases, UsersUseCases } from '@modules/users'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
-import { isValidPhone } from '@utils/modules/auth'
+import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validateReq, Validation } from 'equipped'
 
 export class OrdersController {
 	static async getOrders (req: Request) {
@@ -18,21 +17,14 @@ export class OrdersController {
 	}
 
 	static async createOrder (req: Request) {
-		const data = validate({
-			phone: req.body.phone,
-			street: req.body.street,
-			city: req.body.city,
-			state: req.body.state,
-			country: req.body.country,
-			description: req.body.description
-		}, {
-			phone: { required: true, rules: [isValidPhone] },
-			street: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
-			city: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
-			state: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
-			country: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] },
-			description: { required: true, rules: [Validation.isString] }
-		})
+		const data = validateReq({
+			phone: Schema.any().addRule(Validation.isValidPhone()),
+			street: Schema.string().min(1),
+			city: Schema.string().min(1),
+			state: Schema.string().min(1),
+			country: Schema.string().min(1),
+			description: Schema.string()
+		}, req.body)
 
 		return await OrdersUseCases.add({
 			...data, userId: req.authUser!.id,
@@ -41,11 +33,9 @@ export class OrdersController {
 	}
 
 	static async payForOrder (req: Request) {
-		const data = validate({
-			methodId: req.body.methodId
-		}, {
-			methodId: { required: true, rules: [Validation.isString] }
-		})
+		const data = validateReq({
+			methodId: Schema.string().min(1)
+		}, req.body)
 
 		const userId = req.authUser!.id
 		const order = await OrdersUseCases.find(req.params.id)

@@ -1,6 +1,6 @@
 import { MethodsUseCases } from '@modules/payment'
-import { BadRequestError, NotAuthorizedError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
+import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
 
 export class MethodsController {
 	static async getTokens (_: Request) {
@@ -32,14 +32,9 @@ export class MethodsController {
 	}
 
 	static async create (req: Request) {
-		const { nonce } = validate({
-			nonce: req.body.nonce
-		}, {
-			nonce: {
-				required: true,
-				rules: [Validation.isString, Validation.isLongerThanX(0)]
-			}
-		})
+		const { nonce } = validateReq({
+			nonce: Schema.string().min(1)
+		}, req.body)
 
 		const methodModel = await BraintreePayment.createPaymentMethod(req.authUser!.id, nonce)
 			.catch(() => {

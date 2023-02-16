@@ -1,6 +1,6 @@
 import { UserEntity } from '../entities/users'
 import { UserBio, UserMeta, UserRoles } from '../types'
-import { QueryParams, QueryResults } from '@stranerd/api-commons'
+import { QueryParams, QueryResults } from 'equipped'
 
 export interface IUserRepository {
 	get (query: QueryParams): Promise<QueryResults<UserEntity>>

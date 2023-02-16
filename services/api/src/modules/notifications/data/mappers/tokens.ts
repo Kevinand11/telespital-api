@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { TokenFromModel, TokenToModel } from '../models/tokens'
 import { TokenEntity } from '../../domain/entities/tokens'
 

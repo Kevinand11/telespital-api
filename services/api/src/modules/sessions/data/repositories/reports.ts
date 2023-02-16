@@ -1,4 +1,4 @@
-import { parseQueryParams, QueryParams } from '@stranerd/api-commons'
+import { parseQueryParams, QueryParams } from 'equipped'
 import { IReportRepository } from '../../domain/irepositories/reports'
 import { ReportStatus } from '../../domain/types'
 import { ReportMapper } from '../mappers/reports'
@@ -9,7 +9,7 @@ export class ReportRepository implements IReportRepository {
 	private static instance: ReportRepository
 	private mapper: ReportMapper
 
-	private constructor () { 
+	private constructor () {
 		this.mapper = new ReportMapper()
 	}
 
@@ -18,7 +18,7 @@ export class ReportRepository implements IReportRepository {
 		return ReportRepository.instance
 	}
 
-	async get(query: QueryParams) {
+	async get (query: QueryParams) {
 		const data = await parseQueryParams<ReportFromModel>(Report, query)
 
 		return {
@@ -27,17 +27,17 @@ export class ReportRepository implements IReportRepository {
 		}
 	}
 
-	async find(id: string) {
+	async find (id: string) {
 		const report = await Report.findById(id)
-		return this.mapper.mapFrom(report) 
+		return this.mapper.mapFrom(report)
 	}
 
-	async create(data: ReportToModel) {
+	async create (data: ReportToModel) {
 		const report = await Report.findOneAndUpdate(
 			{ userId: data.userId, status: ReportStatus.created },
 			{ $setOnInsert: { ...data, status: ReportStatus.created } },
 			{ new: true, upsert: true })
-		
+
 		return this.mapper.mapFrom(report)!
 	}
 

@@ -1,5 +1,5 @@
 import { OrderEntity } from '../entities/orders'
-import { QueryParams, QueryResults } from '@stranerd/api-commons'
+import { QueryParams, QueryResults } from 'equipped'
 import { OrderToModel } from '../../data/models/orders'
 
 export interface IOrderRepository {

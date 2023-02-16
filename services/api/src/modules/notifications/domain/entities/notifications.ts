@@ -1,4 +1,4 @@
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity } from 'equipped'
 import { NotificationData } from '../types'
 
 export class NotificationEntity extends BaseEntity {
@@ -13,16 +13,16 @@ export class NotificationEntity extends BaseEntity {
 	public readonly updatedAt: number
 
 	constructor ({
-		             id,
-		             title,
-		             body,
-		             data,
-		             userId,
-		             sendEmail,
-		             createdAt,
-		             seen,
-		             updatedAt
-	             }: NotificationConstructorArgs) {
+		id,
+		title,
+		body,
+		data,
+		userId,
+		sendEmail,
+		createdAt,
+		seen,
+		updatedAt
+	}: NotificationConstructorArgs) {
 		super()
 		this.id = id
 		this.title = title

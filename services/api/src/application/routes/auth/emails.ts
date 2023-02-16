@@ -1,4 +1,4 @@
-import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { makeController, Route, StatusCodes } from 'equipped'
 import { EmailsController } from '../../controllers/auth/emails'
 
 const emailSignIn: Route = {

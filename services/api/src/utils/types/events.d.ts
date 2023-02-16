@@ -1,6 +1,6 @@
-import { Email, EventTypes, MediaOutput } from '@stranerd/api-commons'
+import { Email, EventTypes, MediaOutput } from 'equipped'
 
-declare module '@stranerd/api-commons/lib/events/events' {
+declare module 'equipped/lib/events/events' {
     interface Events {
         [EventTypes.SENDMAIL]: {
             topic: typeof EventTypes.SENDMAIL,

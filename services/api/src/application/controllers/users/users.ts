@@ -1,5 +1,5 @@
 import { UsersUseCases } from '@modules/users'
-import { QueryParams, Request } from '@stranerd/api-commons'
+import { QueryParams, Request } from 'equipped'
 import { AuthUserType } from '@modules/auth'
 
 export class UsersController {

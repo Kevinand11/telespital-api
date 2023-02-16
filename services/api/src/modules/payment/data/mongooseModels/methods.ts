@@ -1,4 +1,4 @@
-import { generateChangeStreams, mongoose } from '@stranerd/api-commons'
+import { generateChangeStreams, mongoose } from 'equipped'
 import { MethodFromModel } from '../models/methods'
 import { MethodChangeStreamCallbacks } from '@utils/changeStreams/payment/methods'
 import { MethodEntity } from '../../domain/entities/methods'

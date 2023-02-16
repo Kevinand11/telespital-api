@@ -12,7 +12,7 @@ import {
 	Random,
 	readEmailFromPug,
 	ValidationError
-} from '@stranerd/api-commons'
+} from 'equipped'
 import { appInstance } from '@utils/environment'
 import { UserMapper } from '../mappers/users'
 import { publishers } from '@utils/events'

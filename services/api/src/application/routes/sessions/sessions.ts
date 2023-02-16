@@ -1,4 +1,4 @@
-import { makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { makeController, Route, StatusCodes } from 'equipped'
 import { SessionsController } from '../../controllers/sessions/sessions'
 import { isAuthenticated, isDoctor, isPatient } from '@application/middlewares'
 

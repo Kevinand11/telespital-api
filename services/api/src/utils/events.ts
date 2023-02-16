@@ -1,4 +1,4 @@
-import { Events, EventTypes } from '@stranerd/api-commons'
+import { Events, EventTypes } from 'equipped'
 import { appInstance } from '@utils/environment'
 import { sendMailAndCatchError } from '@utils/modules/notifications/emails'
 import { StorageUseCases } from '@modules/storage'

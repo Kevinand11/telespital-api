@@ -1,4 +1,4 @@
-import { generateChangeStreams, mongoose } from '@stranerd/api-commons'
+import { generateChangeStreams, mongoose } from 'equipped'
 import { TokenFromModel } from '../models/tokens'
 import { TokenChangeStreamCallbacks } from '@utils/changeStreams/notifications/tokens'
 import { TokenEntity } from '../../domain/entities/tokens'

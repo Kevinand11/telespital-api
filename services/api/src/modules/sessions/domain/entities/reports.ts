@@ -1,4 +1,4 @@
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity } from 'equipped'
 import { ReportData, ReportStatus, ReportSettlement } from '../types'
 
 export class ReportEntity extends BaseEntity {
@@ -12,8 +12,8 @@ export class ReportEntity extends BaseEntity {
 	public readonly updatedAt: number
 
 	constructor ({
-		             id, userId, message, data, status, settlement, createdAt, updatedAt
-	             }: ReportConstructorArgs) {
+		id, userId, message, data, status, settlement, createdAt, updatedAt
+	}: ReportConstructorArgs) {
 		super()
 		this.id = id
 		this.userId = userId

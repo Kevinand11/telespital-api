@@ -1,4 +1,4 @@
-import { AuthRole, makeController, Route, StatusCodes } from '@stranerd/api-commons'
+import { AuthRole, makeController, Route, StatusCodes } from 'equipped'
 import { NotificationsController } from '../../controllers/notifications/notifications'
 import { isAdmin, isAuthenticated } from '@application/middlewares'
 

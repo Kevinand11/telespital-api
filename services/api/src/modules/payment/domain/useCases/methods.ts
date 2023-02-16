@@ -1,4 +1,4 @@
-import { QueryParams } from '@stranerd/api-commons'
+import { QueryParams } from 'equipped'
 import { IMethodRepository } from '../irepositories/methods'
 import { MethodToModel } from '../../data/models/methods'
 

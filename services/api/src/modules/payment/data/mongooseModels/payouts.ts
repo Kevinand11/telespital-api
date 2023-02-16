@@ -1,4 +1,4 @@
-import { generateChangeStreams, mongoose } from '@stranerd/api-commons'
+import { generateChangeStreams, mongoose } from 'equipped'
 import { PayoutFromModel } from '../models/payouts'
 import { PayoutChangeStreamCallbacks } from '@utils/changeStreams/payment/payouts'
 import { PayoutEntity } from '../../domain/entities/payouts'

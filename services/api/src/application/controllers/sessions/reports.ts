@@ -1,5 +1,5 @@
 import { ReportsUseCases, SessionsUseCases } from '@modules/sessions'
-import { NotAuthorizedError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
+import { NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
 
 export class ReportsController {
 	static async find (req: Request) {
@@ -13,13 +13,10 @@ export class ReportsController {
 	}
 
 	static async create (req: Request) {
-		const { message, sessionId } = validate({
-			message: req.body.message,
-			sessionId: req.body.sessionId
-		}, {
-			message: { required: true, rules: [Validation.isString] },
-			sessionId: { required: true, rules: [Validation.isString] }
-		})
+		const { message, sessionId } = validateReq({
+			message: Schema.string(),
+			sessionId: Schema.string().min(1)
+		}, req.body)
 
 		const userId = req.authUser!.id
 		const session = await SessionsUseCases.find(sessionId)

@@ -1,5 +1,5 @@
 import { Currencies, UserPhone } from '../types'
-import { BaseEntity } from '@stranerd/api-commons'
+import { BaseEntity } from 'equipped'
 
 export class OrderEntity extends BaseEntity {
 	public readonly id: string
@@ -15,8 +15,8 @@ export class OrderEntity extends BaseEntity {
 	public readonly description: string
 
 	constructor ({
-		             id, userId, amount, currency, paid, phone, street, city, state, country, description
-	             }: OrderConstructorArgs) {
+		id, userId, amount, currency, paid, phone, street, city, state, country, description
+	}: OrderConstructorArgs) {
 		super()
 		this.id = id
 		this.userId = userId

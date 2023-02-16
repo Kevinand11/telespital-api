@@ -1,6 +1,6 @@
 import { IMessageRepository } from '../irepositories/messages'
 import { MessageToModel } from '../../data/models/messages'
-import { QueryParams } from '@stranerd/api-commons'
+import { QueryParams } from 'equipped'
 
 export class MessagesUseCase {
 	private repository: IMessageRepository

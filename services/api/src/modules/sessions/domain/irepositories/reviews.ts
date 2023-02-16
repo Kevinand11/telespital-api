@@ -1,5 +1,5 @@
 import { ReviewEntity } from '../entities/reviews'
-import { QueryParams, QueryResults } from '@stranerd/api-commons'
+import { QueryParams, QueryResults } from 'equipped'
 import { EmbeddedUser } from '../types'
 import { ReviewToModel } from '../../data/models/reviews'
 

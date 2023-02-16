@@ -2,7 +2,7 @@ import { IReviewRepository } from '../../domain/irepositories/reviews'
 import { ReviewMapper } from '../mappers/reviews'
 import { ReviewFromModel, ReviewToModel } from '../models/reviews'
 import { Review } from '../mongooseModels/reviews'
-import { parseQueryParams, QueryParams } from '@stranerd/api-commons'
+import { parseQueryParams, QueryParams } from 'equipped'
 import { EmbeddedUser } from '../../domain/types'
 
 export class ReviewRepository implements IReviewRepository {

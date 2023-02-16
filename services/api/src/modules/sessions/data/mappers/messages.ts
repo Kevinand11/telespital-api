@@ -1,6 +1,6 @@
 import { MessageFromModel, MessageToModel } from '../models/messages'
 import { MessageEntity } from '../../domain/entities/messages'
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 
 export class MessageMapper extends BaseMapper<MessageFromModel, MessageToModel, MessageEntity> {
 	mapFrom (model: MessageFromModel | null) {

@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { PayoutEntity } from '../../domain/entities/payouts'
 import { PayoutFromModel, PayoutToModel } from '../models/payouts'
 

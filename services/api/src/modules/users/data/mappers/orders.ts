@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { OrderEntity } from '../../domain/entities/orders'
 import { OrderFromModel, OrderToModel } from '../models/orders'
 

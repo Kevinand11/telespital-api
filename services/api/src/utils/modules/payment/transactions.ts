@@ -6,7 +6,7 @@ import {
 	TransactionType,
 	WalletsUseCases
 } from '@modules/payment'
-import { Conditions } from '@stranerd/api-commons'
+import { Conditions } from 'equipped'
 import { SessionsUseCases } from '@modules/sessions'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
 import { OrdersUseCases } from '@modules/users'

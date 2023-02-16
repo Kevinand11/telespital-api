@@ -1,4 +1,4 @@
-import { generateChangeStreams, mongoose } from '@stranerd/api-commons'
+import { generateChangeStreams, mongoose } from 'equipped'
 import { NotificationFromModel } from '../models/notifications'
 import { NotificationChangeStreamCallbacks } from '@utils/changeStreams/notifications/notifications'
 import { NotificationEntity } from '../../domain/entities/notifications'

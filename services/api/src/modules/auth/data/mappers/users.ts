@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { AuthUserEntity } from '../../domain/entities/users'
 import { UserFromModel, UserToModel } from '../models/users'
 

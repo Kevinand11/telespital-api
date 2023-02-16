@@ -1,25 +1,25 @@
-import { ChangeStreamCallbacks } from '@stranerd/api-commons'
-import { MessagesUseCases, SessionEntity, SessionFromModel } from '@modules/sessions'
-import { getSocketEmitter } from '@index'
 import { Currencies, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
+import { MessagesUseCases, SessionEntity, SessionFromModel } from '@modules/sessions'
 import { UserMeta, UsersUseCases } from '@modules/users'
-import { LiveVideo } from '@utils/modules/sessions/video'
+import { appInstance } from '@utils/environment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
+import { LiveVideo } from '@utils/modules/sessions/video'
+import { ChangeStreamCallbacks } from 'equipped'
 
 export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromModel, SessionEntity> = {
 	created: async ({ after }) => {
 		await Promise.all(
 			after.getParticipants().map(async (id) => {
-				await getSocketEmitter().emitCreated(`sessions/sessions/${id}`, after)
-				await getSocketEmitter().emitCreated(`sessions/sessions/${id}/${after.id}`, after)
+				await appInstance.listener.created(`sessions/sessions/${id}`, after)
+				await appInstance.listener.created(`sessions/sessions/${id}/${after.id}`, after)
 			})
 		)
 	},
 	updated: async ({ after, before, changes }) => {
 		await Promise.all(
 			after.getParticipants().map(async (id) => {
-				await getSocketEmitter().emitUpdated(`sessions/sessions/${id}`, after)
-				await getSocketEmitter().emitUpdated(`sessions/sessions/${id}/${after.id}`, after)
+				await appInstance.listener.updated(`sessions/sessions/${id}`, after)
+				await appInstance.listener.updated(`sessions/sessions/${id}/${after.id}`, after)
 			})
 		)
 
@@ -60,8 +60,8 @@ export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromMode
 	deleted: async ({ before }) => {
 		await Promise.all(
 			before.getParticipants().map(async (id) => {
-				await getSocketEmitter().emitDeleted(`sessions/sessions/${id}`, before)
-				await getSocketEmitter().emitDeleted(`sessions/sessions/${id}/${before.id}`, before)
+				await appInstance.listener.deleted(`sessions/sessions/${id}`, before)
+				await appInstance.listener.deleted(`sessions/sessions/${id}/${before.id}`, before)
 			})
 		)
 

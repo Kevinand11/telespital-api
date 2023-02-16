@@ -12,8 +12,9 @@ import {
 	makeAccessToken,
 	makeRefreshToken,
 	NotAuthorizedError,
+	Schema,
 	Validation
-} from '@stranerd/api-commons'
+} from 'equipped'
 import { sendNotification } from '@utils/modules/notifications/notifications'
 
 const letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -23,30 +24,13 @@ const numbers = '0123456789'.split('')
 const symbolChars = '~`!@#$%^&*()_-+={[}]|\\:;"\'<,>.?/'
 const symbols = symbolChars.split('')
 
-export const isValidPassword = (value: string) => {
-	const valids = [
-		Validation.isString(value),
-		Validation.isLongerThanOrEqualTo(value, 8),
-		Validation.isShorterThanOrEqualTo(value, 40),
-		uCaseLetters.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid('must contain at least 1 uppercase letter'),
-		lCaseLetters.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid('must contain at least 1 lowercase letter'),
-		numbers.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid('must contain at least 1 number'),
-		symbols.some((l) => value.includes(l)) ? Validation.isValid() : Validation.isInvalid(`must contain at least 1 special character in ${symbolChars}`)
-	]
-	if (valids.every((e) => e.valid)) return Validation.isValid()
-	return Validation.isInvalid(valids.filter((v) => !v.valid)
-		.map((v) => v.error)
-		.join('\n'))
-}
-
-export const isValidPhone = (phone: { code: string, number: string }) => {
-	const { code = '', number = '' } = phone ?? {}
-	const isValidCode = Validation.isString(code).valid && code.startsWith('+') && Validation.isNumber(parseInt(code.slice(1))).valid
-	const isValidNumber = Validation.isNumber(parseInt(number)).valid
-	if (!isValidCode) return Validation.isInvalid('invalid phone code')
-	if (!isValidNumber) return Validation.isInvalid('invalid phone number')
-	return Validation.isValid()
-}
+export const isValidPassword = Validation.makeRule<string>((value) => Schema
+	.string().min(8).max(40)
+	.custom((v) => uCaseLetters.some((l) => v?.includes(l)), 'must contain at least 1 uppercase letter')
+	.custom((v) => lCaseLetters.some((l) => v?.includes(l)), 'must contain at least 1 lowercase letter')
+	.custom((v) => numbers.some((l) => v?.includes(l)), 'must contain at least 1 number')
+	.custom((v) => symbols.some((l) => v?.includes(l)), `must contain at least 1 special character in ${symbolChars}`)
+	.parse(value))
 
 export const signOutUser = async (userId: string): Promise<boolean> => {
 	await deleteCachedAccessToken(userId)

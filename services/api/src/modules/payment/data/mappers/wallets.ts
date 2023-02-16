@@ -1,4 +1,4 @@
-import { BaseMapper } from '@stranerd/api-commons'
+import { BaseMapper } from 'equipped'
 import { WalletEntity } from '../../domain/entities/wallets'
 import { WalletFromModel, WalletToModel } from '../models/wallets'
 

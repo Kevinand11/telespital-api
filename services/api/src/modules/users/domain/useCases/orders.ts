@@ -1,5 +1,5 @@
 import { IOrderRepository } from '../irepositories/orders'
-import { QueryParams } from '@stranerd/api-commons'
+import { QueryParams } from 'equipped'
 import { OrderToModel } from '../../data/models/orders'
 
 export class OrdersUseCase {

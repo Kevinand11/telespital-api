@@ -1,10 +1,10 @@
+import { AuthUserType } from '@modules/auth'
+import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { PrescriptionUnit, SessionStatus, SessionsUseCases } from '@modules/sessions'
 import { UsersUseCases } from '@modules/users'
-import { BadRequestError, NotAuthorizedError, QueryParams, Request, validate, Validation } from '@stranerd/api-commons'
-import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
 import { LiveVideo } from '@utils/modules/sessions/video'
-import { AuthUserType } from '@modules/auth'
+import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
 
 export class SessionsController {
 	static async getSessions (req: Request) {
@@ -28,11 +28,9 @@ export class SessionsController {
 	}
 
 	static async createSession (req: Request) {
-		const data = validate({
-			description: req.body.description
-		}, {
-			description: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] }
-		})
+		const data = validateReq({
+			description: Schema.string().min(1)
+		}, req.body)
 
 		const user = await UsersUseCases.find(req.authUser!.id)
 		if (!user) throw new BadRequestError('profile not found')
@@ -46,11 +44,9 @@ export class SessionsController {
 	}
 
 	static async updateDescription (req: Request) {
-		const data = validate({
-			description: req.body.description
-		}, {
-			description: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] }
-		})
+		const data = validateReq({
+			description: Schema.string().min(1)
+		}, req.body)
 
 		return await SessionsUseCases.update({
 			id: req.params.id, userId: req.authUser!.id,
@@ -59,19 +55,13 @@ export class SessionsController {
 	}
 
 	static async updatePrescriptions (req: Request) {
-		const data = validate({
-			prescriptions: req.body.prescriptions
-		}, {
-			prescriptions: {
-				required: true, rules: [Validation.isArrayOfX((val: any) => {
-					const valid = [
-						Validation.isString(val.medication).valid, Validation.isString(val.dosage).valid,
-						Validation.arrayContains(val.unit, Object.keys(PrescriptionUnit), (cur, val) => cur === val)
-					]
-					return valid.every((v) => v)
-				}, 'prescriptions')]
-			}
-		})
+		const data = validateReq({
+			prescriptions: Schema.array(Schema.object({
+				medication: Schema.string().min(1),
+				dosage: Schema.string().min(1),
+				unit: Schema.any<PrescriptionUnit>().in(Object.values(PrescriptionUnit))
+			}))
+		}, req.body)
 
 		return await SessionsUseCases.update({
 			id: req.params.id, userId: req.authUser!.id,
@@ -80,11 +70,9 @@ export class SessionsController {
 	}
 
 	static async updateNote (req: Request) {
-		const data = validate({
-			note: req.body.note
-		}, {
-			note: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] }
-		})
+		const data = validateReq({
+			note: Schema.string().min(1)
+		}, req.body)
 
 		return await SessionsUseCases.update({
 			id: req.params.id, userId: req.authUser!.id,
@@ -93,11 +81,9 @@ export class SessionsController {
 	}
 
 	static async payForSession (req: Request) {
-		const data = validate({
-			methodId: req.body.methodId
-		}, {
-			methodId: { required: true, rules: [Validation.isString] }
-		})
+		const data = validateReq({
+			methodId: Schema.string().min(1)
+		}, req.body)
 
 		const userId = req.authUser!.id
 		const session = await SessionsUseCases.find(req.params.id)
@@ -130,11 +116,9 @@ export class SessionsController {
 	}
 
 	static async cancelSession (req: Request) {
-		const { reason } = validate({
-			reason: req.body.reason
-		}, {
-			reason: { required: true, rules: [Validation.isString, Validation.isLongerThanX(0)] }
-		})
+		const { reason } = validateReq({
+			reason: Schema.string().min(1)
+		}, req.body)
 
 		const cancelled = await SessionsUseCases.cancel({ id: req.params.id, reason, userId: req.authUser!.id })
 		if (cancelled) return cancelled
@@ -142,16 +126,10 @@ export class SessionsController {
 	}
 
 	static async rateSession (req: Request) {
-		const data = validate({
-			rating: parseInt(req.body.rating),
-			message: req.body.message
-		}, {
-			rating: {
-				required: true,
-				rules: [Validation.isNumber, Validation.isMoreThanOrEqualToX(0), Validation.isLessThanOrEqualToX(5)]
-			},
-			message: { required: true, rules: [Validation.isString] }
-		})
+		const data = validateReq({
+			rating: Schema.number().gte(0).lte(5),
+			message: Schema.string()
+		}, { ...req.body, rating: parseInt(req.body.rating) })
 
 		const user = await UsersUseCases.find(req.authUser!.id)
 		if (!user) throw new BadRequestError('profile not found')

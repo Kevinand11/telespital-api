@@ -1,6 +1,6 @@
 import { MethodToModel } from '../../data/models/methods'
 import { MethodEntity } from '../entities/methods'
-import { QueryParams, QueryResults } from '@stranerd/api-commons'
+import { QueryParams, QueryResults } from 'equipped'
 
 export interface IMethodRepository {
 	create: (data: MethodToModel) => Promise<MethodEntity>

@@ -1,4 +1,4 @@
-import { Request } from '@stranerd/api-commons'
+import { Request } from 'equipped'
 import { getNewTokens } from '@utils/modules/auth'
 
 export class TokenController {

@@ -1,5 +1,5 @@
 import { RegisterInput, RoleInput, UserUpdateInput } from '../types'
-import { QueryParams, QueryResults } from '@stranerd/api-commons'
+import { QueryParams, QueryResults } from 'equipped'
 import { AuthUserEntity } from '../entities/users'
 
 export interface IUserRepository {

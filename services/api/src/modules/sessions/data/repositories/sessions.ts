@@ -1,12 +1,13 @@
+import { appInstance } from '@utils/environment'
+import { mongoose, NotAuthorizedError, QueryParams } from 'equipped'
 import { ISessionRepository } from '../../domain/irepositories/sessions'
-import { SessionMapper } from '../mappers/sessions'
-import { SessionFromModel, SessionToModel } from '../models/sessions'
-import { Session } from '../mongooseModels/sessions'
-import { mongoose, NotAuthorizedError, parseQueryParams, QueryParams } from 'equipped'
 import { EmbeddedUser, SessionStatus } from '../../domain/types'
-import { ReviewToModel } from '../models/reviews'
-import { Review } from '../mongooseModels/reviews'
 import { ReviewMapper } from '../mappers/reviews'
+import { SessionMapper } from '../mappers/sessions'
+import { ReviewToModel } from '../models/reviews'
+import { SessionFromModel, SessionToModel } from '../models/sessions'
+import { Review } from '../mongooseModels/reviews'
+import { Session } from '../mongooseModels/sessions'
 
 export class SessionRepository implements ISessionRepository {
 	private static instance: SessionRepository
@@ -24,7 +25,7 @@ export class SessionRepository implements ISessionRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await parseQueryParams<SessionFromModel>(Session, query)
+		const data = await appInstance.db.parseQueryParams<SessionFromModel>(Session, query)
 
 		return {
 			...data,

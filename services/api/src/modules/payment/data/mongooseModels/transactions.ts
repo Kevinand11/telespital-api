@@ -1,8 +1,9 @@
-import { generateChangeStreams, mongoose } from 'equipped'
-import { TransactionFromModel } from '../models/transactions'
-import { TransactionChangeStreamCallbacks } from '@utils/changeStreams/payment/transactions'
+import { TransactionDbChangeCallbacks } from '@utils/changeStreams/payment/transactions'
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { TransactionEntity } from '../../domain/entities/transactions'
 import { TransactionMapper } from '../mappers/transactions'
+import { TransactionFromModel } from '../models/transactions'
 
 const TransactionSchema = new mongoose.Schema<TransactionFromModel>({
 	_id: {
@@ -51,4 +52,5 @@ const TransactionSchema = new mongoose.Schema<TransactionFromModel>({
 
 export const Transaction = mongoose.model<TransactionFromModel>('PaymentTransaction', TransactionSchema)
 
-generateChangeStreams<TransactionFromModel, TransactionEntity>(Transaction, TransactionChangeStreamCallbacks, new TransactionMapper().mapFrom).then()
+export const TransactionChange = appInstance.db
+	.generateDbChange<TransactionFromModel, TransactionEntity>(Transaction, TransactionDbChangeCallbacks, new TransactionMapper().mapFrom)

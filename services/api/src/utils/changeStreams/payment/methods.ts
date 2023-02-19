@@ -1,9 +1,9 @@
 import { MethodEntity, MethodFromModel } from '@modules/payment'
 import { appInstance } from '@utils/environment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const MethodChangeStreamCallbacks: ChangeStreamCallbacks<MethodFromModel, MethodEntity> = {
+export const MethodDbChangeCallbacks: DbChangeCallbacks<MethodFromModel, MethodEntity> = {
 	created: async ({ after }) => {
 		await appInstance.listener.created(`payment/methods/${after.userId}`, after)
 		await appInstance.listener.created(`payment/methods/${after.id}/${after.userId}`, after)

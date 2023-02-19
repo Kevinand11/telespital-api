@@ -4,9 +4,9 @@ import { UserMeta, UsersUseCases } from '@modules/users'
 import { appInstance } from '@utils/environment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
 import { LiveVideo } from '@utils/modules/sessions/video'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const SessionChangeStreamCallbacks: ChangeStreamCallbacks<SessionFromModel, SessionEntity> = {
+export const SessionDbChangeCallbacks: DbChangeCallbacks<SessionFromModel, SessionEntity> = {
 	created: async ({ after }) => {
 		await Promise.all(
 			after.getParticipants().map(async (id) => {

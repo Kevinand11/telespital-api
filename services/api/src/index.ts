@@ -6,7 +6,7 @@ import { startJobs } from '@utils/jobs'
 import { registerSockets } from '@utils/sockets'
 
 const start = async () => {
-	await appInstance.startDbConnection()
+	await appInstance.startConnections()
 	await Promise.all(
 		Object.values(subscribers)
 			.map(async (subscriber) => {

@@ -2,9 +2,9 @@ import { ReviewsUseCases, SessionsUseCases } from '@modules/sessions'
 import { UserEntity, UserFromModel } from '@modules/users'
 import { appInstance } from '@utils/environment'
 import { deActivateUserProfile } from '@utils/modules/auth'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const UserChangeStreamCallbacks: ChangeStreamCallbacks<UserFromModel, UserEntity> = {
+export const UserDbChangeCallbacks: DbChangeCallbacks<UserFromModel, UserEntity> = {
 	created: async ({ after }) => {
 		await appInstance.listener.created('users/users', after)
 		await appInstance.listener.created(`users/users/${after.id}`, after)

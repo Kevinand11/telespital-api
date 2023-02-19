@@ -1,4 +1,5 @@
-import { parseQueryParams, QueryParams } from 'equipped'
+import { appInstance } from '@utils/environment'
+import { QueryParams } from 'equipped'
 import { IReportRepository } from '../../domain/irepositories/reports'
 import { ReportStatus } from '../../domain/types'
 import { ReportMapper } from '../mappers/reports'
@@ -19,7 +20,7 @@ export class ReportRepository implements IReportRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await parseQueryParams<ReportFromModel>(Report, query)
+		const data = await appInstance.db.parseQueryParams<ReportFromModel>(Report, query)
 
 		return {
 			...data,

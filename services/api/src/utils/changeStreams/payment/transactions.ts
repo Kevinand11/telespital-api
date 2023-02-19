@@ -1,9 +1,9 @@
 import { TransactionEntity, TransactionFromModel, TransactionStatus } from '@modules/payment'
 import { appInstance } from '@utils/environment'
 import { fulfillTransaction } from '@utils/modules/payment/transactions'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const TransactionChangeStreamCallbacks: ChangeStreamCallbacks<TransactionFromModel, TransactionEntity> = {
+export const TransactionDbChangeCallbacks: DbChangeCallbacks<TransactionFromModel, TransactionEntity> = {
 	created: async ({ after }) => {
 		await appInstance.listener.created(`payment/transactions/${after.userId}`, after)
 		await appInstance.listener.created(`payment/transactions/${after.id}/${after.userId}`, after)

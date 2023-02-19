@@ -1,9 +1,10 @@
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { IUserRepository } from '../../domain/irepositories/users'
 import { UserBio, UserMeta, UserRoles } from '../../domain/types'
 import { UserMapper } from '../mappers/users'
-import { User } from '../mongooseModels/users'
-import { mongoose, parseQueryParams } from 'equipped'
 import { UserFromModel } from '../models/users'
+import { User } from '../mongooseModels/users'
 
 export class UserRepository implements IUserRepository {
 	private static instance: UserRepository
@@ -15,7 +16,7 @@ export class UserRepository implements IUserRepository {
 	}
 
 	async get (query) {
-		const data = await parseQueryParams<UserFromModel>(User, query)
+		const data = await appInstance.db.parseQueryParams<UserFromModel>(User, query)
 		return {
 			...data,
 			results: data.results.map((u) => this.mapper.mapFrom(u)!)

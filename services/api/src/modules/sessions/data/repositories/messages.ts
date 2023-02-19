@@ -1,8 +1,9 @@
-import { MessageMapper } from '../mappers/messages'
+import { appInstance } from '@utils/environment'
+import { QueryParams } from 'equipped'
 import { IMessageRepository } from '../../domain/irepositories/messages'
+import { MessageMapper } from '../mappers/messages'
 import { MessageFromModel, MessageToModel } from '../models/messages'
 import { Message } from '../mongooseModels/messages'
-import { parseQueryParams, QueryParams } from 'equipped'
 
 export class MessageRepository implements IMessageRepository {
 	private static instance: MessageRepository
@@ -27,7 +28,7 @@ export class MessageRepository implements IMessageRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await parseQueryParams<MessageFromModel>(Message, query)
+		const data = await appInstance.db.parseQueryParams<MessageFromModel>(Message, query)
 
 		return {
 			...data,

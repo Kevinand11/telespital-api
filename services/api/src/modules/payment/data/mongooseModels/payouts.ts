@@ -1,8 +1,9 @@
-import { generateChangeStreams, mongoose } from 'equipped'
-import { PayoutFromModel } from '../models/payouts'
-import { PayoutChangeStreamCallbacks } from '@utils/changeStreams/payment/payouts'
+import { PayoutDbChangeCallbacks } from '@utils/changeStreams/payment/payouts'
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { PayoutEntity } from '../../domain/entities/payouts'
 import { PayoutMapper } from '../mappers/payouts'
+import { PayoutFromModel } from '../models/payouts'
 
 const PayoutSchema = new mongoose.Schema<PayoutFromModel>({
 	_id: {
@@ -41,4 +42,5 @@ const PayoutSchema = new mongoose.Schema<PayoutFromModel>({
 
 export const Payout = mongoose.model<PayoutFromModel>('PaymentPayout', PayoutSchema)
 
-generateChangeStreams<PayoutFromModel, PayoutEntity>(Payout, PayoutChangeStreamCallbacks, new PayoutMapper().mapFrom).then()
+export const PayoutChange = appInstance.db
+	.generateDbChange<PayoutFromModel, PayoutEntity>(Payout, PayoutDbChangeCallbacks, new PayoutMapper().mapFrom)

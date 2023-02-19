@@ -1,9 +1,10 @@
+import { appInstance } from '@utils/environment'
+import { QueryParams } from 'equipped'
 import { IReviewRepository } from '../../domain/irepositories/reviews'
+import { EmbeddedUser } from '../../domain/types'
 import { ReviewMapper } from '../mappers/reviews'
 import { ReviewFromModel, ReviewToModel } from '../models/reviews'
 import { Review } from '../mongooseModels/reviews'
-import { parseQueryParams, QueryParams } from 'equipped'
-import { EmbeddedUser } from '../../domain/types'
 
 export class ReviewRepository implements IReviewRepository {
 	private static instance: ReviewRepository
@@ -19,7 +20,7 @@ export class ReviewRepository implements IReviewRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await parseQueryParams<ReviewFromModel>(Review, query)
+		const data = await appInstance.db.parseQueryParams<ReviewFromModel>(Review, query)
 
 		return {
 			...data,

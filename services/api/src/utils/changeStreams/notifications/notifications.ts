@@ -3,9 +3,9 @@ import { UsersUseCases } from '@modules/users'
 import { appInstance } from '@utils/environment'
 import { publishers } from '@utils/events'
 import { sendPushNotification } from '@utils/modules/notifications/push'
-import { ChangeStreamCallbacks, EmailsList, readEmailFromPug } from 'equipped'
+import { DbChangeCallbacks, EmailsList, readEmailFromPug } from 'equipped'
 
-export const NotificationChangeStreamCallbacks: ChangeStreamCallbacks<NotificationFromModel, NotificationEntity> = {
+export const NotificationDbChangeCallbacks: DbChangeCallbacks<NotificationFromModel, NotificationEntity> = {
 	created: async ({ after }) => {
 		await appInstance.listener.created(`notifications/notifications/${after.userId}`, after)
 		await appInstance.listener.created(`notifications/notifications/${after.id}/${after.userId}`, after)

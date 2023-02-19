@@ -1,8 +1,8 @@
 import { WalletEntity, WalletFromModel } from '@modules/payment'
 import { appInstance } from '@utils/environment'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const WalletChangeStreamCallbacks: ChangeStreamCallbacks<WalletFromModel, WalletEntity> = {
+export const WalletDbChangeCallbacks: DbChangeCallbacks<WalletFromModel, WalletEntity> = {
 	created: async ({ after }) => {
 		await appInstance.listener.created(`payment/wallets/${after.userId}`, after)
 		await appInstance.listener.created(`payment/wallets/${after.id}/${after.userId}`, after)

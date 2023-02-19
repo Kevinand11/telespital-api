@@ -1,8 +1,9 @@
-import { generateChangeStreams, mongoose } from 'equipped'
-import { OrderFromModel } from '../models/orders'
-import { OrderChangeStreamCallbacks } from '@utils/changeStreams/users/orders'
+import { OrderDbChangeCallbacks } from '@utils/changeStreams/users/orders'
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { OrderEntity } from '../../domain/entities/orders'
 import { OrderMapper } from '../mappers/orders'
+import { OrderFromModel } from '../models/orders'
 
 const OrderSchema = new mongoose.Schema<OrderFromModel>({
 	_id: {
@@ -52,4 +53,5 @@ const OrderSchema = new mongoose.Schema<OrderFromModel>({
 
 export const Order = mongoose.model<OrderFromModel>('UsersOrder', OrderSchema)
 
-generateChangeStreams<OrderFromModel, OrderEntity>(Order, OrderChangeStreamCallbacks, new OrderMapper().mapFrom).then()
+export const OrderChange = appInstance.db
+	.generateDbChange<OrderFromModel, OrderEntity>(Order, OrderDbChangeCallbacks, new OrderMapper().mapFrom)

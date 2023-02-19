@@ -1,4 +1,5 @@
-import { mongoose, parseQueryParams, QueryParams } from 'equipped'
+import { appInstance } from '@utils/environment'
+import { mongoose, QueryParams } from 'equipped'
 import { IPayoutRepository } from '../../domain/irepositories/payouts'
 import { EmbeddedUser, PayoutPay, PayoutStatus, TransactionStatus, TransactionType } from '../../domain/types'
 import { PayoutMapper } from '../mappers/payouts'
@@ -22,7 +23,7 @@ export class PayoutRepository implements IPayoutRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await parseQueryParams<PayoutFromModel>(Payout, query)
+		const data = await appInstance.db.parseQueryParams<PayoutFromModel>(Payout, query)
 
 		return {
 			...data,

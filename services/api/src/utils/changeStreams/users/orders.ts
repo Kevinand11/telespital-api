@@ -1,8 +1,8 @@
 import { OrderEntity, OrderFromModel } from '@modules/users'
 import { appInstance } from '@utils/environment'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const OrderChangeStreamCallbacks: ChangeStreamCallbacks<OrderFromModel, OrderEntity> = {
+export const OrderDbChangeCallbacks: DbChangeCallbacks<OrderFromModel, OrderEntity> = {
 	created: async ({ after }) => {
 		await appInstance.listener.created('users/orders', after)
 		await appInstance.listener.created(`users/orders/${after.id}`, after)

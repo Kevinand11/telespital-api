@@ -1,8 +1,9 @@
-import { generateChangeStreams, mongoose } from 'equipped'
-import { ReviewFromModel } from '../models/reviews'
+import { ReviewDbChangeCallbacks } from '@utils/changeStreams/sessions/reviews'
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { ReviewEntity } from '../../domain/entities/reviews'
 import { ReviewMapper } from '../mappers/reviews'
-import { ReviewChangeStreamCallbacks } from '@utils/changeStreams/sessions/reviews'
+import { ReviewFromModel } from '../models/reviews'
 
 const ReviewSchema = new mongoose.Schema<ReviewFromModel>({
 	_id: {
@@ -44,4 +45,5 @@ const ReviewSchema = new mongoose.Schema<ReviewFromModel>({
 
 export const Review = mongoose.model<ReviewFromModel>('SessionsReview', ReviewSchema)
 
-generateChangeStreams<ReviewFromModel, ReviewEntity>(Review, ReviewChangeStreamCallbacks, new ReviewMapper().mapFrom).then()
+export const ReviewChange = appInstance.db
+	.generateDbChange<ReviewFromModel, ReviewEntity>(Review, ReviewDbChangeCallbacks, new ReviewMapper().mapFrom)

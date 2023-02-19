@@ -1,8 +1,9 @@
-import { generateChangeStreams, mongoose } from 'equipped'
-import { TokenFromModel } from '../models/tokens'
-import { TokenChangeStreamCallbacks } from '@utils/changeStreams/notifications/tokens'
+import { TokenDbChangeCallbacks } from '@utils/changeStreams/notifications/tokens'
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { TokenEntity } from '../../domain/entities/tokens'
 import { TokenMapper } from '../mappers/tokens'
+import { TokenFromModel } from '../models/tokens'
 
 const Schema = new mongoose.Schema<TokenFromModel>({
 	_id: {
@@ -32,4 +33,5 @@ const Schema = new mongoose.Schema<TokenFromModel>({
 
 export const Token = mongoose.model<TokenFromModel>('NotificationsToken', Schema)
 
-generateChangeStreams<TokenFromModel, TokenEntity>(Token, TokenChangeStreamCallbacks, new TokenMapper().mapFrom).then()
+export const TokenChange = appInstance.db
+	.generateDbChange<TokenFromModel, TokenEntity>(Token, TokenDbChangeCallbacks, new TokenMapper().mapFrom)

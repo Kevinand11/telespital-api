@@ -1,8 +1,9 @@
-import { generateChangeStreams, mongoose } from 'equipped'
-import { ErrorFromModel } from '../models/errors'
-import { ErrorChangeStreamCallbacks } from '@utils/changeStreams/notifications/errors'
+import { ErrorDbChangeCallbacks } from '@utils/changeStreams/notifications/errors'
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { ErrorEntity } from '../../domain/entities/errors'
 import { ErrorMapper } from '../mappers/errors'
+import { ErrorFromModel } from '../models/errors'
 
 const Schema = new mongoose.Schema<ErrorFromModel>({
 	_id: {
@@ -48,4 +49,5 @@ const Schema = new mongoose.Schema<ErrorFromModel>({
 
 export const Error = mongoose.model<ErrorFromModel>('NotificationsEmailsError', Schema)
 
-generateChangeStreams<ErrorFromModel, ErrorEntity>(Error, ErrorChangeStreamCallbacks, new ErrorMapper().mapFrom).then()
+export const ErrorChange = appInstance.db
+	.generateDbChange<ErrorFromModel, ErrorEntity>(Error, ErrorDbChangeCallbacks, new ErrorMapper().mapFrom)

@@ -1,7 +1,8 @@
+import { appInstance } from '@utils/environment'
+import { QueryParams } from 'equipped'
 import { ITransactionRepository } from '../../domain/irepositories/transactions'
 import { TransactionMapper } from '../mappers/transactions'
 import { TransactionFromModel, TransactionToModel } from '../models/transactions'
-import { parseQueryParams, QueryParams } from 'equipped'
 import { Transaction } from '../mongooseModels/transactions'
 
 export class TransactionRepository implements ITransactionRepository {
@@ -18,7 +19,7 @@ export class TransactionRepository implements ITransactionRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await parseQueryParams<TransactionFromModel>(Transaction, query)
+		const data = await appInstance.db.parseQueryParams<TransactionFromModel>(Transaction, query)
 
 		return {
 			...data,

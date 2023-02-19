@@ -1,8 +1,9 @@
-import { generateChangeStreams, mongoose } from 'equipped'
-import { MessageFromModel } from '../models/messages'
+import { MessageDbChangeCallbacks } from '@utils/changeStreams/sessions/messages'
+import { appInstance } from '@utils/environment'
+import { mongoose } from 'equipped'
 import { MessageEntity } from '../../domain/entities/messages'
-import { MessageChangeStreamCallbacks } from '@utils/changeStreams/sessions/messages'
 import { MessageMapper } from '../mappers/messages'
+import { MessageFromModel } from '../models/messages'
 
 const Schema = new mongoose.Schema<MessageFromModel>({
 	_id: {
@@ -50,4 +51,5 @@ const Schema = new mongoose.Schema<MessageFromModel>({
 
 export const Message = mongoose.model<MessageFromModel>('SessionsMessage', Schema)
 
-generateChangeStreams<MessageFromModel, MessageEntity>(Message, MessageChangeStreamCallbacks, new MessageMapper().mapFrom).then()
+export const MessageChange = appInstance.db
+	.generateDbChange<MessageFromModel, MessageEntity>(Message, MessageDbChangeCallbacks, new MessageMapper().mapFrom)

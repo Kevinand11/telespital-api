@@ -1,8 +1,9 @@
+import { appInstance } from '@utils/environment'
+import { QueryParams } from 'equipped'
 import { INotificationRepository } from '../../domain/irepositories/notifications'
 import { NotificationMapper } from '../mappers/notifications'
-import { Notification } from '../mongooseModels/notifications'
-import { parseQueryParams, QueryParams } from 'equipped'
 import { NotificationFromModel, NotificationToModel } from '../models/notifications'
+import { Notification } from '../mongooseModels/notifications'
 
 export class NotificationRepository implements INotificationRepository {
 	private static instance: NotificationRepository
@@ -14,7 +15,7 @@ export class NotificationRepository implements INotificationRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await parseQueryParams<NotificationFromModel>(Notification, query)
+		const data = await appInstance.db.parseQueryParams<NotificationFromModel>(Notification, query)
 		return {
 			...data,
 			results: data.results.map((n) => this.mapper.mapFrom(n)!)

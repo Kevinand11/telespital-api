@@ -1,9 +1,9 @@
 import { MessageEntity, MessageFromModel } from '@modules/sessions'
 import { appInstance } from '@utils/environment'
 import { publishers } from '@utils/events'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const MessageChangeStreamCallbacks: ChangeStreamCallbacks<MessageFromModel, MessageEntity> = {
+export const MessageDbChangeCallbacks: DbChangeCallbacks<MessageFromModel, MessageEntity> = {
 	created: async ({ after }) => {
 		await Promise.all(after.members.map(async (userId) => {
 			await appInstance.listener.created(`sessions/messages/${userId}`, after)

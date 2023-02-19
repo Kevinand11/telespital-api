@@ -1,8 +1,8 @@
 import { ReportEntity, ReportFromModel } from '@modules/sessions'
 import { appInstance } from '@utils/environment'
-import { ChangeStreamCallbacks } from 'equipped'
+import { DbChangeCallbacks } from 'equipped'
 
-export const ReportChangeStreamCallbacks: ChangeStreamCallbacks<ReportFromModel, ReportEntity> = {
+export const ReportDbChangeCallbacks: DbChangeCallbacks<ReportFromModel, ReportEntity> = {
 	created: async ({ after }) => {
 		await appInstance.listener.created('sessions/reports', after)
 		await appInstance.listener.created(`sessions/reports/${after.id}`, after)

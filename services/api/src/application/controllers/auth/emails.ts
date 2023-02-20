@@ -79,7 +79,7 @@ export class EmailsController {
 
 	static async verifyEmail (req: Request) {
 		const { token } = validateReq({
-			token: Schema.string()
+			token: Schema.force.string()
 		}, req.body)
 
 		const data = await AuthUseCases.verifyEmail(token)

@@ -16,7 +16,7 @@ export class PasswordsController {
 
 	static async resetPassword (req: Request) {
 		const validateData = validateReq({
-			token: Schema.string(),
+			token: Schema.force.string(),
 			password: Schema.string().min(8).max(16)
 		}, req.body)
 

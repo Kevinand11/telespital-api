@@ -3,7 +3,7 @@ import { appId, appInstance, port } from '@utils/environment'
 import { subscribers } from '@utils/events'
 import { startJobs } from '@utils/jobs'
 import { registerSockets } from '@utils/sockets'
-import { StatusCodes } from 'equipped'
+import { BadRequestError } from 'equipped'
 
 const start = async () => {
 	await appInstance.startConnections()
@@ -32,10 +32,9 @@ const start = async () => {
 			path: '',
 			method: 'all',
 			controllers: [
-				() => ({
-					status: StatusCodes.ServerError,
-					result: 'Jokes'
-				})
+				() => {
+					throw new BadRequestError('Jokes')
+				}
 			]
 		}
 	]

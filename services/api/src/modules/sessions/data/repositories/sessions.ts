@@ -112,7 +112,7 @@ export class SessionRepository implements ISessionRepository {
 			} else {
 				const review = await new Review({ ...data, to: sessionToUpdate.doctor!.id }).save({ session })
 				await Session.findByIdAndUpdate(data.sessionId,
-					{ $set: { [`ratings.${data.user.id}`]: review.id } },
+					{ $set: { [`ratings.${data.user.id}`]: review.id, status: SessionStatus.completed } },
 					{ session }
 				)
 				res = review

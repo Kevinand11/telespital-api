@@ -1190,10 +1190,10 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/braintree@^3.3.6":
-  version "3.3.6"
-  resolved "https://registry.yarnpkg.com/@types/braintree/-/braintree-3.3.6.tgz#145f53e409e5bfd4db77003be50e5cd5f9190329"
-  integrity sha512-5f/d514xsR5U+bVopt0em2R2dhrZbfphKbt5Xc/IGp69h8B6GOQtn4cCmdHDk7Akl0nJSuBfvSjNxWO6IWI/Pw==
+"@types/braintree@^3.3.7":
+  version "3.3.7"
+  resolved "https://registry.yarnpkg.com/@types/braintree/-/braintree-3.3.7.tgz#76b70cb01333134e86c6f11ec91305e7bc365134"
+  integrity sha512-nOgPxv/+p6QBDqaia2/BBDdEo7mJR/MrVZy6s+OYPNE3ZTEj1szbFm+7MCJhAVcVAfGUbjA9ZuZhorTNbABpMA==
   dependencies:
     "@types/node" "*"
 

@@ -21,7 +21,7 @@
 		"nodemailer": "^6.9.1"
 	},
 	"devDependencies": {
-		"@types/braintree": "^3.3.6",
+		"@types/braintree": "^3.3.7",
 		"@types/long": "^5.0.0",
 		"@types/node": "^18.13.0",
 		"@typescript-eslint/eslint-plugin": "^5.52.0",

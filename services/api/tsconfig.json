@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"skipLibCheck": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,

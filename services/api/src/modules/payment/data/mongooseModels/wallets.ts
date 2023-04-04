@@ -1,15 +1,13 @@
 import { WalletDbChangeCallbacks } from '@utils/changeStreams/payment/wallets'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { WalletEntity } from '../../domain/entities/wallets'
 import { Currencies } from '../../domain/types'
 import { WalletMapper } from '../mappers/wallets'
 import { WalletFromModel } from '../models/wallets'
 
-const WalletSchema = new mongoose.Schema<WalletFromModel>({
+const WalletSchema = new appInstance.dbs.mongo.Schema<WalletFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	userId: {
 		type: String,
@@ -28,7 +26,7 @@ const WalletSchema = new mongoose.Schema<WalletFromModel>({
 		}
 	},
 	account: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: null
 	},
@@ -44,7 +42,6 @@ const WalletSchema = new mongoose.Schema<WalletFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now }, minimize: false })
 
-export const Wallet = mongoose.model<WalletFromModel>('PaymentWallet', WalletSchema)
+export const Wallet = appInstance.dbs.mongo.use().model<WalletFromModel>('PaymentWallet', WalletSchema)
 
-export const WalletChange = appInstance.db
-	.generateDbChange<WalletFromModel, WalletEntity>(Wallet, WalletDbChangeCallbacks, new WalletMapper().mapFrom)
+export const WalletChange = appInstance.dbs.mongo.change(Wallet, WalletDbChangeCallbacks, new WalletMapper().mapFrom)

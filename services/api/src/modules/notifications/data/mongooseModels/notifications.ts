@@ -1,14 +1,12 @@
 import { NotificationDbChangeCallbacks } from '@utils/changeStreams/notifications/notifications'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { NotificationEntity } from '../../domain/entities/notifications'
 import { NotificationMapper } from '../mappers/notifications'
 import { NotificationFromModel } from '../models/notifications'
 
-const NotificationSchema = new mongoose.Schema<NotificationFromModel>({
+const NotificationSchema = new appInstance.dbs.mongo.Schema<NotificationFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	title: {
 		type: String,
@@ -30,7 +28,7 @@ const NotificationSchema = new mongoose.Schema<NotificationFromModel>({
 		default: false
 	},
 	data: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true,
 		default: {}
 	},
@@ -50,7 +48,6 @@ const NotificationSchema = new mongoose.Schema<NotificationFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now }, minimize: false })
 
-export const Notification = mongoose.model<NotificationFromModel>('Notification', NotificationSchema)
+export const Notification = appInstance.dbs.mongo.use().model<NotificationFromModel>('Notification', NotificationSchema)
 
-export const NotificationChange = appInstance.db
-	.generateDbChange<NotificationFromModel, NotificationEntity>(Notification, NotificationDbChangeCallbacks, new NotificationMapper().mapFrom)
+export const NotificationChange = appInstance.dbs.mongo.change(Notification, NotificationDbChangeCallbacks, new NotificationMapper().mapFrom)

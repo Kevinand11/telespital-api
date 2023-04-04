@@ -1,6 +1,6 @@
 import { isAuthenticated } from '@application/middlewares'
 import { TokensUseCases } from '@modules/notifications'
-import { makeController, Route, Schema, StatusCodes, validateReq } from 'equipped'
+import { makeController, Route, Schema, StatusCodes, validate } from 'equipped'
 
 const subscribeDevice: Route = {
 	path: '/notifications/devices/subscribe',
@@ -8,7 +8,7 @@ const subscribeDevice: Route = {
 	controllers: [
 		isAuthenticated,
 		makeController(async (req) => {
-			const { token } = validateReq({
+			const { token } = validate({
 				token: Schema.string().min(1)
 			}, req.body)
 			const res = await TokensUseCases.update({ userId: req.authUser!.id, tokens: [token], add: true })
@@ -26,7 +26,7 @@ const unsubscribeDevice: Route = {
 	controllers: [
 		isAuthenticated,
 		makeController(async (req) => {
-			const { token } = validateReq({
+			const { token } = validate({
 				token: Schema.string().min(1)
 			}, req.body)
 			const res = await TokensUseCases.update({ userId: req.authUser!.id, tokens: [token], add: false })

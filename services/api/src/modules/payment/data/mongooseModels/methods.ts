@@ -1,14 +1,12 @@
 import { MethodDbChangeCallbacks } from '@utils/changeStreams/payment/methods'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { MethodEntity } from '../../domain/entities/methods'
 import { MethodMapper } from '../mappers/methods'
 import { MethodFromModel } from '../models/methods'
 
-const MethodSchema = new mongoose.Schema<MethodFromModel>({
+const MethodSchema = new appInstance.dbs.mongo.Schema<MethodFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	userId: {
 		type: String,
@@ -24,7 +22,7 @@ const MethodSchema = new mongoose.Schema<MethodFromModel>({
 		required: true
 	},
 	data: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true
 	},
 	createdAt: {
@@ -39,7 +37,6 @@ const MethodSchema = new mongoose.Schema<MethodFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now }, minimize: false })
 
-export const Method = mongoose.model<MethodFromModel>('PaymentMethod', MethodSchema)
+export const Method = appInstance.dbs.mongo.use().model<MethodFromModel>('PaymentMethod', MethodSchema)
 
-export const MethodChange = appInstance.db
-	.generateDbChange<MethodFromModel, MethodEntity>(Method, MethodDbChangeCallbacks, new MethodMapper().mapFrom)
+export const MethodChange = appInstance.dbs.mongo.change(Method, MethodDbChangeCallbacks, new MethodMapper().mapFrom)

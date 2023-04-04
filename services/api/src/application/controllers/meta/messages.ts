@@ -1,11 +1,11 @@
 import { sendNewMessageEmail } from '@utils/modules/meta/messages'
-import { Request, Schema, validateReq, Validation } from 'equipped'
+import { Request, Schema, validate, Validation } from 'equipped'
 
 export class MessageController {
 	static async createMessage (req: Request) {
 		const {
 			name, organization, email, phone, message
-		} = validateReq({
+		} = validate({
 			name: Schema.string().min(1),
 			organization: Schema.string().min(1),
 			email: Schema.string().email(),

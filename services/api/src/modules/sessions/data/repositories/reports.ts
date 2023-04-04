@@ -4,7 +4,7 @@ import { IReportRepository } from '../../domain/irepositories/reports'
 import { ReportStatus } from '../../domain/types'
 import { ReportMapper } from '../mappers/reports'
 import { Report } from '../mongooseModels/reports'
-import { ReportFromModel, ReportToModel } from './../models/reports'
+import { ReportToModel } from './../models/reports'
 
 export class ReportRepository implements IReportRepository {
 	private static instance: ReportRepository
@@ -20,7 +20,7 @@ export class ReportRepository implements IReportRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await appInstance.db.parseQueryParams<ReportFromModel>(Report, query)
+		const data = await appInstance.dbs.mongo.query(Report, query)
 
 		return {
 			...data,

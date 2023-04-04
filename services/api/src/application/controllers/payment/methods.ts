@@ -1,6 +1,6 @@
 import { MethodsUseCases } from '@modules/payment'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
-import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
+import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class MethodsController {
 	static async getTokens (_: Request) {
@@ -32,7 +32,7 @@ export class MethodsController {
 	}
 
 	static async create (req: Request) {
-		const { nonce } = validateReq({
+		const { nonce } = validate({
 			nonce: Schema.string().min(1)
 		}, req.body)
 

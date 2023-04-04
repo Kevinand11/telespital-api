@@ -5,21 +5,27 @@ import { DbChangeCallbacks } from 'equipped'
 
 export const TransactionDbChangeCallbacks: DbChangeCallbacks<TransactionFromModel, TransactionEntity> = {
 	created: async ({ after }) => {
-		await appInstance.listener.created(`payment/transactions/${after.userId}`, after)
-		await appInstance.listener.created(`payment/transactions/${after.id}/${after.userId}`, after)
+		await appInstance.listener.created([
+			`payment/transactions/${after.userId}`,
+			`payment/transactions/${after.id}/${after.userId}`
+		], after)
 
 		if (after.status === TransactionStatus.fulfilled) await fulfillTransaction(after)
 	},
 	updated: async ({ after, before, changes }) => {
-		await appInstance.listener.updated(`payment/transactions/${after.userId}`, after)
-		await appInstance.listener.updated(`payment/transactions/${after.id}/${after.userId}`, after)
+		await appInstance.listener.created([
+			`payment/transactions/${after.userId}`,
+			`payment/transactions/${after.id}/${after.userId}`
+		], after)
 
 		if (changes.status) {
 			if (before.status === TransactionStatus.initialized && after.status === TransactionStatus.fulfilled) await fulfillTransaction(after)
 		}
 	},
 	deleted: async ({ before }) => {
-		await appInstance.listener.deleted(`payment/transactions/${before.userId}`, before)
-		await appInstance.listener.deleted(`payment/transactions/${before.id}/${before.userId}`, before)
+		await appInstance.listener.deleted([
+			`payment/transactions/${before.userId}`,
+			`payment/transactions/${before.id}/${before.userId}`
+		], before)
 	}
 }

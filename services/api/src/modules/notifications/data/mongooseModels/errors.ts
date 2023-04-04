@@ -1,14 +1,12 @@
 import { ErrorDbChangeCallbacks } from '@utils/changeStreams/notifications/errors'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { ErrorEntity } from '../../domain/entities/errors'
 import { ErrorMapper } from '../mappers/errors'
 import { ErrorFromModel } from '../models/errors'
 
-const Schema = new mongoose.Schema<ErrorFromModel>({
+const Schema = new appInstance.dbs.mongo.Schema<ErrorFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	error: {
 		type: String,
@@ -31,7 +29,7 @@ const Schema = new mongoose.Schema<ErrorFromModel>({
 		required: true
 	},
 	data: {
-		type: mongoose.Schema.Types.Mixed as unknown as ErrorFromModel['data'],
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: {} as unknown as ErrorFromModel['data']
 	},
@@ -47,7 +45,6 @@ const Schema = new mongoose.Schema<ErrorFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now } })
 
-export const Error = mongoose.model<ErrorFromModel>('NotificationsEmailsError', Schema)
+export const Error = appInstance.dbs.mongo.use().model<ErrorFromModel>('NotificationsEmailsError', Schema)
 
-export const ErrorChange = appInstance.db
-	.generateDbChange<ErrorFromModel, ErrorEntity>(Error, ErrorDbChangeCallbacks, new ErrorMapper().mapFrom)
+export const ErrorChange = appInstance.dbs.mongo.change(Error, ErrorDbChangeCallbacks, new ErrorMapper().mapFrom)

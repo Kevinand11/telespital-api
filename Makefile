@@ -8,6 +8,8 @@ setup:
 	mkdir -p $(SETUP_FOLDER)
 	touch $(SETUP_FOLDER)/acmeStaging.json $(SETUP_FOLDER)/acmeProduction.json
 	chmod 600 $(SETUP_FOLDER)/acme*.json
+	mkdir -p /c/data/docker/telespital/kafka/data
+	chmod 777 /c/data/docker/telespital/kafka/data
 	node bin/copy-envs.js $(APPS)
 
 dev-start: setup

@@ -1,14 +1,12 @@
 import { PayoutDbChangeCallbacks } from '@utils/changeStreams/payment/payouts'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { PayoutEntity } from '../../domain/entities/payouts'
 import { PayoutMapper } from '../mappers/payouts'
 import { PayoutFromModel } from '../models/payouts'
 
-const PayoutSchema = new mongoose.Schema<PayoutFromModel>({
+const PayoutSchema = new appInstance.dbs.mongo.Schema<PayoutFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	userId: {
 		type: String,
@@ -19,12 +17,12 @@ const PayoutSchema = new mongoose.Schema<PayoutFromModel>({
 		required: true
 	},
 	pay: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: {}
 	},
 	settlement: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: null
 	},
@@ -40,7 +38,6 @@ const PayoutSchema = new mongoose.Schema<PayoutFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now }, minimize: false })
 
-export const Payout = mongoose.model<PayoutFromModel>('PaymentPayout', PayoutSchema)
+export const Payout = appInstance.dbs.mongo.use().model<PayoutFromModel>('PaymentPayout', PayoutSchema)
 
-export const PayoutChange = appInstance.db
-	.generateDbChange<PayoutFromModel, PayoutEntity>(Payout, PayoutDbChangeCallbacks, new PayoutMapper().mapFrom)
+export const PayoutChange = appInstance.dbs.mongo.change(Payout, PayoutDbChangeCallbacks, new PayoutMapper().mapFrom)

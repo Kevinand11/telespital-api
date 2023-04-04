@@ -1,14 +1,12 @@
 import { MessageDbChangeCallbacks } from '@utils/changeStreams/sessions/messages'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { MessageEntity } from '../../domain/entities/messages'
 import { MessageMapper } from '../mappers/messages'
 import { MessageFromModel } from '../models/messages'
 
-const Schema = new mongoose.Schema<MessageFromModel>({
+const Schema = new appInstance.dbs.mongo.Schema<MessageFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	from: {
 		type: String,
@@ -28,12 +26,12 @@ const Schema = new mongoose.Schema<MessageFromModel>({
 		default: ''
 	},
 	media: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: null
 	},
 	readAt: {
-		type: mongoose.Schema.Types.Mixed as unknown as MessageFromModel['readAt'],
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: {}
 	},
@@ -49,7 +47,6 @@ const Schema = new mongoose.Schema<MessageFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now }, minimize: false })
 
-export const Message = mongoose.model<MessageFromModel>('SessionsMessage', Schema)
+export const Message = appInstance.dbs.mongo.use().model<MessageFromModel>('SessionsMessage', Schema)
 
-export const MessageChange = appInstance.db
-	.generateDbChange<MessageFromModel, MessageEntity>(Message, MessageDbChangeCallbacks, new MessageMapper().mapFrom)
+export const MessageChange = appInstance.dbs.mongo.change(Message, MessageDbChangeCallbacks, new MessageMapper().mapFrom)

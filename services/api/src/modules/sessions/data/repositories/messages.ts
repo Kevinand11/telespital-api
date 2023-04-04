@@ -2,7 +2,7 @@ import { appInstance } from '@utils/environment'
 import { QueryParams } from 'equipped'
 import { IMessageRepository } from '../../domain/irepositories/messages'
 import { MessageMapper } from '../mappers/messages'
-import { MessageFromModel, MessageToModel } from '../models/messages'
+import { MessageToModel } from '../models/messages'
 import { Message } from '../mongooseModels/messages'
 
 export class MessageRepository implements IMessageRepository {
@@ -28,7 +28,7 @@ export class MessageRepository implements IMessageRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await appInstance.db.parseQueryParams<MessageFromModel>(Message, query)
+		const data = await appInstance.dbs.mongo.query(Message, query)
 
 		return {
 			...data,

@@ -1,8 +1,8 @@
 import { appInstance } from '@utils/environment'
-import { BadRequestError, mongoose, QueryParams } from 'equipped'
+import { BadRequestError, QueryParams } from 'equipped'
 import { IMethodRepository } from '../../domain/irepositories/methods'
 import { MethodMapper } from '../mappers/methods'
-import { MethodFromModel, MethodToModel } from '../models/methods'
+import { MethodToModel } from '../models/methods'
 import { Method } from '../mongooseModels/methods'
 
 export class MethodRepository implements IMethodRepository {
@@ -19,7 +19,7 @@ export class MethodRepository implements IMethodRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await appInstance.db.parseQueryParams<MethodFromModel>(Method, query)
+		const data = await appInstance.dbs.mongo.query(Method, query)
 
 		return {
 			...data,
@@ -41,8 +41,7 @@ export class MethodRepository implements IMethodRepository {
 
 	async makePrimary (id: string, userId: string) {
 		let res = null as any
-		const session = await mongoose.startSession()
-		await session.withTransaction(async (session) => {
+		await Method.collection.conn.transaction(async (session) => {
 			await Method.updateMany({ _id: { $ne: id }, userId }, { $set: { primary: false } }, { session })
 			const method = await Method.findOneAndUpdate({ _id: id, userId }, { $set: { primary: true } }, {
 				session,
@@ -51,7 +50,6 @@ export class MethodRepository implements IMethodRepository {
 			res = method
 			return method
 		})
-		await session.endSession()
 		return this.mapper.mapFrom(res)
 	}
 

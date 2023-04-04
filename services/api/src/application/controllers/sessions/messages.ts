@@ -1,6 +1,6 @@
 import { MessagesUseCases, SessionsUseCases } from '@modules/sessions'
 import { StorageUseCases } from '@modules/storage'
-import { Conditions, NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
+import { Conditions, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class MessageController {
 	static async getMessages (req: Request) {
@@ -16,7 +16,7 @@ export class MessageController {
 	}
 
 	static async addMessage (req: Request) {
-		const { body, sessionId, media: mediaFile } = validateReq({
+		const { body, sessionId, media: mediaFile } = validate({
 			body: Schema.string(),
 			sessionId: Schema.string().min(1),
 			media: Schema.file().nullable()
@@ -35,7 +35,7 @@ export class MessageController {
 	}
 
 	static async markMessageRead (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			sessionId: Schema.string().min(1)
 		}, req.body)
 

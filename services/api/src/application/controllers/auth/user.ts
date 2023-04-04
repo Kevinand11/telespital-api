@@ -2,7 +2,7 @@ import { AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { StorageUseCases } from '@modules/storage'
 import { superAdminEmail } from '@utils/environment'
 import { checkPermissions, deActivateUserProfile, signOutUser } from '@utils/modules/auth'
-import { AuthRole, BadRequestError, Enum, NotFoundError, Request, Schema, validateReq, Validation, verifyAccessToken } from 'equipped'
+import { AuthRole, BadRequestError, Enum, NotFoundError, Request, Schema, validate, Validation, verifyAccessToken } from 'equipped'
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -14,7 +14,7 @@ export class UserController {
 		const userId = req.authUser!.id
 		const uploadedPhoto = req.files.photo?.[0] ?? null
 		const changedPhoto = !!uploadedPhoto || req.body.photo === null
-		const data = validateReq({
+		const data = validate({
 			firstName: Schema.string().min(1),
 			lastName: Schema.string().min(1),
 			phone: Schema.any().addRule(Validation.isValidPhone()),
@@ -38,7 +38,7 @@ export class UserController {
 		const supportedRoles = Object.values(AuthRole)
 			.filter((key) => !unSupportedRoles.includes(key))
 
-		const { roles, userId, value } = validateReq({
+		const { roles, userId, value } = validate({
 			roles: Schema.array(Schema.any<Enum<typeof AuthRole>>().in(supportedRoles)),
 			userId: Schema.string().min(1),
 			value: Schema.boolean()
@@ -54,7 +54,7 @@ export class UserController {
 	}
 
 	static async updateUserInactiveRole (req: Request) {
-		const { userId, value } = validateReq({
+		const { userId, value } = validate({
 			userId: Schema.string().min(1),
 			value: Schema.boolean()
 		}, req.body)

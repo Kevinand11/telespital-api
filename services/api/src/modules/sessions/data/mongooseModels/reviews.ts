@@ -1,14 +1,12 @@
 import { ReviewDbChangeCallbacks } from '@utils/changeStreams/sessions/reviews'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { ReviewEntity } from '../../domain/entities/reviews'
 import { ReviewMapper } from '../mappers/reviews'
 import { ReviewFromModel } from '../models/reviews'
 
-const ReviewSchema = new mongoose.Schema<ReviewFromModel>({
+const ReviewSchema = new appInstance.dbs.mongo.Schema<ReviewFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	sessionId: {
 		type: String,
@@ -19,7 +17,7 @@ const ReviewSchema = new mongoose.Schema<ReviewFromModel>({
 		required: true
 	},
 	user: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true
 	},
 	rating: {
@@ -43,7 +41,6 @@ const ReviewSchema = new mongoose.Schema<ReviewFromModel>({
 	}
 }, { minimize: false })
 
-export const Review = mongoose.model<ReviewFromModel>('SessionsReview', ReviewSchema)
+export const Review = appInstance.dbs.mongo.use().model<ReviewFromModel>('SessionsReview', ReviewSchema)
 
-export const ReviewChange = appInstance.db
-	.generateDbChange<ReviewFromModel, ReviewEntity>(Review, ReviewDbChangeCallbacks, new ReviewMapper().mapFrom)
+export const ReviewChange = appInstance.dbs.mongo.change(Review, ReviewDbChangeCallbacks, new ReviewMapper().mapFrom)

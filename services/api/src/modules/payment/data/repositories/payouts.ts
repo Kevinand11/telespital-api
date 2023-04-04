@@ -1,5 +1,5 @@
 import { appInstance } from '@utils/environment'
-import { mongoose, QueryParams } from 'equipped'
+import { QueryParams } from 'equipped'
 import { IPayoutRepository } from '../../domain/irepositories/payouts'
 import { EmbeddedUser, PayoutPay, PayoutStatus, TransactionStatus, TransactionType } from '../../domain/types'
 import { PayoutMapper } from '../mappers/payouts'
@@ -7,7 +7,6 @@ import { TransactionToModel } from '../models/transactions'
 import { Payout } from '../mongooseModels/payouts'
 import { Transaction } from '../mongooseModels/transactions'
 import { Wallet } from '../mongooseModels/wallets'
-import { PayoutFromModel } from './../models/payouts'
 
 export class PayoutRepository implements IPayoutRepository {
 	private static instance: PayoutRepository
@@ -23,7 +22,7 @@ export class PayoutRepository implements IPayoutRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await appInstance.db.parseQueryParams<PayoutFromModel>(Payout, query)
+		const data = await appInstance.dbs.mongo.query(Payout, query)
 
 		return {
 			...data,
@@ -38,9 +37,8 @@ export class PayoutRepository implements IPayoutRepository {
 
 	async create (userId: string, users: EmbeddedUser[]) {
 		let res = null as any
-		const session = await mongoose.startSession()
-		await session.withTransaction(async (session) => {
-			const _id = new mongoose.Types.ObjectId().toString()
+		await Transaction.collection.conn.transaction(async (session) => {
+			const _id = appInstance.dbs.mongo.Id.toString()
 			const transactionModels: TransactionToModel[] = []
 			const userDataPromise: Promise<[string, PayoutPay[string]]>[] = users.map(async (user) => {
 				const wallet = await Wallet.findOneAndUpdate(
@@ -64,7 +62,6 @@ export class PayoutRepository implements IPayoutRepository {
 			await Transaction.insertMany(transactionModels, { session })
 			return res
 		})
-		await session.endSession()
 		return this.mapper.mapFrom(res)!
 	}
 

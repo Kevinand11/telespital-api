@@ -28,18 +28,16 @@ export const braintreeConfig = {
 	isProd: braintree.isProd
 }
 
-export const accessTokenKey = getEnvOrFail('ACCESS_TOKEN_KEY')
-export const refreshTokenKey = getEnvOrFail('REFRESH_TOKEN_KEY')
-export const mongoDbURI = getEnvOrFail('MONGODB_URI')
-export const rabbitURI = getEnvOrFail('RABBITMQ_URI')
-export const redisURI = getEnvOrFail('REDIS_URI')
-
 Instance.initialize({
-	accessTokenKey, refreshTokenKey,
-	mongoDbURI, rabbitURI, redisURI,
 	isDev, appId,
-	bullQueueName: 'telespital-task-queues',
-	rabbitColumnName: 'Telespital'
+	accessTokenKey: getEnvOrFail('ACCESS_TOKEN_KEY'),
+	refreshTokenKey: getEnvOrFail('REFRESH_TOKEN_KEY'),
+	bullQueueName: 'greep-task-queues',
+	mongoDbURI: getEnvOrFail('MONGODB_URI'),
+	redisURI: getEnvOrFail('REDIS_URI'),
+	kafkaURIs: getEnvOrFail('KAFKA_URIS').split(','),
+	debeziumUrl: getEnvOrFail('DEBEZIUM_URL'),
+	eventColumnName: 'Telespital'
 })
 export const appInstance = Instance.get()
 

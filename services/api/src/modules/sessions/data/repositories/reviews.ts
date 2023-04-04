@@ -3,7 +3,7 @@ import { QueryParams } from 'equipped'
 import { IReviewRepository } from '../../domain/irepositories/reviews'
 import { EmbeddedUser } from '../../domain/types'
 import { ReviewMapper } from '../mappers/reviews'
-import { ReviewFromModel, ReviewToModel } from '../models/reviews'
+import { ReviewToModel } from '../models/reviews'
 import { Review } from '../mongooseModels/reviews'
 
 export class ReviewRepository implements IReviewRepository {
@@ -20,7 +20,7 @@ export class ReviewRepository implements IReviewRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await appInstance.db.parseQueryParams<ReviewFromModel>(Review, query)
+		const data = await appInstance.dbs.mongo.query(Review, query)
 
 		return {
 			...data,

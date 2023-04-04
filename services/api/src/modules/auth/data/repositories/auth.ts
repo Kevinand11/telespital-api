@@ -1,21 +1,20 @@
-import { IAuthRepository } from '../../domain/irepositories/auth'
-import { Credential, PasswordResetInput } from '../../domain/types'
-import User from '../mongooseModels/users'
-import { UserFromModel, UserToModel } from '../models/users'
+import { appInstance } from '@utils/environment'
+import { publishers } from '@utils/events'
 import {
 	AuthTypes,
 	BadRequestError,
 	EmailsList,
 	Enum,
 	Hash,
-	mongoose,
 	Random,
 	readEmailFromPug,
 	ValidationError
 } from 'equipped'
-import { appInstance } from '@utils/environment'
+import { IAuthRepository } from '../../domain/irepositories/auth'
+import { Credential, PasswordResetInput } from '../../domain/types'
 import { UserMapper } from '../mappers/users'
-import { publishers } from '@utils/events'
+import { UserFromModel, UserToModel } from '../models/users'
+import { User } from '../mongooseModels/users'
 
 const TOKENS_TTL_IN_SECS = 60 * 60
 
@@ -120,7 +119,7 @@ export class AuthRepository implements IAuthRepository {
 		return this.mapper.mapFrom(user)!
 	}
 
-	private async signInUser (user: UserFromModel & mongoose.Document<any, any, UserFromModel>, type: Enum<typeof AuthTypes>) {
+	private async signInUser (user: UserFromModel, type: Enum<typeof AuthTypes>) {
 		const userUpdated = await User.findByIdAndUpdate(user._id, {
 			$set: { lastSignedInAt: Date.now() },
 			$addToSet: { authTypes: [type] }

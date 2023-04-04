@@ -1,14 +1,12 @@
 import { ReportDbChangeCallbacks } from '@utils/changeStreams/sessions/reports'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { ReportEntity } from '../../domain/entities/reports'
 import { ReportMapper } from '../mappers/reports'
 import { ReportFromModel } from '../models/reports'
 
-const ReportSchema = new mongoose.Schema<ReportFromModel>({
+const ReportSchema = new appInstance.dbs.mongo.Schema<ReportFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	userId: {
 		type: String,
@@ -23,11 +21,11 @@ const ReportSchema = new mongoose.Schema<ReportFromModel>({
 		required: true
 	},
 	data: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true
 	},
 	settlement: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: null
 	},
@@ -43,7 +41,6 @@ const ReportSchema = new mongoose.Schema<ReportFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now }, minimize: false })
 
-export const Report = mongoose.model<ReportFromModel>('SessionsReport', ReportSchema)
+export const Report = appInstance.dbs.mongo.use().model<ReportFromModel>('SessionsReport', ReportSchema)
 
-export const ReportChange = appInstance.db
-	.generateDbChange<ReportFromModel, ReportEntity>(Report, ReportDbChangeCallbacks, new ReportMapper().mapFrom)
+export const ReportChange = appInstance.dbs.mongo.change(Report, ReportDbChangeCallbacks, new ReportMapper().mapFrom)

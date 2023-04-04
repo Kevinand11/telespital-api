@@ -5,23 +5,20 @@ import { DbChangeCallbacks } from 'equipped'
 
 export const MessageDbChangeCallbacks: DbChangeCallbacks<MessageFromModel, MessageEntity> = {
 	created: async ({ after }) => {
-		await Promise.all(after.members.map(async (userId) => {
-			await appInstance.listener.created(`sessions/messages/${userId}`, after)
-			await appInstance.listener.created(`sessions/messages/${after.id}/${userId}`, after)
-		}))
+		await appInstance.listener.created(after.members.map((userId) => [
+			`sessions/messages/${userId}`, `sessions/messages/${after.id}/${userId}`
+		]).flat(), after)
 	},
 	updated: async ({ after, before, changes }) => {
-		await Promise.all(after.members.map(async (userId) => {
-			await appInstance.listener.updated(`sessions/messages/${userId}`, after)
-			await appInstance.listener.updated(`sessions/messages/${after.id}/${userId}`, after)
-		}))
+		await appInstance.listener.created(after.members.map((userId) => [
+			`sessions/messages/${userId}`, `sessions/messages/${after.id}/${userId}`
+		]).flat(), after)
 		if (changes.media && before.media) await publishers.DELETEFILE.publish(before.media)
 	},
 	deleted: async ({ before }) => {
-		await Promise.all(before.members.map(async (userId) => {
-			await appInstance.listener.deleted(`sessions/messages/${userId}`, before)
-			await appInstance.listener.deleted(`sessions/messages/${before.id}/${userId}`, before)
-		}))
+		await appInstance.listener.created(before.members.map((userId) => [
+			`sessions/messages/${userId}`, `sessions/messages/${before.id}/${userId}`
+		]).flat(), before)
 		if (before.media) await publishers.DELETEFILE.publish(before.media)
 	}
 }

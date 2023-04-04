@@ -1,14 +1,12 @@
 import { OrderDbChangeCallbacks } from '@utils/changeStreams/users/orders'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { OrderEntity } from '../../domain/entities/orders'
 import { OrderMapper } from '../mappers/orders'
 import { OrderFromModel } from '../models/orders'
 
-const OrderSchema = new mongoose.Schema<OrderFromModel>({
+const OrderSchema = new appInstance.dbs.mongo.Schema<OrderFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	userId: {
 		type: String,
@@ -21,7 +19,7 @@ const OrderSchema = new mongoose.Schema<OrderFromModel>({
 		default: false
 	},
 	phone: {
-		type: mongoose.Schema.Types.Mixed as unknown as OrderFromModel['phone'],
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true
 	},
 	street: {
@@ -51,7 +49,6 @@ const OrderSchema = new mongoose.Schema<OrderFromModel>({
 	}
 }, { minimize: false })
 
-export const Order = mongoose.model<OrderFromModel>('UsersOrder', OrderSchema)
+export const Order = appInstance.dbs.mongo.use().model<OrderFromModel>('UsersOrder', OrderSchema)
 
-export const OrderChange = appInstance.db
-	.generateDbChange<OrderFromModel, OrderEntity>(Order, OrderDbChangeCallbacks, new OrderMapper().mapFrom)
+export const OrderChange = appInstance.dbs.mongo.change(Order, OrderDbChangeCallbacks, new OrderMapper().mapFrom)

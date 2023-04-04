@@ -1,5 +1,5 @@
 import { ReportsUseCases, SessionsUseCases } from '@modules/sessions'
-import { NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
+import { NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class ReportsController {
 	static async find (req: Request) {
@@ -13,7 +13,7 @@ export class ReportsController {
 	}
 
 	static async create (req: Request) {
-		const { message, sessionId } = validateReq({
+		const { message, sessionId } = validate({
 			message: Schema.string(),
 			sessionId: Schema.string().min(1)
 		}, req.body)

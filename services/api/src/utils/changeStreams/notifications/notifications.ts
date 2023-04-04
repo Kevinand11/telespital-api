@@ -7,8 +7,10 @@ import { DbChangeCallbacks, EmailsList, readEmailFromPug } from 'equipped'
 
 export const NotificationDbChangeCallbacks: DbChangeCallbacks<NotificationFromModel, NotificationEntity> = {
 	created: async ({ after }) => {
-		await appInstance.listener.created(`notifications/notifications/${after.userId}`, after)
-		await appInstance.listener.created(`notifications/notifications/${after.id}/${after.userId}`, after)
+		await appInstance.listener.created([
+			`notifications/notifications/${after.userId}`,
+			`notifications/notifications/${after.id}/${after.userId}`
+		], after)
 
 		await sendPushNotification({
 			userIds: [after.userId],
@@ -31,11 +33,15 @@ export const NotificationDbChangeCallbacks: DbChangeCallbacks<NotificationFromMo
 		}
 	},
 	updated: async ({ after }) => {
-		await appInstance.listener.updated(`notifications/notifications/${after.userId}`, after)
-		await appInstance.listener.updated(`notifications/notifications/${after.id}/${after.userId}`, after)
+		await appInstance.listener.created([
+			`notifications/notifications/${after.userId}`,
+			`notifications/notifications/${after.id}/${after.userId}`
+		], after)
 	},
 	deleted: async ({ before }) => {
-		await appInstance.listener.deleted(`notifications/notifications/${before.userId}`, before)
-		await appInstance.listener.deleted(`notifications/notifications/${before.id}/${before.userId}`, before)
+		await appInstance.listener.deleted([
+			`notifications/notifications/${before.userId}`,
+			`notifications/notifications/${before.id}/${before.userId}`
+		], before)
 	}
 }

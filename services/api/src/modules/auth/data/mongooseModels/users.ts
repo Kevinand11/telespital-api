@@ -1,15 +1,13 @@
 import { UserDbChangeCallbacks } from '@utils/changeStreams/auth/users'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { AuthUserEntity } from '../../domain/entities/users'
 import { AuthUserType } from '../../domain/types'
 import { UserMapper } from '../mappers/users'
 import { UserFromModel } from '../models/users'
 
-const UserSchema = new mongoose.Schema<UserFromModel>({
+const UserSchema = new appInstance.dbs.mongo.Schema<UserFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	email: {
 		type: String,
@@ -19,7 +17,7 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 		required: true
 	},
 	phone: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true
 	},
 	password: {
@@ -28,11 +26,11 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 		default: ''
 	},
 	name: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true
 	},
 	photo: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: null
 	},
@@ -48,7 +46,7 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 		default: []
 	},
 	roles: {
-		type: Object as unknown as UserFromModel['roles'],
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: {} as unknown as UserFromModel['roles']
 	},
@@ -58,7 +56,7 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 		default: AuthUserType.patient
 	},
 	data: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: {}
 	},
@@ -74,9 +72,6 @@ const UserSchema = new mongoose.Schema<UserFromModel>({
 	}
 })
 
-export const User = mongoose.model<UserFromModel>('AuthUser', UserSchema)
+export const User = appInstance.dbs.mongo.use().model<UserFromModel>('AuthUser', UserSchema)
 
-export const UserChange = appInstance.db
-	.generateDbChange<UserFromModel, AuthUserEntity>(User, UserDbChangeCallbacks, new UserMapper().mapFrom)
-
-export default User
+export const UserChange = appInstance.dbs.mongo.change(User, UserDbChangeCallbacks, new UserMapper().mapFrom)

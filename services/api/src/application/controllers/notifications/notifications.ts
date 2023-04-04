@@ -3,7 +3,7 @@ import { NotificationsUseCases, NotificationType } from '@modules/notifications'
 import { UsersUseCases } from '@modules/users'
 import { checkPermissions } from '@utils/modules/auth'
 import { sendNotification } from '@utils/modules/notifications/notifications'
-import { AuthRole, NotFoundError, QueryParams, Request, Schema, validateReq } from 'equipped'
+import { AuthRole, NotFoundError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class NotificationsController {
 	static async getNotifications (req: Request) {
@@ -19,7 +19,7 @@ export class NotificationsController {
 	}
 
 	static async createNotification (req: Request) {
-		const { title, message, userId } = validateReq({
+		const { title, message, userId } = validate({
 			title: Schema.string().min(1),
 			message: Schema.string().min(1),
 			userId: Schema.string().min(1)
@@ -37,7 +37,7 @@ export class NotificationsController {
 	}
 
 	static async markNotificationSeen (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			seen: Schema.boolean()
 		}, req.body)
 

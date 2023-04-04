@@ -1,37 +1,56 @@
 version: "3.8"
 services:
+  traefik:
+    restart: unless-stopped
+    ports:
+      - "90:8080"
+
   api:
     restart: unless-stopped
     build:
       target: base
     volumes:
       - "./services/api/src:/app/src:ro"
-    command: "sh ./wait-for-it.sh redis:6379 mongodb:27017 rabbitmq:5672 -- yarn dev"
+    command: "sh ./wait-for-it.sh redis:6379 mongodb:27017 kafka:9092 debezium:8083 -- yarn dev"
 
   mongodb:
     ports:
       - '27017:27017'
     restart: unless-stopped
 
-  mongodb-express:
-    restart: unless-stopped
-    ports:
-      - '81:8081'
-
-  rabbitmq:
-    restart: unless-stopped
-    ports:
-      - '82:15672'
-
   redis:
     restart: unless-stopped
 
+  mongodb-express:
+    image: 'mongo-express:latest'
+    hostname: mongodb-express
+    restart: unless-stopped
+    ports:
+      - '81:8081'
+    depends_on:
+      - mongodb
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
   redis-commander:
+    image: 'rediscommander/redis-commander:latest'
+    hostname: redis-commander
     restart: unless-stopped
     ports:
       - '83:8081'
+    depends_on:
+      - redis
+    environment:
+      - 'REDIS_HOSTS=local:redis:6379'
 
-  traefik:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:master
+    hostname: kafka-ui
     restart: unless-stopped
+    depends_on:
+      - kafka
     ports:
-      - "90:8080"
+      - '84:8080'
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=${KAFKA_URIS}

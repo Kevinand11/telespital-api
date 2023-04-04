@@ -1,7 +1,7 @@
 import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { OrdersUseCases, UsersUseCases } from '@modules/users'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
-import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validateReq, Validation } from 'equipped'
+import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validate, Validation } from 'equipped'
 
 export class OrdersController {
 	static async getOrders (req: Request) {
@@ -17,7 +17,7 @@ export class OrdersController {
 	}
 
 	static async createOrder (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			phone: Schema.any().addRule(Validation.isValidPhone()),
 			street: Schema.string().min(1),
 			city: Schema.string().min(1),
@@ -33,7 +33,7 @@ export class OrdersController {
 	}
 
 	static async payForOrder (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			methodId: Schema.string().min(1)
 		}, req.body)
 

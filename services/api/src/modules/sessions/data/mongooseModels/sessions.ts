@@ -1,22 +1,20 @@
 import { SessionDbChangeCallbacks } from '@utils/changeStreams/sessions/sessions'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { SessionEntity } from '../../domain/entities/sessions'
 import { SessionMapper } from '../mappers/sessions'
 import { SessionFromModel } from '../models/sessions'
 
-const SessionSchema = new mongoose.Schema<SessionFromModel>({
+const SessionSchema = new appInstance.dbs.mongo.Schema<SessionFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	doctor: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: null
 	},
 	patient: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: true
 	},
 	status: {
@@ -29,7 +27,7 @@ const SessionSchema = new mongoose.Schema<SessionFromModel>({
 		default: ''
 	},
 	prescriptions: {
-		type: [mongoose.Schema.Types.Mixed] as unknown as SessionFromModel['prescriptions'],
+		type: [appInstance.dbs.mongo.Schema.Types.Mixed] as unknown as SessionFromModel['prescriptions'],
 		required: false,
 		default: []
 	},
@@ -52,12 +50,12 @@ const SessionSchema = new mongoose.Schema<SessionFromModel>({
 		default: false
 	},
 	ratings: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: {}
 	},
 	cancelled: {
-		type: mongoose.Schema.Types.Mixed,
+		type: appInstance.dbs.mongo.Schema.Types.Mixed,
 		required: false,
 		default: null
 	},
@@ -83,7 +81,6 @@ const SessionSchema = new mongoose.Schema<SessionFromModel>({
 	}
 }, { minimize: false })
 
-export const Session = mongoose.model<SessionFromModel>('Session', SessionSchema)
+export const Session = appInstance.dbs.mongo.use().model<SessionFromModel>('Session', SessionSchema)
 
-export const SessionChange = appInstance.db
-	.generateDbChange<SessionFromModel, SessionEntity>(Session, SessionDbChangeCallbacks, new SessionMapper().mapFrom)
+export const SessionChange = appInstance.dbs.mongo.change(Session, SessionDbChangeCallbacks, new SessionMapper().mapFrom)

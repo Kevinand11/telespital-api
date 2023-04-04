@@ -1,7 +1,7 @@
 import { appInstance } from '@utils/environment'
 import { IOrderRepository } from '../../domain/irepositories/orders'
 import { OrderMapper } from '../mappers/orders'
-import { OrderFromModel, OrderToModel } from '../models/orders'
+import { OrderToModel } from '../models/orders'
 import { Order } from '../mongooseModels/orders'
 
 export class OrderRepository implements IOrderRepository {
@@ -14,7 +14,7 @@ export class OrderRepository implements IOrderRepository {
 	}
 
 	async get (query) {
-		const data = await appInstance.db.parseQueryParams<OrderFromModel>(Order, query)
+		const data = await appInstance.dbs.mongo.query(Order, query)
 		return {
 			...data,
 			results: data.results.map((u) => this.mapper.mapFrom(u)!)

@@ -22,13 +22,15 @@ services:
       target: production
     hostname: api
     restart: always
+    stop_grace_period: 60s
     depends_on:
       - mongodb
       - redis
-      - rabbitmq
+      - kafka
+      - debezium
     volumes:
       - '/c/data/docker/telespital/files/api/:/app/public/'
-    command: 'sh ./wait-for-it.sh redis:6379 mongodb:27017 rabbitmq:5672 -- node lib/index.js'
+    command: 'sh ./wait-for-it.sh redis:6379 mongodb:27017 kafka:9092 debezium:8083 -- node lib/index.js'
 
   mongodb:
     image: 'mongo:6.0.3'
@@ -39,34 +41,39 @@ services:
     restart: always
     command: '--quiet --bind_ip_all --replSet rs0'
 
-  mongodb-express:
-    image: 'mongo-express:latest'
-    hostname: mongodb-express
-    restart: unless-stopped
-    depends_on:
-      - mongodb
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-
-  rabbitmq:
-    build:
-      context: ./docker/rabbitmq
-    hostname: rabbitmq
+  kafka:
+    image: bitnami/kafka:3.4.0
+    hostname: kafka
     restart: always
+    volumes:
+      - '/c/data/docker/telespital/kafka/data:/bitnami/kafka'
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://kafka:9092,CONTROLLER://kafka:9093,PLAINTEXT_HOST://0.0.0.0:29092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+
+  debezium:
+    image: debezium/connect:2.2
+    environment:
+      BOOTSTRAP_SERVERS: ${KAFKA_URIS}
+      GROUP_ID: telespital
+      CONFIG_STORAGE_TOPIC: debezium.connect.configs
+      OFFSET_STORAGE_TOPIC: debezium.connect.offsets
+      STATUS_STORAGE_TOPIC: debezium.connect.status
+    depends_on:
+      - kafka
 
   redis:
     image: 'redis:6.2.5-alpine'
     hostname: redis
     restart: always
-
-  redis-commander:
-    image: 'rediscommander/redis-commander:latest'
-    hostname: redis-commander
-    restart: always
-    depends_on:
-      - redis
-    environment:
-      - 'REDIS_HOSTS=local:redis:6379'
 
   rsinit:
     build:

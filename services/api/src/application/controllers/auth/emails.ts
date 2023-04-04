@@ -1,7 +1,7 @@
 import { AuthUseCases, AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { StorageUseCases } from '@modules/storage'
 import { checkPermissions, generateAuthOutput, isValidPassword } from '@utils/modules/auth'
-import { AuthRole, Request, Schema, validateReq, Validation, ValidationError } from 'equipped'
+import { AuthRole, Request, Schema, validate, Validation, ValidationError } from 'equipped'
 
 export class EmailsController {
 	static async signup (req: Request) {
@@ -28,7 +28,7 @@ export class EmailsController {
 			email, firstName, lastName, phone,
 			password, photo: userPhoto, type,
 			primarySpecialty, secondarySpecialty
-		} = validateReq({
+		} = validate({
 			email: Schema.string().email().addRule((value) => {
 				const email = value as string
 				return !user ? Validation.isValid(email) : Validation.isInvalid(['email already in use'], email)
@@ -39,8 +39,8 @@ export class EmailsController {
 			phone: Schema.any().addRule(Validation.isValidPhone()),
 			photo: Schema.file().image().nullable(),
 			type: Schema.any<AuthUserType>().in(Object.values(AuthUserType)),
-			primarySpecialty: Schema.string().min(1).requiredIf(() => isDoctorType),
-			secondarySpecialty: Schema.string().min(1).requiredIf(() => isDoctorType),
+			primarySpecialty: Schema.string().min(isDoctorType ? 1 : 0).default(''),
+			secondarySpecialty: Schema.string().min(isDoctorType ? 1 : 0).default(''),
 		}, userCredential)
 		const photo = userPhoto ? await StorageUseCases.upload('profiles', userPhoto) : null
 		const validateData = {
@@ -57,7 +57,7 @@ export class EmailsController {
 	}
 
 	static async signin (req: Request) {
-		const validateData = validateReq({
+		const validateData = validate({
 			email: Schema.string().email(),
 			password: Schema.string(),
 		}, req.body)
@@ -67,7 +67,7 @@ export class EmailsController {
 	}
 
 	static async sendVerificationMail (req: Request) {
-		const { email } = validateReq({
+		const { email } = validate({
 			email: Schema.string().email()
 		}, req.body)
 
@@ -78,7 +78,7 @@ export class EmailsController {
 	}
 
 	static async verifyEmail (req: Request) {
-		const { token } = validateReq({
+		const { token } = validate({
 			token: Schema.force.string()
 		}, req.body)
 

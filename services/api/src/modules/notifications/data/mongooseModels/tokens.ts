@@ -1,14 +1,12 @@
 import { TokenDbChangeCallbacks } from '@utils/changeStreams/notifications/tokens'
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
-import { TokenEntity } from '../../domain/entities/tokens'
 import { TokenMapper } from '../mappers/tokens'
 import { TokenFromModel } from '../models/tokens'
 
-const Schema = new mongoose.Schema<TokenFromModel>({
+const Schema = new appInstance.dbs.mongo.Schema<TokenFromModel>({
 	_id: {
 		type: String,
-		default: () => new mongoose.Types.ObjectId().toString()
+		default: () => appInstance.dbs.mongo.Id.toString()
 	},
 	userId: {
 		type: String,
@@ -31,7 +29,6 @@ const Schema = new mongoose.Schema<TokenFromModel>({
 	}
 }, { timestamps: { currentTime: Date.now } })
 
-export const Token = mongoose.model<TokenFromModel>('NotificationsToken', Schema)
+export const Token = appInstance.dbs.mongo.use().model<TokenFromModel>('NotificationsToken', Schema)
 
-export const TokenChange = appInstance.db
-	.generateDbChange<TokenFromModel, TokenEntity>(Token, TokenDbChangeCallbacks, new TokenMapper().mapFrom)
+export const TokenChange = appInstance.dbs.mongo.change(Token, TokenDbChangeCallbacks, new TokenMapper().mapFrom)

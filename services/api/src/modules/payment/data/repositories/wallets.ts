@@ -1,8 +1,8 @@
+import { BadRequestError } from 'equipped'
 import { IWalletRepository } from '../../domain/irepositories/wallets'
+import { AccountDetails } from '../../domain/types'
 import { WalletMapper } from '../mappers/wallets'
 import { Wallet } from '../mongooseModels/wallets'
-import { AccountDetails } from '../../domain/types'
-import { BadRequestError, mongoose } from 'equipped'
 
 export class WalletRepository implements IWalletRepository {
 	private static instance: WalletRepository
@@ -32,8 +32,7 @@ export class WalletRepository implements IWalletRepository {
 
 	async updateAmount (userId: string, amount: number) {
 		let res = false
-		const session = await mongoose.startSession()
-		await session.withTransaction(async (session) => {
+		await Wallet.collection.conn.transaction(async (session) => {
 			const wallet = this.mapper.mapFrom(await WalletRepository.getUserWallet(userId, session))!
 			const updatedBalance = wallet.balance.amount + amount
 			if (updatedBalance < 0) throw new BadRequestError('wallet balance can\'t go below 0')
@@ -43,7 +42,6 @@ export class WalletRepository implements IWalletRepository {
 			))
 			return res
 		})
-		await session.endSession()
 		return res
 	}
 

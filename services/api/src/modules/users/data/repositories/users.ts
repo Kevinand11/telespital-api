@@ -1,9 +1,7 @@
 import { appInstance } from '@utils/environment'
-import { mongoose } from 'equipped'
 import { IUserRepository } from '../../domain/irepositories/users'
 import { UserBio, UserMeta, UserRoles } from '../../domain/types'
 import { UserMapper } from '../mappers/users'
-import { UserFromModel } from '../models/users'
 import { User } from '../mongooseModels/users'
 
 export class UserRepository implements IUserRepository {
@@ -16,7 +14,7 @@ export class UserRepository implements IUserRepository {
 	}
 
 	async get (query) {
-		const data = await appInstance.db.parseQueryParams<UserFromModel>(User, query)
+		const data = await appInstance.dbs.mongo.query(User, query)
 		return {
 			...data,
 			results: data.results.map((u) => this.mapper.mapFrom(u)!)
@@ -77,8 +75,7 @@ export class UserRepository implements IUserRepository {
 
 	async updateRatings (userId: string, ratings: number, add: boolean) {
 		let res = false
-		const session = await mongoose.startSession()
-		await session.withTransaction(async (session) => {
+		await User.collection.conn.transaction(async (session) => {
 			const user = await User.findById(userId, {}, { session })
 			if (!user) return res
 			user.ratings.total += (add ? 1 : -1) * ratings
@@ -87,7 +84,6 @@ export class UserRepository implements IUserRepository {
 			res = !!(await user.save({ session }))
 			return res
 		})
-		await session.endSession()
 		return res
 	}
 }

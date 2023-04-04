@@ -8,20 +8,14 @@ import { DbChangeCallbacks } from 'equipped'
 
 export const SessionDbChangeCallbacks: DbChangeCallbacks<SessionFromModel, SessionEntity> = {
 	created: async ({ after }) => {
-		await Promise.all(
-			after.getParticipants().map(async (id) => {
-				await appInstance.listener.created(`sessions/sessions/${id}`, after)
-				await appInstance.listener.created(`sessions/sessions/${id}/${after.id}`, after)
-			})
-		)
+		await appInstance.listener.created(after.getParticipants().map((userId) => [
+			`sessions/sessions/${userId}`, `sessions/sessions/${after.id}/${userId}`
+		]).flat(), after)
 	},
 	updated: async ({ after, before, changes }) => {
-		await Promise.all(
-			after.getParticipants().map(async (id) => {
-				await appInstance.listener.updated(`sessions/sessions/${id}`, after)
-				await appInstance.listener.updated(`sessions/sessions/${id}/${after.id}`, after)
-			})
-		)
+		await appInstance.listener.created(after.getParticipants().map((userId) => [
+			`sessions/sessions/${userId}`, `sessions/sessions/${after.id}/${userId}`
+		]).flat(), after)
 
 		if (changes.cancelled && after.cancelled && after.paid) await TransactionsUseCases.create({
 			userId: after.patient.id, email: after.patient.bio.email,
@@ -58,12 +52,9 @@ export const SessionDbChangeCallbacks: DbChangeCallbacks<SessionFromModel, Sessi
 		])
 	},
 	deleted: async ({ before }) => {
-		await Promise.all(
-			before.getParticipants().map(async (id) => {
-				await appInstance.listener.deleted(`sessions/sessions/${id}`, before)
-				await appInstance.listener.deleted(`sessions/sessions/${id}/${before.id}`, before)
-			})
-		)
+		await appInstance.listener.created(before.getParticipants().map((userId) => [
+			`sessions/sessions/${userId}`, `sessions/sessions/${before.id}/${userId}`
+		]).flat(), before)
 
 		if (before.closedAt && !before.cancelled) await Promise.all([
 			UsersUseCases.incrementMeta({

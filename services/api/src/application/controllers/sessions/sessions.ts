@@ -4,7 +4,7 @@ import { PrescriptionUnit, SessionStatus, SessionsUseCases } from '@modules/sess
 import { UsersUseCases } from '@modules/users'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
 import { LiveVideo } from '@utils/modules/sessions/video'
-import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validateReq } from 'equipped'
+import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class SessionsController {
 	static async getSessions (req: Request) {
@@ -28,7 +28,7 @@ export class SessionsController {
 	}
 
 	static async createSession (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			description: Schema.string().min(1)
 		}, req.body)
 
@@ -44,7 +44,7 @@ export class SessionsController {
 	}
 
 	static async updateDescription (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			description: Schema.string().min(1)
 		}, req.body)
 
@@ -55,7 +55,7 @@ export class SessionsController {
 	}
 
 	static async updatePrescriptions (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			prescriptions: Schema.array(Schema.object({
 				medication: Schema.string().min(1),
 				dosage: Schema.string().min(1),
@@ -70,7 +70,7 @@ export class SessionsController {
 	}
 
 	static async updateNote (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			note: Schema.string().min(1)
 		}, req.body)
 
@@ -81,7 +81,7 @@ export class SessionsController {
 	}
 
 	static async payForSession (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			methodId: Schema.string().min(1)
 		}, req.body)
 
@@ -116,7 +116,7 @@ export class SessionsController {
 	}
 
 	static async cancelSession (req: Request) {
-		const { reason } = validateReq({
+		const { reason } = validate({
 			reason: Schema.string().min(1)
 		}, req.body)
 
@@ -126,7 +126,7 @@ export class SessionsController {
 	}
 
 	static async rateSession (req: Request) {
-		const data = validateReq({
+		const data = validate({
 			rating: Schema.number().round(0).gte(0).lte(5),
 			message: Schema.string()
 		}, req.body)

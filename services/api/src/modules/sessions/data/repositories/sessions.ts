@@ -1,11 +1,11 @@
 import { appInstance } from '@utils/environment'
-import { mongoose, NotAuthorizedError, QueryParams } from 'equipped'
+import { NotAuthorizedError, QueryParams } from 'equipped'
 import { ISessionRepository } from '../../domain/irepositories/sessions'
 import { EmbeddedUser, SessionStatus } from '../../domain/types'
 import { ReviewMapper } from '../mappers/reviews'
 import { SessionMapper } from '../mappers/sessions'
 import { ReviewToModel } from '../models/reviews'
-import { SessionFromModel, SessionToModel } from '../models/sessions'
+import { SessionToModel } from '../models/sessions'
 import { Review } from '../mongooseModels/reviews'
 import { Session } from '../mongooseModels/sessions'
 
@@ -25,7 +25,7 @@ export class SessionRepository implements ISessionRepository {
 	}
 
 	async get (query: QueryParams) {
-		const data = await appInstance.db.parseQueryParams<SessionFromModel>(Session, query)
+		const data = await appInstance.dbs.mongo.query(Session, query)
 
 		return {
 			...data,
@@ -101,8 +101,7 @@ export class SessionRepository implements ISessionRepository {
 
 	async rate (data: Omit<ReviewToModel, 'to'>) {
 		let res = null as any
-		const session = await mongoose.startSession()
-		await session.withTransaction(async (session) => {
+		await Session.collection.conn.transaction(async (session) => {
 			const sessionToUpdate = this.mapper.mapFrom(await Session.findById(data.sessionId, {}, { session }))
 			if (!sessionToUpdate || !sessionToUpdate.doctor || sessionToUpdate.closedAt === null || sessionToUpdate.cancelled !== null) throw new NotAuthorizedError('can\'t rate this session')
 			if (sessionToUpdate.patient.id !== data.user.id) throw new NotAuthorizedError('can\'t rate this session')
@@ -119,7 +118,6 @@ export class SessionRepository implements ISessionRepository {
 				return res
 			}
 		})
-		await session.endSession()
 		return this.reviewMapper.mapFrom(res)!
 	}
 }

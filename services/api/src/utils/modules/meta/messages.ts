@@ -1,5 +1,5 @@
-import { EmailsList, EventTypes, readEmailFromPug } from 'equipped'
 import { publishers } from '@utils/events'
+import { EmailsList, EventTypes, readEmailFromPug } from 'equipped'
 
 type Message = {
 	name: string
@@ -23,7 +23,7 @@ export const sendNewMessageEmail = async (message: Message) => {
 	})
 	await publishers[EventTypes.SENDMAIL].publish({
 		from: EmailsList.NO_REPLY,
-		to: EmailsList.SUPPORT,
+		to: EmailsList.NO_REPLY,
 		subject: 'New Contact Message',
 		content, data: {}
 	})

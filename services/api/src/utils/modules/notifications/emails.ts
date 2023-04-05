@@ -1,16 +1,17 @@
-import { createTransport } from 'nodemailer'
-import { appInstance, emails, isDev } from '@utils/environment'
 import { EmailsUseCases } from '@modules/notifications'
+import { appInstance, emails, isDev } from '@utils/environment'
 import { Email, EmailsList } from 'equipped'
+import { createTransport } from 'nodemailer'
 
 const sendMail = async (email: Email) => {
 	const { to, subject, content, from = EmailsList.NO_REPLY } = email
-	const { clientId, privateKey } = emails[from]
+	const { email: user, pass } = emails[from]
 
 	const transporter = createTransport({
-		service: 'gmail',
-		auth: { type: 'OAuth2', user: from, serviceClient: clientId, privateKey },
-		tls: { rejectUnauthorized: false }
+		host: 'smtpout.secureserver.net',
+		secure: false,
+		port: 587,
+		auth: { user, pass },
 	})
 	await transporter.verify()
 

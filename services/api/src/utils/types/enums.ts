@@ -21,8 +21,7 @@ const Ar = makeEnum('AuthRole', {
 } as const)
 
 const El = makeEnum('EmailsList', {
-	NO_REPLY: 'no-reply@telespital.com', // TODO: get correct email address from Michael
-	SUPPORT: 'support@telespital.com'
+	NO_REPLY: 'noreply@telespital.com',
 } as const)
 
 const Ev = makeEnum('EventTypes', {

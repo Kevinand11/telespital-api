@@ -15,8 +15,8 @@ export const superAdminEmail = getEnvOrFail('SUPER_ADMIN')
 const mails = JSON.parse(getEnvOrFail('EMAILS') || '{}')
 export const emails = Object.fromEntries(
 	Object.entries(EmailsList).map(([key, value]) => [value, {
-		privateKey: mails[key.toLowerCase()]?.private_key,
-		clientId: mails[key.toLowerCase()]?.client_id
+		email: mails[key.toLowerCase()]?.email,
+		pass: mails[key.toLowerCase()]?.pass
 	}])
 )
 

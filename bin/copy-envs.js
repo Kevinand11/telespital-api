@@ -7,7 +7,10 @@ if (fs.existsSync('env.json')) {
 	const envs = JSON.parse(content)
 
 	// For root
-	const entries = Object.entries(envs['root'] ?? {}).map(([key, value]) => ([key, typeof value === 'object' ? JSON.stringify(value) : value]))
+	const entries = Object.entries({
+		...(envs['root'] ?? {}),
+		...(envs['general'] ?? {})
+	}).map(([key, value]) => ([key, typeof value === 'object' ? JSON.stringify(value) : value]))
 	const envFormattedEntries = entries.reduce((accumulator, currentValue) => {
 		const [key, value] = currentValue
 		return accumulator + `${key.toUpperCase()}=${value}\n`

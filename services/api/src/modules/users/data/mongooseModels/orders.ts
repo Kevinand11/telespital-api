@@ -13,6 +13,14 @@ const OrderSchema = new appInstance.dbs.mongo.Schema<OrderFromModel>({
 		required: false,
 		default: ''
 	},
+	amount: {
+		type: Number,
+		required: true
+	},
+	currency: {
+		type: String,
+		required: true
+	},
 	paid: {
 		type: Boolean,
 		required: false,

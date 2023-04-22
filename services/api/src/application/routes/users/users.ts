@@ -4,6 +4,19 @@ import { UsersController } from '../../controllers/users/users'
 
 export const usersRoutes: Route[] = [
 	{
+		path: '/users/users/',
+		method: 'get',
+		controllers: [
+			isAdmin([AuthRole.canViewAdmins]),
+			makeController(async (req) => {
+				return {
+					status: StatusCodes.Ok,
+					result: await UsersController.getUsers(req)
+				}
+			})
+		]
+	},
+	{
 		path: '/users/users/admins',
 		method: 'get',
 		controllers: [

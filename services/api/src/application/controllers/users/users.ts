@@ -1,11 +1,16 @@
+import { AuthUserType } from '@modules/auth'
 import { UsersUseCases } from '@modules/users'
 import { QueryParams, Request } from 'equipped'
-import { AuthUserType } from '@modules/auth'
 
 export class UsersController {
 	static async getPatients (req: Request) {
 		const query = req.query as QueryParams
 		query.auth = [{ field: 'bio.type', value: AuthUserType.patient }]
+		return await UsersUseCases.get(query)
+	}
+
+	static async getUsers (req: Request) {
+		const query = req.query as QueryParams
 		return await UsersUseCases.get(query)
 	}
 

@@ -7,7 +7,6 @@ export const usersRoutes: Route[] = [
 		path: '/users/users/',
 		method: 'get',
 		controllers: [
-			isAdmin([AuthRole.canViewAdmins]),
 			makeController(async (req) => {
 				return {
 					status: StatusCodes.Ok,

@@ -1460,10 +1460,10 @@ entities@~2.1.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.1.0.tgz#992d3129cf7df6870b96c57858c249a120f8b8b5"
   integrity sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w==
 
-equipped@4.1.12:
-  version "4.1.12"
-  resolved "https://registry.yarnpkg.com/equipped/-/equipped-4.1.12.tgz#7159860c81ba362a56fc4a221bb86a086b865daa"
-  integrity sha512-dhr81hkGkmQlPJYEFKKeM+0tZl/3WHZkkG+lbTtQ9bpTsR9Tqiu9bOcDV8eDRq+Xfg7yCiA515vsbIvOmi6CSg==
+equipped@4.1.15:
+  version "4.1.15"
+  resolved "https://registry.yarnpkg.com/equipped/-/equipped-4.1.15.tgz#0cfe6ae8e9e3e36e0a0229675d4a5c0b241d6e3a"
+  integrity sha512-nX81292fOwuxwBLsU1DNR0KHduxR33DP5vQ3KZF4t3T+WizFz8jFGh180vxuJFaqgbcAv8wJFLeTqZmCsfpcOg==
   dependencies:
     amqp-connection-manager "^4.1.11"
     amqplib "^0.10.3"

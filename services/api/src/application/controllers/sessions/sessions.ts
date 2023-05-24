@@ -2,21 +2,23 @@ import { AuthUserType } from '@modules/auth'
 import { Currencies, MethodsUseCases, TransactionStatus, TransactionsUseCases, TransactionType } from '@modules/payment'
 import { PrescriptionUnit, SessionStatus, SessionsUseCases } from '@modules/sessions'
 import { UsersUseCases } from '@modules/users'
+import { checkPermissions } from '@utils/modules/auth'
 import { BraintreePayment } from '@utils/modules/payment/braintree'
 import { LiveVideo } from '@utils/modules/sessions/video'
-import { BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
+import { AuthRole, BadRequestError, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class SessionsController {
 	static async getSessions (req: Request) {
 		const query = req.query as QueryParams
-		if (req.authUser!.type !== AuthUserType.doctor) {
-			query.auth = [{ field: 'patient.id', value: req.authUser!.id }]
-		}
+		const hasAccess = req.authUser!.type === AuthUserType.doctor || checkPermissions(req.authUser, [AuthRole.canViewSessions])
+		if (!hasAccess) query.auth = [{ field: 'patient.id', value: req.authUser!.id }]
 		return await SessionsUseCases.get(query)
 	}
 
 	static async findSession (req: Request) {
 		const session = await SessionsUseCases.find(req.params.id)
+		const hasAccess = req.authUser!.type === AuthUserType.doctor || checkPermissions(req.authUser, [AuthRole.canViewSessions])
+		if (hasAccess) return session
 		if (!session || !session.getParticipants().includes(req.authUser!.id)) return null
 		return session
 	}

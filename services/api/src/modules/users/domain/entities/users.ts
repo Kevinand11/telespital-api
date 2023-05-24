@@ -1,5 +1,5 @@
-import { EmbeddedUser, UserBio, UserDates, UserMetaType, UserRatings, UserRoles, UserStatus } from '../types'
 import { BaseEntity, Validation } from 'equipped'
+import { EmbeddedUser, UserBio, UserDates, UserMetaType, UserRatings, UserRoles, UserStatus } from '../types'
 
 export class UserEntity extends BaseEntity {
 	public readonly id: string
@@ -56,7 +56,8 @@ const generateDefaultBio = (bio: Partial<UserBio>): UserBio => {
 	const phone = bio?.phone!
 	return {
 		name: { first, last, full },
-		email, type, photo, phone
+		email, type, photo, phone,
+		data: bio?.data ?? {}
 	}
 }
 

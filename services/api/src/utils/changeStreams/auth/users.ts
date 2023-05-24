@@ -1,7 +1,7 @@
-import { DbChangeCallbacks } from 'equipped'
 import { AuthUserEntity, UserFromModel } from '@modules/auth'
 import { UsersUseCases } from '@modules/users'
 import { publishers } from '@utils/events'
+import { DbChangeCallbacks } from 'equipped'
 
 export const UserDbChangeCallbacks: DbChangeCallbacks<UserFromModel, AuthUserEntity> = {
 	created: async ({ after }) => {
@@ -12,7 +12,8 @@ export const UserDbChangeCallbacks: DbChangeCallbacks<UserFromModel, AuthUserEnt
 				name: after.allNames,
 				email: after.email,
 				phone: after.phone,
-				photo: after.photo
+				photo: after.photo,
+				data: after.data
 			},
 			timestamp: after.signedUpAt
 		})
@@ -33,7 +34,8 @@ export const UserDbChangeCallbacks: DbChangeCallbacks<UserFromModel, AuthUserEnt
 				name: after.allNames,
 				email: after.email,
 				phone: after.phone,
-				photo: after.photo
+				photo: after.photo,
+				data: after.data
 			},
 			timestamp: Date.now()
 		})

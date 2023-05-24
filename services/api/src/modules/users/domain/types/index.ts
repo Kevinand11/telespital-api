@@ -1,7 +1,8 @@
+import { AuthUserData, AuthUserType, UserPhone } from '@modules/auth'
 import { AuthRoles, MediaOutput } from 'equipped'
-import { AuthUserType, UserPhone } from '@modules/auth'
 
 export { Currencies } from '@modules/payment'
+export type { UserPhone }
 export type Media = MediaOutput
 
 export type UserBio = {
@@ -14,9 +15,9 @@ export type UserBio = {
 		full: string
 	}
 	photo: Media | null
+	data: AuthUserData
 }
 
-export type { UserPhone }
 
 export type UserRoles = AuthRoles
 

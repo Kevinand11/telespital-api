@@ -40,8 +40,8 @@ export class AuthUserEntity extends BaseEntity {
 		}
 	}
 
-	static bioKeys (): (keyof (UserUpdateInput & { email: string }))[] {
-		return ['name', 'email', 'photo']
+	static bioKeys (): (keyof (UserUpdateInput & { email: string, data: AuthUserData }))[] {
+		return ['name', 'email', 'photo', 'data']
 	}
 }
 

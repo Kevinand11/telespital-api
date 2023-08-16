@@ -1,5 +1,7 @@
 {
 	"compilerOptions": {
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
@@ -12,8 +14,7 @@
 		"outDir": "lib",
 		"moduleResolution": "Node",
 		"lib": [
-			"ESNext",
-			"ESNext.AsyncIterable"
+			"ES2021",
 		],
 		"esModuleInterop": true,
 		"allowJs": false,
@@ -30,9 +31,6 @@
 			],
 			"@utils/*": [
 				"./src/utils/*"
-			],
-			"@index": [
-				"./src/index"
 			]
 		},
 		"types": [

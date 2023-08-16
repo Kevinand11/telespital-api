@@ -1,6 +1,7 @@
 import { TokensUseCases } from '@modules/notifications'
 import { messaging } from 'firebase-admin'
 import { appInstance } from '@utils/environment'
+import { Validation } from 'equipped'
 
 type NotificationPushData = {
 	type: 'notifications'
@@ -26,17 +27,12 @@ type PushNotification = {
 	data: NotificationPushData | ChatPushData
 }
 
-const chunkArray = <T> (arr: T[], size: number) => new Array(Math.ceil(arr.length / size))
-	.fill([])
-	.map((_, index) => arr.slice(index * size, (index + 1) * size))
-	.filter((chunk) => chunk.length > 0)
-
 export const sendPushNotification = async (notification: PushNotification) => {
 	try {
 		const { userIds, data, title, body } = notification
 		await Promise.all(userIds.map(async (userId) => {
 			const userTokens = await TokensUseCases.find({ userId })
-			const chunks = chunkArray(userTokens.tokens, 500)
+			const chunks = Validation.chunkArray(userTokens.tokens, 500)
 			const invalidTokens = [] as string[]
 
 			await Promise.all(chunks.map(async (tokens) => {

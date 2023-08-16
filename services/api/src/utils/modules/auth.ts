@@ -77,7 +77,6 @@ export const deleteUnverifiedUsers = async () => {
 export const checkPermissions = (authUser: AuthUser | null, roles: Enum<typeof AuthRole>[]) => {
 	if (!authUser) throw new NotAuthorizedError('insufficient permissions')
 	if (authUser.roles[AuthRole.isSuperAdmin]) return true
-	if (authUser.roles[AuthRole.isInactive]) throw new NotAuthorizedError('your account is currently inactive')
 	const hasPerm = roles.some((role) => authUser.roles[role])
 	if (!hasPerm) throw new NotAuthorizedError('insufficient permissions')
 	return true

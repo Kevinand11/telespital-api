@@ -44,6 +44,20 @@ const updateUserRole: Route = {
 	]
 }
 
+const adminUpdateUser: Route = {
+	path: '/auth/admin/user',
+	method: 'post',
+	controllers: [
+		isAuthenticated, isAdmin([AuthRole.canModifyRole]),
+		makeController(async (req) => {
+			return {
+				status: StatusCodes.Ok,
+				result: await UserController.adminUpdateUser(req)
+			}
+		})
+	]
+}
+
 const updateUserInactiveRole: Route = {
 	path: '/auth/user/roles/inactive',
 	method: 'post',
@@ -84,5 +98,5 @@ const superAdmin: Route = {
 	]
 }
 
-const routes: Route[] = [getUserDetails, updateUserRole, updateUserInactiveRole, updateUser, signout, superAdmin]
+const routes: Route[] = [getUserDetails, updateUserRole, adminUpdateUser, updateUserInactiveRole, updateUser, signout, superAdmin]
 export default routes

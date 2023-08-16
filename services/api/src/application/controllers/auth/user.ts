@@ -33,6 +33,36 @@ export class UserController {
 		})
 	}
 
+	static async adminUpdateUser (req: Request) {
+		const uploadedPhoto = req.files.photo?.[0] ?? null
+		const changedPhoto = !!uploadedPhoto || req.body.photo === null
+		const data = validate({
+			userId: Schema.string().min(1),
+			firstName: Schema.string().min(1),
+			lastName: Schema.string().min(1),
+			phone: Schema.any().addRule(Validation.isValidPhone()),
+			photo: Schema.file().image().nullable()
+		}, { ...req.body, photo: uploadedPhoto })
+
+		const { userId, firstName, lastName, phone } = data
+
+		const user = await AuthUsersUseCases.findUser(userId)
+		if (!user) throw new BadRequestError('user not found')
+
+		const photo = uploadedPhoto ? await StorageUseCases.upload('profiles', uploadedPhoto) : undefined
+
+		const updatedUser = await AuthUsersUseCases.updateProfile({
+			userId,
+			data: {
+				name: { first: firstName, last: lastName },
+				phone,
+				...(changedPhoto ? { photo } : {}) as any
+			}
+		})
+
+		return !!updatedUser
+	}
+
 	static async updateUserRole (req: Request) {
 		const unSupportedRoles = [AuthRole.isSuperAdmin, AuthRole.isInactive]
 		const supportedRoles = Object.values(AuthRole)

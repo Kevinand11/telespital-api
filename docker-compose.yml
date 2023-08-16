@@ -33,7 +33,7 @@ services:
     command: 'sh ./wait-for-it.sh redis:6379 mongodb:27017 kafka:9092 debezium:8083 -- node lib/index.js'
 
   mongodb:
-    image: 'mongo:6.0.3'
+    image: 'mongo:6.0.7'
     hostname: mongodb
     volumes:
       - '/c/data/docker/telespital/mongo/db:/data/db'
@@ -42,7 +42,7 @@ services:
     command: '--quiet --bind_ip_all --replSet rs0'
 
   kafka:
-    image: bitnami/kafka:3.4.0
+    image: bitnami/kafka:3.5.0
     hostname: kafka
     restart: always
     volumes:
@@ -56,11 +56,12 @@ services:
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
       - ALLOW_PLAINTEXT_LISTENER=yes
 
   debezium:
-    image: debezium/connect:2.2
+    image: debezium/connect:2.3
     environment:
       BOOTSTRAP_SERVERS: ${KAFKA_URIS}
       GROUP_ID: telespital
@@ -71,7 +72,7 @@ services:
       - kafka
 
   redis:
-    image: 'redis:6.2.5-alpine'
+    image: 'redis:6.2.13-alpine'
     hostname: redis
     restart: always
 

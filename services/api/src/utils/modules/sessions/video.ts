@@ -1,4 +1,4 @@
-import { RtcRole, RtcTokenBuilder } from 'agora-access-token'
+import { RtcRole, RtcTokenBuilder } from 'agora-token'
 import { agoraConfig } from '@utils/environment'
 
 const { appId, appCertificate, apiKey, apiSecret } = agoraConfig
@@ -12,9 +12,9 @@ export class LiveVideo {
 		const { sessionId, userName, userId, isDoctor } = data
 		const roomId = await LiveVideo.createRoom(sessionId)
 		const role = isDoctor ? RtcRole.PUBLISHER : RtcRole.PUBLISHER
-		const authToken = RtcTokenBuilder.buildTokenWithAccount(
+		const authToken = RtcTokenBuilder.buildTokenWithUserAccount(
 			appId, appCertificate, roomId, userId, role,
-			Math.floor(Date.now() / 1000) + (3600 * 4)
+			3600 * 4, 3600 * 4
 		)
 		return { authToken, userName, userId, roomId, role, appId }
 	}

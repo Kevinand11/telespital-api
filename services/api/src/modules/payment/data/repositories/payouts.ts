@@ -51,7 +51,7 @@ export class PayoutRepository implements IPayoutRepository {
 				transactionModels.push({
 					...balance, title: 'Payout generated',
 					userId: user.id, email: user.bio.email,
-					status: TransactionStatus.fulfilled,
+					status: TransactionStatus.settled,
 					data: { payoutId: _id, type: TransactionType.NewPayout }
 				})
 				return [userId, { ...balance }]

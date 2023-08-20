@@ -12,6 +12,8 @@ export class ReviewEntity extends BaseEntity {
 	public readonly createdAt: number
 	public readonly updatedAt: number
 
+	ignoreInJSON = ['user.bio.email']
+
 	constructor ({
 		id, sessionId, to, user, rating, message, createdAt, updatedAt
 	}: ReviewConstructorArgs) {

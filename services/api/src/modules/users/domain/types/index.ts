@@ -47,6 +47,6 @@ export type UserMetaType = Record<UserMeta, number>
 
 export type EmbeddedUser = {
 	id: string
-	bio: UserBio
+	bio: Pick<UserBio, 'name' | 'photo' | 'email'>
 	roles: UserRoles
 }

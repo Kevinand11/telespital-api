@@ -10,6 +10,8 @@ export class UserEntity extends BaseEntity {
 	public readonly status: UserStatus
 	public readonly ratings: UserRatings
 
+	ignoreInJSON = ['bio.email', 'bio.phone']
+
 	constructor ({
 		id, bio, roles, dates, meta, status, ratings
 	}: UserConstructorArgs) {
@@ -30,7 +32,11 @@ export class UserEntity extends BaseEntity {
 	getEmbedded (): EmbeddedUser {
 		return {
 			id: this.id,
-			bio: this.bio,
+			bio: {
+				name: this.bio.name,
+				email: this.bio.email,
+				photo: this.bio.photo
+			},
 			roles: this.roles
 		}
 	}
@@ -69,5 +75,9 @@ export const generateDefaultUser = (user: Partial<EmbeddedUser>): EmbeddedUser =
 	const id = user?.id ?? ''
 	const bio = generateDefaultBio(user?.bio ?? {})
 	const roles = generateDefaultRoles(user?.roles ?? {})
-	return { id, bio, roles }
+	return {
+		id,
+		bio: { name: bio.name, email: bio.email, photo: bio.photo },
+		roles
+	}
 }

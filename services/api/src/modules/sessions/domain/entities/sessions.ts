@@ -20,6 +20,8 @@ export class SessionEntity extends BaseEntity {
 	public readonly createdAt: number
 	public readonly updatedAt: number
 
+	ignoreInJSON = ['doctor.bio.email', 'patient.bio.email']
+
 	constructor ({
 		id, doctor, patient, prescriptions, note,
 		description, price, currency, paid, status, ratings,

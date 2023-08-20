@@ -10,8 +10,6 @@ export class UserEntity extends BaseEntity {
 	public readonly status: UserStatus
 	public readonly ratings: UserRatings
 
-	ignoreInJSON = ['bio.email', 'bio.phone']
-
 	constructor ({
 		id, bio, roles, dates, meta, status, ratings
 	}: UserConstructorArgs) {

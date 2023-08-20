@@ -11,7 +11,6 @@ import {
 	exchangeOldForNewTokens,
 	makeAccessToken,
 	makeRefreshToken,
-	NotAuthorizedError,
 	Schema,
 	Validation
 } from 'equipped'
@@ -75,11 +74,9 @@ export const deleteUnverifiedUsers = async () => {
 }
 
 export const checkPermissions = (authUser: AuthUser | null, roles: Enum<typeof AuthRole>[]) => {
-	if (!authUser) throw new NotAuthorizedError('insufficient permissions')
+	if (!authUser) return false
 	if (authUser.roles[AuthRole.isSuperAdmin]) return true
-	const hasPerm = roles.some((role) => authUser.roles[role])
-	if (!hasPerm) throw new NotAuthorizedError('insufficient permissions')
-	return true
+	return roles.some((role) => authUser.roles[role])
 }
 
 export const deActivateUserProfile = async (userId: string, value: boolean, message: string) => {

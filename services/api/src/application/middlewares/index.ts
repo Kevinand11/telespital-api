@@ -38,7 +38,8 @@ export const hasRefreshToken = makeMiddleware(
 export const isAdmin = (roles: Enum<typeof AuthRole>[]) => makeMiddleware(
 	async (request) => {
 		await isAuth(request)
-		checkPermissions(request.authUser, roles)
+		const hasPerm = checkPermissions(request.authUser, roles)
+		if (!hasPerm) throw new NotAuthorizedError('insufficient permissions')
 	}
 )
 

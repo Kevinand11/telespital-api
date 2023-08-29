@@ -3,7 +3,7 @@ import { NotificationsUseCases, NotificationType } from '@modules/notifications'
 import { UsersUseCases } from '@modules/users'
 import { checkPermissions } from '@utils/modules/auth'
 import { sendNotification } from '@utils/modules/notifications/notifications'
-import { AuthRole, NotFoundError, QueryParams, Request, Schema, validate } from 'equipped'
+import { AuthRole, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class NotificationsController {
 	static async getNotifications (req: Request) {
@@ -19,21 +19,27 @@ export class NotificationsController {
 	}
 
 	static async createNotification (req: Request) {
-		const { title, message, userId } = validate({
-			title: Schema.string().min(1),
-			message: Schema.string().min(1),
-			userId: Schema.string().min(1)
+		const { notifications } = validate({
+			notifications: Schema.array(Schema.object({
+				title: Schema.string().min(1),
+				message: Schema.string().min(1),
+				userId: Schema.string().min(1)
+			})).min(1)
 		}, req.body)
 
-		const user = await UsersUseCases.find(userId)
-		if (!user) throw new NotFoundError('user not found')
-		if (user.bio.type === AuthUserType.patient) checkPermissions(req.authUser, [AuthRole.canSendPatientNotification])
-		if (user.bio.type === AuthUserType.doctor) checkPermissions(req.authUser, [AuthRole.canSendDoctorNotification])
+		const { results: users } = await UsersUseCases.get({ auth: [{ field: 'id', value: notifications.map((n) => n.userId) }] })
 
-		return await sendNotification([userId], {
-			title, body: message, sendEmail: false,
-			data: { type: NotificationType.AdminMessage, adminId: req.authUser!.id }
+		users.forEach((user) => {
+			if (user.bio.type === AuthUserType.patient && !checkPermissions(req.authUser, [AuthRole.canSendPatientNotification])) throw new NotAuthorizedError('cant send notifications to patients')
+			if (user.bio.type === AuthUserType.doctor && !checkPermissions(req.authUser, [AuthRole.canSendDoctorNotification])) throw new NotAuthorizedError('cant send notifications to doctors')
 		})
+
+		const res =  await Promise.all(notifications.map((notification) => sendNotification([notification.userId], {
+			title: notification.title, body: notification.message, sendEmail: false,
+			data: { type: NotificationType.AdminMessage, adminId: req.authUser!.id }
+		})))
+
+		return res.every((r) => r)
 	}
 
 	static async markNotificationSeen (req: Request) {

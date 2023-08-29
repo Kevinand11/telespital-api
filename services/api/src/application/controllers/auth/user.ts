@@ -2,7 +2,7 @@ import { AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { StorageUseCases } from '@modules/storage'
 import { superAdminEmail } from '@utils/environment'
 import { checkPermissions, deActivateUserProfile, signOutUser } from '@utils/modules/auth'
-import { AuthRole, BadRequestError, Enum, NotFoundError, Request, Schema, validate, Validation, verifyAccessToken } from 'equipped'
+import { AuthRole, BadRequestError, Enum, NotAuthorizedError, NotFoundError, Request, Schema, validate, Validation, verifyAccessToken } from 'equipped'
 
 export class UserController {
 	static async findUser (req: Request) {
@@ -92,9 +92,9 @@ export class UserController {
 		if (req.authUser!.id === userId) throw new BadRequestError('You cannot modify your own roles')
 		const user = await AuthUsersUseCases.findUser(userId)
 		if (!user) throw new NotFoundError()
-		if (user.type === AuthUserType.patient) checkPermissions(req.authUser, [AuthRole.canDeactivatePatientProfile])
-		if (user.type === AuthUserType.doctor) checkPermissions(req.authUser, [AuthRole.canDeactivateDoctorProfile])
-		if (user.type === AuthUserType.admin) checkPermissions(req.authUser, [AuthRole.canDeactivateAdminProfile])
+		if (user.type === AuthUserType.patient && !checkPermissions(req.authUser, [AuthRole.canDeactivatePatientProfile])) throw new NotAuthorizedError()
+		if (user.type === AuthUserType.doctor && !checkPermissions(req.authUser, [AuthRole.canDeactivateDoctorProfile])) throw new NotAuthorizedError()
+		if (user.type === AuthUserType.admin && !checkPermissions(req.authUser, [AuthRole.canDeactivateAdminProfile])) throw new NotAuthorizedError()
 
 		return await deActivateUserProfile(userId, value,
 			value ? 'Your account has been deactivated' : 'Your account has been reactivated')

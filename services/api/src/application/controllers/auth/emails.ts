@@ -1,7 +1,7 @@
 import { AuthUseCases, AuthUsersUseCases, AuthUserType } from '@modules/auth'
 import { StorageUseCases } from '@modules/storage'
 import { checkPermissions, generateAuthOutput, isValidPassword } from '@utils/modules/auth'
-import { AuthRole, Request, Schema, validate, Validation, ValidationError } from 'equipped'
+import { AuthRole, NotAuthorizedError, Request, Schema, validate, Validation, ValidationError } from 'equipped'
 
 export class EmailsController {
 	static async signup (req: Request) {
@@ -22,7 +22,7 @@ export class EmailsController {
 		const isDoctorType = userCredential.type === AuthUserType.doctor
 		const isAdminType = userCredential.type === AuthUserType.admin
 
-		if (isAdminType) checkPermissions(req.authUser, [AuthRole.canCreateAdmins])
+		if (isAdminType && !checkPermissions(req.authUser, [AuthRole.canCreateAdmins])) throw new NotAuthorizedError()
 
 		const {
 			email, firstName, lastName, phone,

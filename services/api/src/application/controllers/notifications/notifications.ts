@@ -3,7 +3,7 @@ import { NotificationsUseCases, NotificationType } from '@modules/notifications'
 import { UsersUseCases } from '@modules/users'
 import { checkPermissions } from '@utils/modules/auth'
 import { sendNotification } from '@utils/modules/notifications/notifications'
-import { AuthRole, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
+import { AuthRole, Conditions, NotAuthorizedError, QueryParams, Request, Schema, validate } from 'equipped'
 
 export class NotificationsController {
 	static async getNotifications (req: Request) {
@@ -27,19 +27,18 @@ export class NotificationsController {
 			})).min(1)
 		}, req.body)
 
-		const { results: users } = await UsersUseCases.get({ auth: [{ field: 'id', value: notifications.map((n) => n.userId) }] })
+		const { results: users } = await UsersUseCases.get({ where: [{ field: 'id', condition: Conditions.in, value: notifications.map((n) => n.userId) }] })
 
 		users.forEach((user) => {
 			if (user.bio.type === AuthUserType.patient && !checkPermissions(req.authUser, [AuthRole.canSendPatientNotification])) throw new NotAuthorizedError('cant send notifications to patients')
 			if (user.bio.type === AuthUserType.doctor && !checkPermissions(req.authUser, [AuthRole.canSendDoctorNotification])) throw new NotAuthorizedError('cant send notifications to doctors')
 		})
 
-		const res =  await Promise.all(notifications.map((notification) => sendNotification([notification.userId], {
+		return await sendNotification(notifications.map((notification) => ({
 			title: notification.title, body: notification.message, sendEmail: false,
+			userId: notification.userId,
 			data: { type: NotificationType.AdminMessage, adminId: req.authUser!.id }
 		})))
-
-		return res.every((r) => r)
 	}
 
 	static async markNotificationSeen (req: Request) {

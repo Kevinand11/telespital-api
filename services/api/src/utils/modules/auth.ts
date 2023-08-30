@@ -80,11 +80,12 @@ export const checkPermissions = (authUser: AuthUser | null, roles: Enum<typeof A
 }
 
 export const deActivateUserProfile = async (userId: string, value: boolean, message: string) => {
-	await sendNotification([userId], {
+	await sendNotification([{
+		userId,
 		title: 'Profile Activity Updated',
 		body: message, sendEmail: true,
 		data: { type: NotificationType.SystemMessage }
-	})
+	}])
 	return await AuthUsersUseCases.updateRole({
 		userId, roles: { [AuthRole.isInactive]: value }
 	})
